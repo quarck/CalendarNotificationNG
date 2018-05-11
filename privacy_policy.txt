@@ -1,0 +1,18 @@
+As part of normal operation, this app receives and stores information about events fired by Android Calendar
+
+No such information ever leaves application: 
+
+ * it is not transmitted anywhere
+
+ * not shared with anyone
+
+ * not provided to any 3rd party 
+
+After event is dismissed, its infromation is stored in the Bin for a number of days (default 3), and 
+after expiration - information is completely removed. 
+
+Bin can be disabled, in such case information about event is removed from the app as soon as event 
+is dismissed. 
+
+Application contains functionality of keeping logs in a persistent storage for debug purpose, this 
+functionality is off by default and can only be enabled through hidden developers menu. 

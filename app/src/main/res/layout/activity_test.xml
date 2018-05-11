@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".ui.TestActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/scrollView"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        >
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="0dp"
+            >
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:layout_marginLeft="4dip"
+                android:layout_marginRight="4dip"
+                android:background="?android:attr/dividerVertical"
+                android:layout_alignParentTop="true"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/material_red"
+                android:text="
+WARNING!\n\nNo usable hidden functionality can be found here\nThis Activity is purely for debuging purpose\nif you want to play with it - use it at your own risk!\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n."
+                android:id="@+id/todo"
+                android:visibility="visible"
+                android:focusable="true"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="EventID:"/>
+
+                <EditText
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/edittext_debug_event_id"
+                    android:layout_weight="2"/>
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="VIEW"
+                    android:id="@+id/test_btn_view"
+                    android:onClick="OnButtonViewClick"
+                    android:padding="4dp"
+                    android:layout_gravity="center_horizontal"
+                    android:visibility="visible"
+                    android:background="?android:attr/selectableItemBackground"
+                    />
+
+            </LinearLayout>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="ADD RANDOM EVENT"
+                android:id="@+id/buttonTest2"
+                android:onClick="OnButtonAddRandomEventClick"
+                android:visibility="visible"
+                android:padding="14dp"
+                />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="POST DEMO EVENTS FOR PLAY STORE"
+                android:id="@+id/buttonTest3"
+                android:onClick="OnButtonStrEvClick"
+                android:visibility="visible"
+                android:padding="14dp"
+                />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="ADD EVENT TO PROVIDER"
+                android:id="@+id/buttonTest4"
+                android:onClick="OnButtonAddProvierEventClick"
+                android:visibility="visible"
+                android:padding="14dp"
+                />
+
+
+            <ToggleButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/buttonTestToggleDebugAutoDismiss"
+                android:onClick="OnButtonToggleAutoDismissDebugClick"
+                android:visibility="visible"
+                android:textOn="DEBUGGING AUTO DISMISS"
+                android:textOff="NOT DEBUGGING AUTO DISMISS"
+                android:padding="14dp"
+                />
+
+            <ToggleButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/buttonTestToggleDebugAlarmDelays"
+                android:onClick="OnButtonToggleAlarmDelayDebugClick"
+                android:visibility="visible"
+                android:textOn="DEBUGGING ALARM DELAYS"
+                android:textOff="NOT DEBUGGING ALARM DELAYS"
+                android:padding="14dp"
+                />
+
+            <ToggleButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/buttonTestToggleDebugMonitor"
+                android:onClick="OnButtonToggleDebugMonitorClick"
+                android:visibility="visible"
+                android:textOn="DEBUGGING MONITOR"
+                android:textOff="NOT DEBUGGING MONITOR"
+                android:padding="14dp"
+                />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="HIDE THIS PAGE"
+                android:id="@+id/buttonTest5"
+                android:onClick="OnButtonDisableDevPage"
+                android:visibility="visible"
+                android:padding="14dp"
+                />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

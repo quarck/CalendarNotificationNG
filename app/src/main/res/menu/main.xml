@@ -1,0 +1,63 @@
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.MainActivity" >
+
+    <item
+        android:id="@+id/action_snooze_all"
+        android:orderInCategory="90"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_update_white_24dp"
+        android:title="@string/snooze_all" />
+
+    <item
+        android:id="@+id/action_dismissed_events"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:title="@string/deleted_events" />
+
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="120"
+        app:showAsAction="never"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:title="@string/settings"/>
+
+    <item
+        android:id="@+id/action_mute_all"
+        android:orderInCategory="123"
+        app:showAsAction="never"
+        android:icon="@drawable/ic_volume_off_white_24dp"
+        android:title="@string/mute_all"
+        android:visible="false"/>
+
+    <item
+        android:id="@+id/action_dismiss_all"
+        android:orderInCategory="126"
+        app:showAsAction="never"
+        android:title="@string/dismiss_all_events" />
+
+    <item
+        android:id="@+id/action_feedback"
+        android:orderInCategory="130"
+        app:showAsAction="never"
+        android:icon="@android:drawable/ic_menu_help"
+        android:title="@string/help_feedback"
+        />
+
+    <item
+        android:id="@+id/action_about"
+        android:orderInCategory="140"
+        app:showAsAction="never"
+        android:title="@string/menu_about" />
+
+    <item
+        android:id="@+id/action_test_page"
+        android:orderInCategory="10000"
+        app:showAsAction="never"
+        android:title="Dev page"
+        tools:ignore="HardcodedText"
+        android:visible="false"
+        />
+</menu>
