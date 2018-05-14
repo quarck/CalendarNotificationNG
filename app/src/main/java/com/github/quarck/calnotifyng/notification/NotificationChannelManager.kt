@@ -31,12 +31,12 @@ import com.github.quarck.calnotifyng.utils.notificationManager
 
 object NotificationChannelManager {
 
-    const val NOTIFICATION_CHANNEL_ID_DEFAULT = "com.github.calnotifyng.notify.def"
-    const val NOTIFICATION_CHANNEL_ID_ALARM = "com.github.calnotifyng.notify.alarm"
-    const val NOTIFICATION_CHANNEL_ID_SILENT = "com.github.calnotifyng.notify.quiet"
+    const val NOTIFICATION_CHANNEL_ID_DEFAULT = "com.github.calnotifyng.notify.cal"
+    const val NOTIFICATION_CHANNEL_ID_ALARM = "com.github.calnotifyng.notify.calalarm"
+    const val NOTIFICATION_CHANNEL_ID_SILENT = "com.github.calnotifyng.notify.calquiet"
 
-    const val NOTIFICATION_CHANNEL_ID_REMINDER = "com.github.calnotifyng.notify.reminder"
-    const val NOTIFICAITON_CHANNEL_ID_REMINDER_ALARM = "com.github.calnotifyng.notify.ralarm"
+    const val NOTIFICATION_CHANNEL_ID_REMINDER = "com.github.calnotifyng.notify.rem"
+    const val NOTIFICAITON_CHANNEL_ID_REMINDER_ALARM = "com.github.calnotifyng.notify.remalarm"
 
     fun createDefaultNotificationChannelDebug(context: Context): String {
 
