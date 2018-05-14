@@ -444,7 +444,7 @@ class EventNotificationManager : EventNotificationManagerInterface {
             soundState = NotificationChannelManager.SoundState.Alarm
 
         val channel = NotificationChannelManager.createNotificationChannelForPurpose(context,
-                isSeparateReminderNotification = false, isInLineReminder = isReminder, isRepost = true,
+                isReminder = false,
                 soundState = soundState)
 
         val builder =
@@ -833,7 +833,7 @@ class EventNotificationManager : EventNotificationManagerInterface {
         }
 
         val channel = NotificationChannelManager.createNotificationChannelForPurpose(
-                ctx, isSeparateReminderNotification = true, isInLineReminder = false, isRepost = false,
+                ctx, isReminder = true,
                 soundState = if (notificationSettings.useAlarmStream || forceAlarmStream)
                     NotificationChannelManager.SoundState.Alarm
                 else NotificationChannelManager.SoundState.Normal)
@@ -907,8 +907,8 @@ class EventNotificationManager : EventNotificationManagerInterface {
         val text = ctx.resources.getString(R.string.N_calendar_events).format(numTotalEvents)
 
         val channel = NotificationChannelManager.createNotificationChannelForPurpose(
-                ctx, isSeparateReminderNotification = false, isInLineReminder = false,
-                isRepost = true, soundState = NotificationChannelManager.SoundState.Silent)
+                ctx, isReminder = false,
+                soundState = NotificationChannelManager.SoundState.Silent)
 
         val groupBuilder = Notification.Builder(ctx, channel)
                 .setContentTitle(ctx.resources.getString(R.string.calendar))
@@ -1048,9 +1048,7 @@ class EventNotificationManager : EventNotificationManagerInterface {
         val channel = NotificationChannelManager.createNotificationChannelForPurpose(
                 ctx,
                 soundState = soundState,
-                isSeparateReminderNotification = false,
-                isInLineReminder =  isReminder,
-                isRepost = isRepost
+                isReminder = false
         )
 
         val builder = Notification.Builder(ctx, channel)
@@ -1343,9 +1341,8 @@ class EventNotificationManager : EventNotificationManagerInterface {
                         .toString()
 
         val channel = NotificationChannelManager.createNotificationChannelForPurpose(
-                context, isSeparateReminderNotification = false, isInLineReminder = false,
-                soundState = NotificationChannelManager.SoundState.Silent,
-                isRepost = true
+                context, isReminder = false,
+                soundState = NotificationChannelManager.SoundState.Silent
         )
 
         val builder =

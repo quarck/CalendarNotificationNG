@@ -35,13 +35,8 @@ object NotificationChannelManager {
     const val NOTIFICATION_CHANNEL_ID_ALARM = "com.github.calnotifyng.notify.alarm"
     const val NOTIFICATION_CHANNEL_ID_SILENT = "com.github.calnotifyng.notify.quiet"
 
-    const val NOTIFICATION_CHANNEL_ID_REPOST_DEFAULT = "com.github.calnotifyng.notify.repdef"
-    const val NOTIFICATION_CHANNEL_ID_REPOST_ALARM = "com.github.calnotifyng.notify.repalarm"
-    const val NOTIFICATION_CHANNEL_ID_REPOST_SILENT = "com.github.calnotifyng.notify.repquiet"
-
     const val NOTIFICATION_CHANNEL_ID_REMINDER = "com.github.calnotifyng.notify.reminder"
     const val NOTIFICAITON_CHANNEL_ID_REMINDER_ALARM = "com.github.calnotifyng.notify.ralarm"
-
 
     fun createDefaultNotificationChannelDebug(context: Context): String {
 
@@ -52,12 +47,12 @@ object NotificationChannelManager {
         val notificationChannel =
                 NotificationChannel(
                         channelId,
-                        context.getString(R.string.notification_channel_default),
+                        context.getString(R.string.debug_notifications),
                         NotificationManager.IMPORTANCE_DEFAULT
                 )
 
         // Configure the notification channel.
-        notificationChannel.description = context.getString(R.string.notification_channel_default_desc)
+        notificationChannel.description = context.getString(R.string.debug_notifications_description)
 
         notificationChannel.enableLights(true)
         notificationChannel.lightColor = settings.ledColor
@@ -87,10 +82,8 @@ object NotificationChannelManager {
 
     fun createNotificationChannelForPurpose(
             context: Context,
-            isSeparateReminderNotification: Boolean,
-            isInLineReminder: Boolean,
-            soundState: SoundState,
-            isRepost: Boolean
+            isReminder: Boolean,
+            soundState: SoundState
     ): String {
 
         val channelId: String
@@ -101,58 +94,31 @@ object NotificationChannelManager {
 
         var importance = NotificationManager.IMPORTANCE_DEFAULT
 
-        if (!isSeparateReminderNotification) {
+        if (!isReminder) {
             // Regular notification - NOT a reminder
-
-            if (!isRepost || isInLineReminder) {
-                // Non-repost - initial notification
-                when (soundState) {
-                    NotificationChannelManager.SoundState.Normal -> {
-                        channelId = NOTIFICATION_CHANNEL_ID_DEFAULT
-                        channelName = context.getString(R.string.notification_channel_default)
-                        channelDesc = context.getString(R.string.notification_channel_default_desc)
-                        importance = NotificationManager.IMPORTANCE_DEFAULT
-                    }
-                    NotificationChannelManager.SoundState.Alarm -> {
-                        channelId = NOTIFICATION_CHANNEL_ID_ALARM
-                        channelName = context.getString(R.string.notification_channel_alarm)
-                        channelDesc = context.getString(R.string.notification_channel_alarm_desc)
-                        importance = NotificationManager.IMPORTANCE_HIGH
-                    }
-                    NotificationChannelManager.SoundState.Silent -> {
-                        channelId = NOTIFICATION_CHANNEL_ID_SILENT
-                        channelName = context.getString(R.string.notification_channel_silent)
-                        channelDesc = context.getString(R.string.notification_channel_silent_desc)
-                        importance = NotificationManager.IMPORTANCE_LOW
-                    }
+            // Non-repost - initial notification
+            when (soundState) {
+                NotificationChannelManager.SoundState.Normal -> {
+                    channelId = NOTIFICATION_CHANNEL_ID_DEFAULT
+                    channelName = context.getString(R.string.notification_channel_default)
+                    channelDesc = context.getString(R.string.notification_channel_default_desc)
+                    importance = NotificationManager.IMPORTANCE_DEFAULT
                 }
-            }
-            else {
-                // Repost - e.g. after reboot. Not showing up screen popup, everything else
-                // is the same as with initial
-                when (soundState) {
-                    NotificationChannelManager.SoundState.Normal -> {
-                        channelId = NOTIFICATION_CHANNEL_ID_REPOST_DEFAULT
-                        channelName = context.getString(R.string.notification_channel_repost_default)
-                        channelDesc = context.getString(R.string.notification_channel_repost_default_desc)
-                        importance = NotificationManager.IMPORTANCE_DEFAULT
-                    }
-                    NotificationChannelManager.SoundState.Alarm -> {
-                        channelId = NOTIFICATION_CHANNEL_ID_REPOST_ALARM
-                        channelName = context.getString(R.string.notification_channel_repost_alarm)
-                        channelDesc = context.getString(R.string.notification_channel_repost_alarm_desc)
-                        importance = NotificationManager.IMPORTANCE_DEFAULT
-                    }
-                    NotificationChannelManager.SoundState.Silent -> {
-                        channelId = NOTIFICATION_CHANNEL_ID_REPOST_SILENT
-                        channelName = context.getString(R.string.notification_channel_repost_silent)
-                        channelDesc = context.getString(R.string.notification_channel_repost_silent_desc)
-                        importance = NotificationManager.IMPORTANCE_LOW
-                    }
+                NotificationChannelManager.SoundState.Alarm -> {
+                    channelId = NOTIFICATION_CHANNEL_ID_ALARM
+                    channelName = context.getString(R.string.notification_channel_alarm)
+                    channelDesc = context.getString(R.string.notification_channel_alarm_desc)
+                    importance = NotificationManager.IMPORTANCE_HIGH
+                }
+                NotificationChannelManager.SoundState.Silent -> {
+                    channelId = NOTIFICATION_CHANNEL_ID_SILENT
+                    channelName = context.getString(R.string.notification_channel_silent)
+                    channelDesc = context.getString(R.string.notification_channel_silent_desc)
+                    importance = NotificationManager.IMPORTANCE_LOW
                 }
             }
         }
-        else { // if (!isSeparateReminderNotification) {
+        else { // if (!isReminder) {
             // Reminder notification
             // isRepost is ignored
             if (soundState == SoundState.Alarm) {
@@ -188,7 +154,7 @@ object NotificationChannelManager {
 
         if (soundState == SoundState.Alarm) {
             attribBuilder
-                    .setFlags(AudioAttributes.FLAG_AUDIBILITY_ENFORCED)
+                    //.setFlags(AudioAttributes.FLAG_AUDIBILITY_ENFORCED)
                     .setLegacyStreamType(AudioManager.STREAM_ALARM)
                     .setUsage(AudioAttributes.USAGE_ALARM)
         }
@@ -197,7 +163,7 @@ object NotificationChannelManager {
         }
 
         if (soundState != SoundState.Silent) {
-            if (!isSeparateReminderNotification) {
+            if (!isReminder) {
                 notificationChannel.setSound(settings.ringtoneURI, attribBuilder.build())
 
                 if (settings.vibraOn) {
@@ -219,7 +185,7 @@ object NotificationChannelManager {
             }
         }
 
-        if (isSeparateReminderNotification) {
+        if (isReminder) {
             notificationChannel.setShowBadge(false)
         }
 
