@@ -63,6 +63,7 @@
     <string name="one_hour_from_now">Move next hour</string>
     <string name="same_time_tomorrow">Move next day</string>
     <string name="next_week_same_day">Move next week</string>
+    <string name="move_four_weeks">Move by 4 weeks</string>
     <string name="custom_pick_a_date">Custom (pick a date)</string>
     <string name="title_activity_activity_test_buttons_and_to_do" translatable="false">ActivityTestButtonsAndToDo</string>
 

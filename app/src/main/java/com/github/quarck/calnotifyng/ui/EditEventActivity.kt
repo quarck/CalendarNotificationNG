@@ -471,9 +471,7 @@ open class EditEventActivity : AppCompatActivity() {
             eventTitleLayout.background = ColorDrawable(color.adjustCalendarColor(settings.darkerCalendarColors))
             eventTitleText.background = ColorDrawable(color.adjustCalendarColor(settings.darkerCalendarColors))
 
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                window.statusBarColor = color.scaleColor(0.7f)
-            }
+            window.statusBarColor = color.scaleColor(0.7f)
 
             from = state.from
             to = state.to
@@ -519,9 +517,7 @@ open class EditEventActivity : AppCompatActivity() {
             eventTitleLayout.background = ColorDrawable(eventToEdit.color.adjustCalendarColor(settings.darkerCalendarColors))
             eventTitleText.background = ColorDrawable(eventToEdit.color.adjustCalendarColor(settings.darkerCalendarColors))
 
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                window.statusBarColor = eventToEdit.color.scaleColor(0.7f)
-            }
+            window.statusBarColor = eventToEdit.color.scaleColor(0.7f)
 
             eventTitleText.setText(eventToEdit.title)
             note.setText(eventToEdit.desc)
@@ -566,9 +562,7 @@ open class EditEventActivity : AppCompatActivity() {
                 eventTitleText.setText(receivedSharedText)
             }
 
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                window.statusBarColor = calendar.color.scaleColor(0.7f)
-            }
+            window.statusBarColor = calendar.color.scaleColor(0.7f)
 
             // Set default date and time
             var currentTime = System.currentTimeMillis()
@@ -769,10 +763,7 @@ open class EditEventActivity : AppCompatActivity() {
 //                eventTitleText.background = ColorDrawable(
 //                        calendar.color.adjustCalendarColor(settings.darkerCalendarColors))
 
-
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                    window.statusBarColor = calendar.color.scaleColor(0.7f)
-                }
+                window.statusBarColor = calendar.color.scaleColor(0.7f)
 
                 eventTitleLayout.background = ColorDrawable(calendar.color.adjustCalendarColor(settings.darkerCalendarColors))
                 eventTitleText.background = ColorDrawable(calendar.color.adjustCalendarColor(settings.darkerCalendarColors))

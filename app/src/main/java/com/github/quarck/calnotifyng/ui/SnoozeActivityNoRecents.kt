@@ -304,11 +304,10 @@ open class SnoozeActivityNoRecents : AppCompatActivity() {
             val colorDrawable = ColorDrawable(color)
             findOrThrow<RelativeLayout>(R.id.snooze_view_event_details_layout).background = colorDrawable
 
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                window.statusBarColor = color.scaleColor(0.7f)
-            }
+            window.statusBarColor = color.scaleColor(0.7f)
 
-            if (!ev.isRepeating) {
+            val shouldOfferMove = (!ev.isRepeating) && (DateTimeUtils.isUTCTodayOrInThePast(ev.startTime))
+            if (shouldOfferMove) {
                 findOrThrow<RelativeLayout>(R.id.snooze_reschedule_layout).visibility = View.VISIBLE
             }
             else {
@@ -937,6 +936,8 @@ open class SnoozeActivityNoRecents : AppCompatActivity() {
                 reschedule(Consts.DAY_IN_SECONDS * 1000L)
             R.id.snooze_view_reschedule_present3 ->
                 reschedule(Consts.DAY_IN_SECONDS * 7L * 1000L)
+            R.id.snooze_view_reschedule_present4 ->
+                reschedule(Consts.DAY_IN_SECONDS * 28L * 1000L)
         }
     }
 

@@ -759,7 +759,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/snooze_view_reschedule_present4"
-            android:text="@string/custom_pick_a_date"
+            android:text="@string/move_four_weeks"
             android:textAppearance="?android:textAppearanceMedium"
             android:textColor="@color/primary_text"
             android:paddingTop="@dimen/snooze_view_spacing"
@@ -772,7 +772,6 @@
             android:clickable="true"
             android:onClick="OnButtonRescheduleCustomClick"
             android:background="?android:attr/selectableItemBackground"
-            android:visibility="gone"
             />
 
     </RelativeLayout>
