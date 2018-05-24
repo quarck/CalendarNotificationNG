@@ -766,8 +766,8 @@ object ApplicationController : EventMovedHandler {
 
     fun fireEventReminder(
             context: Context,
-            itIsAfterQuietHoursReminder: Boolean, hasActiveAlarms: Boolean, separateNotification: Boolean) {
-        notificationManager.fireEventReminder(context, itIsAfterQuietHoursReminder, hasActiveAlarms, separateNotification);
+            itIsAfterQuietHoursReminder: Boolean, hasActiveAlarms: Boolean) {
+        notificationManager.fireEventReminder(context, itIsAfterQuietHoursReminder, hasActiveAlarms);
     }
 
     fun cleanupEventReminder(context: Context) {

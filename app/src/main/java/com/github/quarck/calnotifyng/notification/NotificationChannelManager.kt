@@ -24,8 +24,10 @@ import android.app.NotificationManager
 import android.content.Context
 import android.media.AudioAttributes
 import android.media.AudioManager
+import com.github.quarck.calnotifyng.NotificationSettingsSnapshot
 import com.github.quarck.calnotifyng.R
 import com.github.quarck.calnotifyng.Settings
+import com.github.quarck.calnotifyng.logs.DevLog
 import com.github.quarck.calnotifyng.utils.notificationManager
 
 
@@ -137,6 +139,9 @@ object NotificationChannelManager {
             }
         }
 
+        DevLog.info(context, LOG_TAG, "Notification channel for state $soundState, is reminder: $isReminder," +
+                " -> channel ID $channelId, importance $importance")
+
         // Configure the notification channel.
         val notificationChannel = NotificationChannel(channelId, channelName, importance)
         notificationChannel.description = channelDesc
@@ -157,6 +162,8 @@ object NotificationChannelManager {
                     //.setFlags(AudioAttributes.FLAG_AUDIBILITY_ENFORCED)
                     .setLegacyStreamType(AudioManager.STREAM_ALARM)
                     .setUsage(AudioAttributes.USAGE_ALARM)
+
+            DevLog.info(context, LOG_TAG, "Alarm attributes applied")
         }
         else {
             attribBuilder.setUsage(AudioAttributes.USAGE_NOTIFICATION_EVENT)
@@ -193,4 +200,6 @@ object NotificationChannelManager {
 
         return channelId
     }
+
+    private const val LOG_TAG = "NotificationChannelManager"
 }

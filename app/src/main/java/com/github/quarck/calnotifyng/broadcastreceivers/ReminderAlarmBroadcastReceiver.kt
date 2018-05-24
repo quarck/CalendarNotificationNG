@@ -176,8 +176,7 @@ open class ReminderAlarmGenericBroadcastReceiver : BroadcastReceiver() {
                         currentTime = currentTime,
                         itIsAfterQuietHoursReminder = itIsAfterQuietHoursReminder,
                         reminderInterval = Math.min(currentReminderInterval, nextReminderInterval),
-                        hasActiveAlarms = hasActiveAlarms,
-                        separateReminderNotification = settings.reminderCustomRingtone || settings.reminderCustomVibra
+                        hasActiveAlarms = hasActiveAlarms
                 )
             }
         }
@@ -188,14 +187,12 @@ open class ReminderAlarmGenericBroadcastReceiver : BroadcastReceiver() {
             currentTime: Long,
             itIsAfterQuietHoursReminder: Boolean,
             reminderInterval: Long,
-            hasActiveAlarms: Boolean,
-            separateReminderNotification: Boolean
+            hasActiveAlarms: Boolean
     ) {
 
         DevLog.info(context, LOG_TAG, "Firing reminder, current time ${System.currentTimeMillis()}")
 
-        ApplicationController.fireEventReminder(context, itIsAfterQuietHoursReminder, hasActiveAlarms,
-                separateReminderNotification);
+        ApplicationController.fireEventReminder(context, itIsAfterQuietHoursReminder, hasActiveAlarms);
 
         ReminderState(context).onReminderFired(currentTime)
     }
