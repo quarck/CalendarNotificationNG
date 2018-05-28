@@ -71,18 +71,15 @@ class EventListAdapter(
 
         var eventHolder: RelativeLayout?
         var eventTitleText: TextView
-        var eventTitleLayout: RelativeLayout?
         var eventDateText: TextView
         var eventTimeText: TextView
-        var eventLocatoinText: TextView?
+
         var snoozedUntilText: TextView?
         val compactViewCalendarColor: View?
 
         val compactViewContentLayout: RelativeLayout?
         var undoLayout: RelativeLayout?
 
-        var snoozeButton: Button?
-        var dismissButton: Button?
         var undoButton: Button?
 
         var muteImage: ImageView?
@@ -94,16 +91,10 @@ class EventListAdapter(
         init {
             eventHolder = itemView.find<RelativeLayout>(R.id.card_view_main_holder)
             eventTitleText = itemView.findOrThrow<TextView>(R.id.card_view_event_name)
-            eventTitleLayout = itemView.find<RelativeLayout?>(R.id.card_view_event_title_layout)
 
             eventDateText = itemView.findOrThrow<TextView>(R.id.card_view_event_date)
             eventTimeText = itemView.findOrThrow<TextView>(R.id.card_view_event_time)
             snoozedUntilText = itemView.find<TextView>(R.id.card_view_snoozed_until)
-
-            eventLocatoinText = itemView.find<TextView?>(R.id.card_view_location)
-
-            snoozeButton = itemView.find<Button?>(R.id.card_view_button_reschedule)
-            dismissButton = itemView.find<Button?>(R.id.card_view_button_dismiss)
 
             undoLayout = itemView.find<RelativeLayout?>(R.id.event_card_undo_layout)
 
@@ -123,17 +114,8 @@ class EventListAdapter(
             }
 
             eventHolder?.setOnClickListener(itemClickListener)
-            eventLocatoinText?.setOnClickListener(itemClickListener)
             eventDateText.setOnClickListener(itemClickListener)
             eventTimeText.setOnClickListener(itemClickListener)
-
-            dismissButton?.setOnClickListener {
-                callback.onItemDismiss(itemView, adapterPosition, eventId);
-            }
-
-            snoozeButton?.setOnClickListener {
-                callback.onItemSnooze(itemView, adapterPosition, eventId);
-            }
         }
     }
 
@@ -367,16 +349,13 @@ class EventListAdapter(
 
             if (event.snoozedUntil != 0L) {
                 holder.snoozedUntilText?.text =
-                        context.resources.getString(R.string.snoozed_until_string) + " " +
-                                eventFormatter.formatSnoozedUntil(event);
+                        context.resources.getString(R.string.snoozed_until_string) + " " + eventFormatter.formatSnoozedUntil(event);
 
                 holder.snoozedUntilText?.visibility = View.VISIBLE;
-                holder.snoozeButton?.text = changeString
             }
             else {
                 holder.snoozedUntilText?.text = "";
                 holder.snoozedUntilText?.visibility = View.GONE;
-                holder.snoozeButton?.text = snoozeString
             }
 
             holder.calendarColor.color =
