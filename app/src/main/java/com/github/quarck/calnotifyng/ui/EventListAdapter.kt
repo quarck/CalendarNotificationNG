@@ -299,7 +299,7 @@ class EventListAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         //
-        if (position < 0 || position >= events.size || holder == null)
+        if (position < 0 || position >= events.size)
             return
 
         val event = events[position]
@@ -368,7 +368,7 @@ class EventListAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent?.context).inflate(cardVewResourceId, parent, false);
+        val view = LayoutInflater.from(parent.context).inflate(cardVewResourceId, parent, false);
         return ViewHolder(view);
     }
 
@@ -460,7 +460,7 @@ class EventListAdapter(
 
                                 val foundByManual =
                                         events.withIndex().find {
-                                            (i, ev) ->
+                                            (_, ev) ->
                                             ev.eventId == event.eventId && ev.instanceStartTime == event.instanceStartTime
                                         }
 

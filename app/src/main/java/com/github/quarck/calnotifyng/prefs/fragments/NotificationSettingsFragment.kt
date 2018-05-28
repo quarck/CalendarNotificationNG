@@ -47,8 +47,8 @@ class NotificationSettingsFragment : PreferenceFragment(), SharedPreferences.OnS
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String?) {
         if (key != null && key == Settings.VIBRATION_PATTERN_KEY) {
-            val newPattern = Settings(activity).vibrationPattern
-            activity.vibratorService.vibrate(newPattern, -1);
+            //val newPattern = Settings(activity).vibrationPattern
+            //activity.vibratorService.vibrate(newPattern, -1);
         }
     }
 }

@@ -95,7 +95,7 @@ class ReminderPatternPreference(context: Context, attrs: AttributeSet)
         updateLayout()
 
         checkboxCustomPattern.setOnClickListener {
-            v ->
+            _ ->
             simpleIntervalMode = !checkboxCustomPattern.isChecked
             updateLayout()
         }

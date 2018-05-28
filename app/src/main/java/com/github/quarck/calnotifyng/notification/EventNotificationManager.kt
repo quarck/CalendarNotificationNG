@@ -22,6 +22,7 @@ package com.github.quarck.calnotifyng.notification
 import android.app.*
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.Icon
 import android.text.format.DateUtils
 import com.github.quarck.calnotifyng.*
 import com.github.quarck.calnotifyng.calendar.*
@@ -176,7 +177,7 @@ class EventNotificationManager : EventNotificationManagerInterface {
 
         val isQuietPeriodActive = QuietHoursManager.getSilentUntil(settings) != 0L
 
-        var updatedAnything = false
+        //var updatedAnything = false
 
         EventsStorage(context).use {
             db ->
@@ -189,7 +190,7 @@ class EventNotificationManager : EventNotificationManagerInterface {
 
                 val ongoingSummary = collapsedEvents.isNotEmpty()
 
-                updatedAnything =
+                //updatedAnything =
                         postDisplayedEventNotifications(
                                 context = context,
                                 db = db,
@@ -228,7 +229,7 @@ class EventNotificationManager : EventNotificationManagerInterface {
                         hasAlarms = anyAlarms,
                         isReminder = false
                 )) {
-                    updatedAnything = true
+                    //updatedAnything = true
                 }
             }
 
@@ -266,7 +267,6 @@ class EventNotificationManager : EventNotificationManagerInterface {
                         numActiveEvents,
                         lastStatusChange,
                         notificationSettings,
-                        isQuietPeriodActive,
                         itIsAfterQuietHoursReminder,
                         hasActiveAlarms
                 )
@@ -307,7 +307,7 @@ class EventNotificationManager : EventNotificationManagerInterface {
 
         var shouldPlayAndVibrate = false
 
-        val currentTime = System.currentTimeMillis()
+        //val currentTime = System.currentTimeMillis()
 
 
         // make sure we remove full notifications
@@ -501,6 +501,7 @@ class EventNotificationManager : EventNotificationManagerInterface {
 
     // force - if true - would re-post all active notifications. Normally only new notifications are posted to
     // avoid excessive blinking in the notifications area. Forced notifications are posted without sound or vibra
+    @Suppress("UNUSED_PARAMETER")
     private fun postDisplayedEventNotifications(
             context: Context,
             db: EventsStorage,
@@ -699,13 +700,11 @@ class EventNotificationManager : EventNotificationManagerInterface {
         return sb.reverse().toString()
     }
 
-    @Suppress("DEPRECATION")
     private fun postReminderNotification(
             ctx: Context,
             numActiveEvents: Int,
             lastStatusChange: Long,
             notificationSettings: NotificationSettingsSnapshot,
-            isQuietPeriodActive: Boolean,
             itIsAfterQuietHoursReminder: Boolean,
             forceAlarmStream: Boolean
     ) {
@@ -761,9 +760,6 @@ class EventNotificationManager : EventNotificationManagerInterface {
                 .setContentTitle(title)
                 .setContentText(text)
                 .setSmallIcon(R.drawable.stat_notify_calendar)
-                .setPriority(
-                        Notification.PRIORITY_LOW
-                )
                 .setContentIntent(
                         pendingIntent
                 )
@@ -992,14 +988,14 @@ class EventNotificationManager : EventNotificationManagerInterface {
 
         val snoozeAction =
                 Notification.Action.Builder(
-                        R.drawable.ic_update_white_24dp,
+                        Icon.createWithResource(ctx, R.drawable.ic_update_white_24dp),
                         ctx.getString(com.github.quarck.calnotifyng.R.string.snooze),
                         snoozeActivityIntent
                 ).build()
 
         val dismissAction =
                 Notification.Action.Builder(
-                        R.drawable.ic_clear_white_24dp,
+                        Icon.createWithResource(ctx, R.drawable.ic_clear_white_24dp),
                         ctx.getString(if (event.isTask) R.string.done else R.string.dismiss),
                         dismissPendingIntent
                 ).build()
@@ -1022,7 +1018,7 @@ class EventNotificationManager : EventNotificationManagerInterface {
 
             val defaultSnooze0Action =
                     Notification.Action.Builder(
-                            R.drawable.ic_update_white_24dp,
+                            Icon.createWithResource(ctx, R.drawable.ic_update_white_24dp),
                             ctx.getString(com.github.quarck.calnotifyng.R.string.snooze) + " " +
                                     PreferenceUtils.formatSnoozePreset(snoozePresets[0]),
                             defaultSnooze0PendingIntent
@@ -1049,7 +1045,7 @@ class EventNotificationManager : EventNotificationManagerInterface {
             val actionBuilder =
                     if (event.isMuted) {
                         Notification.Action.Builder(
-                                R.drawable.ic_volume_off_white_24dp,
+                                Icon.createWithResource(ctx, R.drawable.ic_volume_off_white_24dp),
                                 ctx.getString(R.string.un_mute_notification),
                                 muteTogglePendingIntent
                         )
@@ -1057,7 +1053,7 @@ class EventNotificationManager : EventNotificationManagerInterface {
                     }
                     else {
                         Notification.Action.Builder(
-                                R.drawable.ic_volume_up_white_24dp,
+                                Icon.createWithResource(ctx, R.drawable.ic_volume_up_white_24dp),
                                 ctx.getString(R.string.mute_notification),
                                 muteTogglePendingIntent
                         )
@@ -1087,7 +1083,7 @@ class EventNotificationManager : EventNotificationManagerInterface {
         if (notificationSettings.appendEmptyAction) {
             builder.addAction(
                     Notification.Action.Builder(
-                            R.drawable.ic_empty,
+                            Icon.createWithResource(ctx, R.drawable.ic_empty),
                             "",
                             primaryPendingIntent
                     ).build())
@@ -1114,7 +1110,7 @@ class EventNotificationManager : EventNotificationManagerInterface {
 
             val action =
                     Notification.Action.Builder(
-                            R.drawable.ic_update_white_24dp,
+                            Icon.createWithResource(ctx, R.drawable.ic_update_white_24dp),
                             ctx.getString(com.github.quarck.calnotifyng.R.string.snooze) + " " +
                                     PreferenceUtils.formatSnoozePreset(snoozePreset),
                             snoozeIntent
@@ -1129,7 +1125,7 @@ class EventNotificationManager : EventNotificationManagerInterface {
             // the event form wearable
             val dismissEventAction =
                     Notification.Action.Builder(
-                            R.drawable.ic_clear_white_24dp,
+                            Icon.createWithResource(ctx, R.drawable.ic_clear_white_24dp),
                             ctx.getString(com.github.quarck.calnotifyng.R.string.dismiss_event),
                             dismissPendingIntent
                     ).build()
@@ -1272,7 +1268,6 @@ class EventNotificationManager : EventNotificationManagerInterface {
                         .setContentTitle(title)
                         .setContentText(text)
                         .setSmallIcon(com.github.quarck.calnotifyng.R.drawable.stat_notify_calendar)
-                        .setPriority(Notification.PRIORITY_LOW) // always LOW regardless of other settings for regular notifications, so it is always last
                         .setContentIntent(pendingIntent)
                         .setAutoCancel(false)
                         .setOngoing(true)

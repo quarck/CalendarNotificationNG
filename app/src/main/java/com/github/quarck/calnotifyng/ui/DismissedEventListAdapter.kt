@@ -253,7 +253,7 @@ class DismissedEventListAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         //
-        if (position < 0 || position >= entries.size || holder == null)
+        if (position < 0 || position >= entries.size)
             return
 
         val entry = entries[position]
@@ -283,7 +283,7 @@ class DismissedEventListAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent?.context).inflate(cardVewResourceId, parent, false);
+        val view = LayoutInflater.from(parent.context).inflate(cardVewResourceId, parent, false);
         return ViewHolder(view);
     }
 

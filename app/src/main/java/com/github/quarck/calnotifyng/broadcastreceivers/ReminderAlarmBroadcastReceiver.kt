@@ -22,14 +22,11 @@ package com.github.quarck.calnotifyng.broadcastreceivers
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.Handler
 import android.os.PowerManager
 import com.github.quarck.calnotifyng.Consts
 import com.github.quarck.calnotifyng.Settings
 import com.github.quarck.calnotifyng.app.ApplicationController
 import com.github.quarck.calnotifyng.calendar.isActiveAlarm
-import com.github.quarck.calnotifyng.calendar.isNotSnoozed
-import com.github.quarck.calnotifyng.calendar.isNotSpecial
 import com.github.quarck.calnotifyng.eventsstorage.EventsStorage
 import com.github.quarck.calnotifyng.globalState
 import com.github.quarck.calnotifyng.logs.DevLog
@@ -175,7 +172,6 @@ open class ReminderAlarmGenericBroadcastReceiver : BroadcastReceiver() {
                         context = context,
                         currentTime = currentTime,
                         itIsAfterQuietHoursReminder = itIsAfterQuietHoursReminder,
-                        reminderInterval = Math.min(currentReminderInterval, nextReminderInterval),
                         hasActiveAlarms = hasActiveAlarms
                 )
             }
@@ -186,7 +182,6 @@ open class ReminderAlarmGenericBroadcastReceiver : BroadcastReceiver() {
             context: Context,
             currentTime: Long,
             itIsAfterQuietHoursReminder: Boolean,
-            reminderInterval: Long,
             hasActiveAlarms: Boolean
     ) {
 

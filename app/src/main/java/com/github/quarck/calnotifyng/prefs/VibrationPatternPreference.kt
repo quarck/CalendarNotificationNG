@@ -49,7 +49,7 @@ open class VibrationPatternPreference(internal var context: Context, attrs: Attr
     }
 
     open fun onPatternSelected(newPattern: LongArray) {
-        context.vibratorService.vibrate(newPattern, 1);
+        //context.vibratorService.vibrate(newPattern, 1);
     }
 
     override fun onBindDialogView(view: View) {

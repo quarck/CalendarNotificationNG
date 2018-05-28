@@ -56,7 +56,7 @@ class CalendarListAdapter(val context: Context, var entries: Array<CalendarListE
     : RecyclerView.Adapter<CalendarListAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent?.context).inflate(R.layout.calendar_view, parent, false);
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.calendar_view, parent, false);
         return ViewHolder(view);
     }
 
@@ -98,7 +98,7 @@ class CalendarListAdapter(val context: Context, var entries: Array<CalendarListE
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        if (position >= 0 && position < entries.size && holder != null) {
+        if (position >= 0 && position < entries.size) {
 
             val entry = entries[position]
 

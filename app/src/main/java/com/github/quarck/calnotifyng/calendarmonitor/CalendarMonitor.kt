@@ -76,7 +76,7 @@ class CalendarMonitor(val calendarProvider: CalendarProviderInterface) :
         DevLog.info(context, LOG_TAG, "onAppResumed")
 
         val currentTime = System.currentTimeMillis()
-        val doMonitorRescan = monitorSettingsChanged || (currentTime - lastScan >= Consts.ALARM_THRESHOLD / 4)
+        //val doMonitorRescan = monitorSettingsChanged || (currentTime - lastScan >= Consts.ALARM_THRESHOLD / 4)
 
         launchRescanService(
                 context,
