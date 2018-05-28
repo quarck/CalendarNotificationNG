@@ -44,33 +44,6 @@ class Settings(context: Context) : PersistentStorageBase(context) {
         get() = getBoolean(DEVELOPER_MODE_KEY, false)
         set(value) = setBoolean(DEVELOPER_MODE_KEY, value)
 
-    val enableAddEvent: Boolean
-        get() = getBoolean(ENABLE_ADD_EVENT_KEY, false)
-
-    val enableEditEvent: Boolean
-        get() = getBoolean(ENABLE_EDIT_EVENT_KEY, false)
-
-    val autoDismissWhenEditedUsingApp: Boolean
-        get() = getBoolean(AUTO_DISMISS_WHEN_EDITED_USING_APP, false)
-
-    val defaultNewEventDurationMinutes: Int
-        get() = getString(ADD_EVENT_DEFAULT_DURATION_KEY, "").toIntOrNull() ?: 30
-
-    val showDismissButtonDepricated: Boolean
-        get() = getBoolean(DISMISS_ENABLED_KEY, true)
-
-    var notificationSettingsMigrated: Boolean
-        get() = getBoolean(NOTIFICATION_SETTINGS_MIGRATED_KEY, false)
-        set(value) = setBoolean(NOTIFICATION_SETTINGS_MIGRATED_KEY, value)
-
-//    var reminderSettingsMigrated: Boolean
-//        get() = getBoolean(REMINDER_SETTINGS_MIGRATED_KEY, false)
-//        set(value) = setBoolean(REMINDER_SETTINGS_MIGRATED_KEY, value)
-
-    var reminderSettingsMigratedToPattern: Boolean
-        get() = getBoolean(REMINDER_SETTINGS_MIGRATED_TO_PATTERN_KEY, false)
-        set(value) = setBoolean(REMINDER_SETTINGS_MIGRATED_TO_PATTERN_KEY, value)
-
     val notificationAddEmptyAction: Boolean
         get() = getBoolean(NOTIFICATION_ADD_EMPTY_ACTION_KEY, false)
 
@@ -199,13 +172,6 @@ class Settings(context: Context) : PersistentStorageBase(context) {
     val remindersEnabled: Boolean
         get() = getBoolean(ENABLE_REMINDERS_KEY, false)
 
-    val remindersIntervalMillisDepricated1: Long
-        get() = getInt(REMIND_INTERVAL_MINUTES_KEY, DEFAULT_REMINDER_INTERVAL_MINUTES) * 60L * 1000L;
-
-    var remindersIntervalMillisDepricated2: Long
-        get() = getInt(REMIND_INTERVAL_SECONDS_KEY, DEFAULT_REMINDER_INTERVAL_SECONDS) * 1000L
-        set(value) = setInt(REMIND_INTERVAL_SECONDS_KEY, (value / 1000L).toInt())
-
     var remindersIntervalMillisPattern: LongArray
         get() {
             val raw = getString(REMINDER_INTERVAL_PATTERN_KEY, "")
@@ -268,10 +234,6 @@ class Settings(context: Context) : PersistentStorageBase(context) {
     fun setCalendarIsHandled(calendarId: Long, enabled: Boolean) =
             setBoolean("$CALENDAR_IS_HANDLED_KEY_PREFIX.$calendarId", enabled)
 
-    var useCompactView: Boolean
-        get() = getBoolean(USE_COMPACT_LAYOUT_KEY, true)
-        set(value) = setBoolean(USE_COMPACT_LAYOUT_KEY, value)
-
     val haloLightDatePicker: Boolean
         get() = getBoolean(HALO_LIGHT_DATE_PICKER_KEY, false)
 
@@ -290,18 +252,6 @@ class Settings(context: Context) : PersistentStorageBase(context) {
     var versionCodeFirstInstalled: Long
         get() = getLong(VERSION_CODE_FIRST_INSTALLED_KEY, 0L)
         set(value) = setLong(VERSION_CODE_FIRST_INSTALLED_KEY, value)
-
-    var showNewStyleMessage: Boolean
-        get() = getBoolean(SHOW_NEW_STYLE_MSG_KEY, true)
-        set(value) = setBoolean(SHOW_NEW_STYLE_MSG_KEY, value)
-
-//    var dontShowMarshmallowWarning: Boolean
-//        get() = getBoolean(HIDE_MARSHMALLOW_WARNING_KEY, false)
-//        set(value) = setBoolean(HIDE_MARSHMALLOW_WARNING_KEY, value)
-//
-//    var dontShowMarshmallowWarningInSettings: Boolean
-//        get() = getBoolean(HIDE_MARSHMALLOW_WARNING_IN_SETTINGS_KEY, false)
-//        set(value) = setBoolean(HIDE_MARSHMALLOW_WARNING_IN_SETTINGS_KEY, value)
 
     val useSetAlarmClock: Boolean
         get() = getBoolean(BEHAVIOR_USE_SET_ALARM_CLOCK_KEY, true)
@@ -388,14 +338,6 @@ class Settings(context: Context) : PersistentStorageBase(context) {
 
         // Preferences keys
 
-        private const val USE_COMPACT_LAYOUT_KEY = "compact_layout"
-
-        private const val DISMISS_ENABLED_KEY = "pref_key_enable_dismiss_button"
-
-        private const val NOTIFICATION_SETTINGS_MIGRATED_KEY = "notification_settings_migrated"
-        //private const val REMINDER_SETTINGS_MIGRATED_KEY = "reminder_settings_migrated"
-        private const val REMINDER_SETTINGS_MIGRATED_TO_PATTERN_KEY = "reminder_pattern_settings_migrated"
-
         private const val NOTIFICATION_SWIPE_DOES_SNOOZE_KEY = "pref_key_swipe_does_snooze2"
 
         private const val RINGTONE_KEY = "pref_key_ringtone"
@@ -403,7 +345,6 @@ class Settings(context: Context) : PersistentStorageBase(context) {
         const val VIBRATION_PATTERN_KEY = "pref_vibration_pattern"
         private const val LED_ENABLED_KEY = "notification_led"
         private const val LED_COLOR_KEY = "notification_led_color"
-        private const val LED_PATTERN_KEY = "notification_led_v2pattern"
 
         private const val NOTIFICATION_OPENS_SNOOZE_KEY = "notification_opens_snooze"
         private const val NOTIFICATION_AUTO_DISMISS_KEY = "notification_auto_dismiss"
@@ -445,11 +386,6 @@ class Settings(context: Context) : PersistentStorageBase(context) {
 
         private const val VERSION_CODE_FIRST_INSTALLED_KEY = "first_installed_ver"
 
-        private const val SHOW_NEW_STYLE_MSG_KEY = "show_new_style_message"
-
-        private const val HIDE_MARSHMALLOW_WARNING_KEY = "hide_m_doze_warning"
-        private const val HIDE_MARSHMALLOW_WARNING_IN_SETTINGS_KEY = "hide_sttng_m_doze_warning"
-
         private const val BEHAVIOR_USE_SET_ALARM_CLOCK_KEY = "use_set_alarm_clock"
         private const val BEHAVIOR_USE_SET_ALARM_CLOCK_FOR_FAILBACK_KEY = "use_set_alarm_clock_for_failback"
 
@@ -480,12 +416,6 @@ class Settings(context: Context) : PersistentStorageBase(context) {
         private const val NOTIFY_ON_EMAIL_ONLY_EVENTS_KEY = "notify_on_email_only_events"
 
         private const val DEVELOPER_MODE_KEY = "dev"
-
-        private const val ENABLE_ADD_EVENT_KEY = "enable_add_event"
-        private const val ENABLE_EDIT_EVENT_KEY = "enable_edit_event"
-        private const val AUTO_DISMISS_WHEN_EDITED_USING_APP = "auto_dismiss_events_when_edited_into_future"
-
-        private const val ADD_EVENT_DEFAULT_DURATION_KEY = "default_new_event_duration"
 
         private const val OPEN_CALENDAR_FROM_SNOOZE_KEY = "open_calendar_from_snooze"
 

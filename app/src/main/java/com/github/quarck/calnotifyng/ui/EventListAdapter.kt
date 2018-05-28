@@ -55,11 +55,11 @@ interface EventListCallback {
 @Suppress("DEPRECATION")
 class EventListAdapter(
         val context: Context,
-        val useCompactView: Boolean,
-        val cardVewResourceId: Int,
         val callback: EventListCallback)
 
     : RecyclerView.Adapter<EventListAdapter.ViewHolder>() {
+
+    val cardVewResourceId: Int = R.layout.event_card_compact
 
     val darkerCalendarColors: Boolean by lazy {
         Settings(context).darkerCalendarColors
@@ -177,8 +177,7 @@ class EventListAdapter(
                     }
                 })
 
-        if (useCompactView)
-            setUpItemTouchHelper(_recyclerView, context)
+        setUpItemTouchHelper(_recyclerView, context)
     }
 
     private fun setUpItemTouchHelper(_recyclerView: RecyclerView?, context: Context) {
@@ -352,41 +351,18 @@ class EventListAdapter(
 
             holder.alarmImage?.visibility = if (event.isAlarm) View.VISIBLE else View.GONE
 
-            if (useCompactView) {
-                holder.undoLayout?.visibility = View.GONE
-                holder.compactViewContentLayout?.visibility = View.VISIBLE
+            holder.undoLayout?.visibility = View.GONE
+            holder.compactViewContentLayout?.visibility = View.VISIBLE
 
-                if (!event.isSpecial) {
-                    val time = eventFormatter.formatDateTimeOneLine(event)
-                    holder.eventDateText.text = time
-                    holder.eventTimeText.text = ""
-                }
-                else {
-                    val (detail1, detail2) = event.getSpecialDetail(context)
-                    holder.eventDateText.text = detail1
-                    holder.eventTimeText.text = detail2
-                }
+            if (!event.isSpecial) {
+                val time = eventFormatter.formatDateTimeOneLine(event)
+                holder.eventDateText.text = time
+                holder.eventTimeText.text = ""
             }
             else {
-
-                if (!event.isSpecial) {
-                    val (date, time) = eventFormatter.formatDateTimeTwoLines(event)
-
-                    holder.eventDateText.text = date
-                    holder.eventTimeText.text = time
-                }
-                else {
-                    val (detail1, detail2) = event.getSpecialDetail(context)
-                    holder.eventDateText.text = detail1
-                    holder.eventTimeText.text = detail2
-                }
-
-                holder.eventLocatoinText?.text = event.location
-
-                if (event.location != "")
-                    holder.eventLocatoinText?.visibility = View.VISIBLE;
-                else
-                    holder.eventLocatoinText?.visibility = View.GONE;
+                val (detail1, detail2) = event.getSpecialDetail(context)
+                holder.eventDateText.text = detail1
+                holder.eventTimeText.text = detail2
             }
 
             if (event.snoozedUntil != 0L) {
@@ -408,10 +384,7 @@ class EventListAdapter(
                         event.color.adjustCalendarColor(darkerCalendarColors)
                     else
                         primaryColor
-            if (useCompactView)
-                holder.compactViewCalendarColor?.background = holder.calendarColor
-            else
-                holder.eventTitleLayout?.background = holder.calendarColor
+            holder.compactViewCalendarColor?.background = holder.calendarColor
         }
     }
 

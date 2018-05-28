@@ -27,7 +27,6 @@ import com.github.quarck.calnotifyng.*
 import com.github.quarck.calnotifyng.calendar.*
 import com.github.quarck.calnotifyng.eventsstorage.EventsStorage
 import com.github.quarck.calnotifyng.logs.DevLog
-import com.github.quarck.calnotifyng.pebble.PebbleUtils
 import com.github.quarck.calnotifyng.prefs.PreferenceUtils
 import com.github.quarck.calnotifyng.quiethours.QuietHoursManager
 import com.github.quarck.calnotifyng.reminders.ReminderState
@@ -1331,8 +1330,6 @@ class EventNotificationManager : EventNotificationManagerInterface {
                 "DEBUG: Events dismissed",
                 "DEBUG: Some requests were auto-dismissed due to calendar move"
         )
-
-        PebbleUtils.forwardNotificationToPebble(context, "DEBUG:", "Events auto-dismissed", false)
     }
 
     override fun postNearlyMissedNotificationDebugMessage(context: Context) {
@@ -1343,8 +1340,6 @@ class EventNotificationManager : EventNotificationManagerInterface {
                 "DEBUG: Nearly missed event",
                 "DEBUG: Some events has fired later than expeted"
         )
-
-        PebbleUtils.forwardNotificationToPebble(context, "DEBUG:", "Events nearly-missed", false)
     }
 
     override fun postNotificationsAlarmDelayDebugMessage(context: Context, title: String, text: String) {
@@ -1355,8 +1350,6 @@ class EventNotificationManager : EventNotificationManagerInterface {
                 title,
                 text
         )
-
-        PebbleUtils.forwardNotificationToPebble(context, title, text, false)
     }
 
     override fun postNotificationsSnoozeAlarmDelayDebugMessage(context: Context, title: String, text: String) {
@@ -1368,7 +1361,6 @@ class EventNotificationManager : EventNotificationManagerInterface {
                 text
         )
 
-        PebbleUtils.forwardNotificationToPebble(context, title, text, false)
     }
 
     companion object {

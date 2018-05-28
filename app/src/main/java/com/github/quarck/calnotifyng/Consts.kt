@@ -28,11 +28,6 @@ object Consts {
 
     const val FILE_PROVIDER_ID = "com.github.quarck.calnotifyng.fileprovider"
 
-    const val COMPACT_VIEW_DEFAULT_SINCE_VER = 1008
-    const val NEW_NOTIFICATION_SWIPE_SETTINGS_VER = 4241
-    const val SUB_MINUTE_REMINDERS_SETTINGS_VER = 4301
-    const val REMINDER_PATTERNS_SETTINGS_VER = 4322
-
     const val DAY_IN_MILLISECONDS = 24L * 3600L * 1000L
     const val DAY_IN_SECONDS: Long = 3600L * 24
     const val DAY_IN_MINUTES: Int = 60*24
@@ -135,4 +130,6 @@ object Consts {
     const val NEW_EVENT_MIN_MONITOR_RETRY_MILLISECONDS: Long = 10*60L*1000L // 10 minutes
     const val NEW_EVENT_MONITOR_MAX_RETRIES: Int = 10
     const val MIN_REMINDER_INTERVAL_SECONDS: Int = 15
+
+    const val DEFAULT_NEW_EVENT_DURATION_MINUTES: Int = 30
 }

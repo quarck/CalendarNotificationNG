@@ -338,7 +338,7 @@ open class SnoozeActivityNoRecents : AppCompatActivity() {
 
             val fab = findOrThrow<FloatingActionButton>(R.id.floating_edit_button)
 
-            if (!ev.isRepeating && settings.enableEditEvent) {
+            if (!ev.isRepeating) {
                 fab.setOnClickListener {
                     _ ->
                     val intent = Intent(this, EditEventActivity::class.java)

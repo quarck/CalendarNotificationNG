@@ -574,7 +574,7 @@ open class EditEventActivity : AppCompatActivity() {
             from.second = 0
 
             to = DateTimeUtils.createCalendarTime(from.timeInMillis)
-            to.addMinutes(settings.defaultNewEventDurationMinutes)
+            to.addMinutes(Consts.DEFAULT_NEW_EVENT_DURATION_MINUTES)
 
             DevLog.debug(LOG_TAG, "${from.timeInMillis}, ${to.timeInMillis}, $from, $to")
 
@@ -875,7 +875,7 @@ open class EditEventActivity : AppCompatActivity() {
         }
         else {
             to = DateTimeUtils.createCalendarTime(from.timeInMillis)
-            to.addMinutes(settings.defaultNewEventDurationMinutes)
+            to.addMinutes(Consts.DEFAULT_NEW_EVENT_DURATION_MINUTES)
         }
 
         updateDateTimeUI()

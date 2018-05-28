@@ -35,14 +35,6 @@
         />
 
     <header
-        android:title="@string/appearance"
-        android:summary="">
-        <intent
-            android:action="com.github.quarck.calnotifyng.prefs.AppStylePrefActivity"/>
-    </header>
-
-
-    <header
         android:fragment="com.github.quarck.calnotifyng.prefs.fragments.BinSettingsFragment"
         android:title="@string/bin_setting_group_name"
         android:summary=""
