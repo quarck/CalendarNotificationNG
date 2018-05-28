@@ -244,7 +244,7 @@ class EventNotificationManager : EventNotificationManagerInterface {
             hasActiveAlarms: Boolean) {
 
         val settings = Settings(context)
-        val isQuietPeriodActive = !hasActiveAlarms && (QuietHoursManager.getSilentUntil(settings) != 0L)
+        //val isQuietPeriodActive = !hasActiveAlarms && (QuietHoursManager.getSilentUntil(settings) != 0L)
 
         EventsStorage(context).use {
             db ->
