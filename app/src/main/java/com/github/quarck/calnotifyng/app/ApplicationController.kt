@@ -692,7 +692,7 @@ object ApplicationController : EventMovedHandler {
         return ret
     }
 
-    fun snoozeAllEvents(context: Context, snoozeDelay: Long, isChange: Boolean, onlySnoozeVisible: Boolean): SnoozeResult? {
+    fun snoozeEvents(context: Context, filter: (EventAlertRecord)->Boolean, snoozeDelay: Long, isChange: Boolean, onlySnoozeVisible: Boolean): SnoozeResult? {
 
         var ret: SnoozeResult? = null
 
@@ -704,7 +704,7 @@ object ApplicationController : EventMovedHandler {
 
         EventsStorage(context).use {
             db ->
-            val events = db.events.filter { it.isNotSpecial }
+            val events = db.events.filter { it.isNotSpecial && filter(it) }
 
             // Don't allow requests to have exactly the same "snoozedUntil", so to have
             // predicted sorting order, so add a tiny (0.001s per event) adjust to each
@@ -761,6 +761,14 @@ object ApplicationController : EventMovedHandler {
         }
 
         return ret
+    }
+
+    fun snoozeAllCollapsedEvents(context: Context, snoozeDelay: Long, isChange: Boolean, onlySnoozeVisible: Boolean): SnoozeResult? {
+        return snoozeEvents(context, { it.displayStatus == EventDisplayStatus.DisplayedCollapsed }, snoozeDelay, isChange, onlySnoozeVisible)
+    }
+
+    fun snoozeAllEvents(context: Context, snoozeDelay: Long, isChange: Boolean, onlySnoozeVisible: Boolean): SnoozeResult? {
+        return snoozeEvents(context, { true }, snoozeDelay, isChange, onlySnoozeVisible)
     }
 
     fun fireEventReminder(

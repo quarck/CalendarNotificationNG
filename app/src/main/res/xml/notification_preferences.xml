@@ -58,18 +58,6 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory
-        android:title="@string/notification_behavior"
-        android:key="_notifications_behavior">
-
-        <CheckBoxPreference
-            android:key="pref_key_swipe_does_snooze2"
-            android:title="@string/snooze_on_swipe"
-            android:summary="@string/snooze_on_swipe_summary"
-            android:defaultValue="true"
-            />
-    </PreferenceCategory>
-
     <!-- CheckBoxPreference android:key="notification_tts"
         android:title="@string/notify_tts"
         android:summary="@string/notify_tts_summary"
@@ -84,18 +72,6 @@
             android:key="notification_opens_snooze"
             android:title="@string/notfication_opens_snooze"
             android:summary="@string/notfication_opens_snooze_summary"
-            android:defaultValue="false" />
-
-         <com.github.quarck.calnotifyng.prefs.MaxNotificationsPreference
-            android:key="max_notifications_before_collapse"
-            android:title="@string/max_notifications_before_collapse"
-            android:summary="@string/max_notifications_before_collapse_summary"
-            android:defaultValue="32"/>
-
-        <CheckBoxPreference
-            android:key="show_event_desc_in_the_notification"
-            android:title="@string/show_event_desc_in_the_notification_title"
-            android:summary="@string/show_event_desc_in_the_notification_summary"
             android:defaultValue="false" />
 
     </PreferenceCategory>

@@ -29,13 +29,11 @@ import com.github.quarck.calnotifyng.utils.toIntOrNull
 
 data class NotificationSettingsSnapshot
 (
-        val notificationSwipeDoesSnooze: Boolean,
         val enableNotificationMute: Boolean,
         val notificationOpensSnooze: Boolean,
-        val useAlarmStream: Boolean,
-        val showDescription: Boolean,
         val appendEmptyAction: Boolean,
-        val needsSeparateReminderNotification: Boolean
+        val needsSeparateReminderNotification: Boolean,
+        val useAlarmStream: Boolean
 )
 
 class Settings(context: Context) : PersistentStorageBase(context) {
@@ -46,10 +44,6 @@ class Settings(context: Context) : PersistentStorageBase(context) {
 
     val notificationAddEmptyAction: Boolean
         get() = getBoolean(NOTIFICATION_ADD_EMPTY_ACTION_KEY, false)
-
-    var notificationSwipeDoesSnooze: Boolean
-        get() = getBoolean(NOTIFICATION_SWIPE_DOES_SNOOZE_KEY, true)
-        set(value) = setBoolean(NOTIFICATION_SWIPE_DOES_SNOOZE_KEY, value)
 
     val snoozeTapOpensCalendar: Boolean
         get() = getBoolean(OPEN_CALENDAR_FROM_SNOOZE_KEY, true)
@@ -165,9 +159,6 @@ class Settings(context: Context) : PersistentStorageBase(context) {
             val patterns = Consts.VIBRATION_PATTERNS
             return if (idx < patterns.size && idx >= 0) patterns[idx] else patterns[0]
         }
-
-    val maxNotifications: Int
-        get() = getInt(NOTIFICATION_MAX_NOTIFICATIONS_KEY, Consts.DEFAULT_NOTIFICATIONS)
 
     val remindersEnabled: Boolean
         get() = getBoolean(ENABLE_REMINDERS_KEY, false)
@@ -302,43 +293,22 @@ class Settings(context: Context) : PersistentStorageBase(context) {
     val notifyOnEmailOnlyEvents: Boolean
         get() = getBoolean(NOTIFY_ON_EMAIL_ONLY_EVENTS_KEY, false)
 
-    val showEventDescInTheNotification: Boolean
-        get() = getBoolean(SHOW_EVENT_DESC_IN_THE_NOTIFICATION_KEY, false)
-
     val enableDismissAndDelete: Boolean
         get() = getBoolean(SNOOZE_ENABLE_DISMISS_AND_DELETE_KEY, false)
 
-    val enableNotificationMute: Boolean
-        get() = getBoolean(ENABLE_NOTIFICATION_MUTE_KEY, false)
-
-    val enableNotificationMuteTags: Boolean
-        get() = getBoolean(ENABLE_NOTIFICATION_MUTE_TAG_KEY, false)
-
-    val enableNotificationTaskTags: Boolean
-        get() = getBoolean(ENABLE_NOTIFICATION_TASK_TAG_KEY, false)
-
-    val enableNotificationAlarmTags: Boolean
-        get() = getBoolean(ENABLE_NOTIFICATION_ALARM_TAG_KEY, false)
-
-    val enableTagButtons: Boolean
-        get() = getBoolean(ENABLE_NOTIFICATION_TAG_BUTTONS_KEY, false)
-
     val notificationSettingsSnapshot: NotificationSettingsSnapshot
         get() = NotificationSettingsSnapshot(
-                notificationSwipeDoesSnooze = notificationSwipeDoesSnooze,
-                enableNotificationMute = enableNotificationMute && remindersEnabled,
+                ////notificationSwipeDoesSnooze = notificationSwipeDoesSnooze,
+                enableNotificationMute = remindersEnabled,
                 notificationOpensSnooze = notificationOpensSnooze,
-                useAlarmStream = notificationUseAlarmStream,
-                showDescription = showEventDescInTheNotification,
                 appendEmptyAction = notificationAddEmptyAction,
-                needsSeparateReminderNotification = reminderCustomRingtone || reminderCustomVibra
+                needsSeparateReminderNotification = reminderCustomRingtone || reminderCustomVibra,
+                useAlarmStream = notificationUseAlarmStream
         )
 
     companion object {
 
         // Preferences keys
-
-        private const val NOTIFICATION_SWIPE_DOES_SNOOZE_KEY = "pref_key_swipe_does_snooze2"
 
         private const val RINGTONE_KEY = "pref_key_ringtone"
         private const val VIBRATION_ENABLED_KEY = "vibra_on"
@@ -352,8 +322,6 @@ class Settings(context: Context) : PersistentStorageBase(context) {
         private const val NOTIFICATION_ALARM_DELAYS_DEBUG_KEY = "alarm_delays_debug"
 
         private const val NOTIFICATION_TTS_KEY = "notification_tts"
-
-        private const val NOTIFICATION_MAX_NOTIFICATIONS_KEY = "max_notifications_before_collapse"
 
         private const val SNOOZE_PRESET_KEY = "pref_snooze_presets"
         private const val SHOW_CUSTOM_SNOOZE_TIMES_KEY = "show_custom_snooze_and_until"
@@ -421,18 +389,9 @@ class Settings(context: Context) : PersistentStorageBase(context) {
 
         private const val SNOOZE_HIDE_EVENT_DESC_KEY = "snooze_hide_event_description"
 
-        private const val SHOW_EVENT_DESC_IN_THE_NOTIFICATION_KEY = "show_event_desc_in_the_notification"
-
         private const val NOTIFICATION_ADD_EMPTY_ACTION_KEY = "add_empty_action_to_the_end"
 
         private const val SNOOZE_ENABLE_DISMISS_AND_DELETE_KEY = "enable_dismiss_and_delete"
-
-        private const val ENABLE_NOTIFICATION_MUTE_KEY = "enable_notification_mute"
-        private const val ENABLE_NOTIFICATION_MUTE_TAG_KEY = "enable_notification_mute_tags"
-        private const val ENABLE_NOTIFICATION_TASK_TAG_KEY = "enable_notification_task_tags"
-        private const val ENABLE_NOTIFICATION_ALARM_TAG_KEY = "enable_notification_alarm_tags"
-
-        private const val ENABLE_NOTIFICATION_TAG_BUTTONS_KEY = "enable_tag_buttons"
 
         // Default values
         internal const val DEFAULT_SNOOZE_PRESET = "15m, 1h, 4h, 1d, -5m"

@@ -55,6 +55,7 @@ object Consts {
     const val INTENT_SNOOZE_FROM_MAIN_ACTIVITY = "snooze_by_main_activity"
     const val INTENT_SNOOZE_PRESET = "snooze_preset"
     const val INTENT_SNOOZE_ALL_KEY = "snooze_all"
+    const val INTENT_SNOOZE_ALL_COLLAPSED_KEY = "snooze_all_collapsed"
     const val INTENT_DISMISS_ALL_KEY = "dismiss_all"
 
     const val INTENT_IS_USER_ACTION = "causedByUser"
@@ -110,7 +111,8 @@ object Consts {
 
     const val CALENDAR_RESCAN_INTERVAL = 30L * 60L * 1000L // 30 mins
 
-    const val MAX_NUM_EVENTS_BEFORE_COLLAPSING_EVERYTHING = 50
+    //const val MAX_NUM_EVENTS_BEFORE_COLLAPSING_EVERYTHING = 50
+    const val MAX_UNCOLLAPSED_NOTIFICATIONS = 8
 
     const val MAX_DUE_ALERTS_FOR_MANUAL_SCAN = 100
     const val MAX_SCAN_BACKWARD_DAYS = 31L
