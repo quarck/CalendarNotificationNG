@@ -52,7 +52,6 @@ interface EventListCallback {
     fun onScrollPositionChange(newPos: Int)
 }
 
-@Suppress("DEPRECATION")
 class EventListAdapter(
         val context: Context,
         val callback: EventListCallback)

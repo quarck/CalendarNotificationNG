@@ -501,10 +501,8 @@ class EventNotificationManager : EventNotificationManagerInterface {
 
         postGroupNotification(
                 context,
-                snoozePresets,
                 summaryNotificationIsOngoing,
-                numTotalEvents,
-                notificationsSettings
+                numTotalEvents
         )
 
         var currentTime = System.currentTimeMillis()
@@ -782,10 +780,8 @@ class EventNotificationManager : EventNotificationManagerInterface {
 
     private fun postGroupNotification(
             ctx: Context,
-            snoozePresets: LongArray,
             summaryNotificationIsOngoing: Boolean,
-            numTotalEvents: Int,
-            notificationSettings: NotificationSettingsSnapshot
+            numTotalEvents: Int
     ) {
         val notificationManager = ctx.notificationManager
 

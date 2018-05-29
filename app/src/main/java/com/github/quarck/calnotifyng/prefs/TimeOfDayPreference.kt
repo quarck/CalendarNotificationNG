@@ -100,7 +100,6 @@ class TimeOfDayPreference(context: Context, attrs: AttributeSet) : DialogPrefere
         }
     }
 
-    @Suppress("DEPRECATION")
     fun formatTime(time: Pair<Int, Int>): String {
         val timeFormatter = DateFormat.getTimeInstance(DateFormat.SHORT)
         val date = Date(1, 1, 1, time.component1(), time.component2(), 0)

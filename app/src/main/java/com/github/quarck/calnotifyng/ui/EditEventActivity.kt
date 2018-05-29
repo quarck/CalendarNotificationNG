@@ -22,11 +22,9 @@ package com.github.quarck.calnotifyng.ui
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
-import android.content.ContentUris
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.content.res.Resources
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
@@ -383,23 +381,23 @@ open class EditEventActivity : AppCompatActivity() {
 
         tagsLayout = find<LinearLayout?>(R.id.add_event_layout_buttons) ?: throw Exception("Can't find add_event_layout_buttons")
 
-        updateTags(settings, true)
+        updateTags(true)
 
         if (originalEvent == null) {
 
             taskTagButton.setOnClickListener( {
                 isTask = !isTask
-                updateTags(settings, false)
+                updateTags(false)
             })
 
             muteTagButton.setOnClickListener( {
                 isMuted = !isMuted
-                updateTags(settings, false)
+                updateTags(false)
             })
 
             alarmTagButton.setOnClickListener( {
                 isAlarm = !isAlarm
-                updateTags(settings, false)
+                updateTags(false)
             })
         }
 
@@ -496,7 +494,7 @@ open class EditEventActivity : AppCompatActivity() {
 
             updateDateTimeUI();
             updateReminders()
-            updateTags(settings, true)
+            updateTags(true)
         }
         else if (eventToEdit != null) {
 
@@ -658,8 +656,7 @@ open class EditEventActivity : AppCompatActivity() {
         }
     }
 
-    @Suppress("DEPRECATION")
-    fun updateTags(settings: Settings, updateLayouts: Boolean) {
+    fun updateTags(updateLayouts: Boolean) {
 
         val enableTags = originalEvent == null
 
@@ -1296,31 +1293,16 @@ open class EditEventActivity : AppCompatActivity() {
 
         textView.setOnClickListener (this::onNotificationClick)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            textView.setTextAppearance(android.R.style.TextAppearance_Medium)
-        }
-        else {
-            @Suppress("DEPRECATION")
-            textView.setTextAppearance(this, android.R.style.TextAppearance_Medium)
-        }
+        textView.setTextAppearance(android.R.style.TextAppearance_Medium)
 
         textView.setTextColor(notificationPrototype.textColors)
 
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            textView.setPaddingRelative(
-                    notificationPrototype.paddingStart,
-                    notificationPrototype.paddingTop,
-                    notificationPrototype.paddingEnd,
-                    notificationPrototype.paddingBottom)
-        }
-        else {
-            textView.setPadding(
-                    notificationPrototype.paddingLeft,
-                    notificationPrototype.paddingTop,
-                    notificationPrototype.paddingRight,
-                    notificationPrototype.paddingBottom)
-        }
+        textView.setPaddingRelative(
+                notificationPrototype.paddingStart,
+                notificationPrototype.paddingTop,
+                notificationPrototype.paddingEnd,
+                notificationPrototype.paddingBottom)
 
         textView.isClickable = true
         textView.background = notificationPrototype.background

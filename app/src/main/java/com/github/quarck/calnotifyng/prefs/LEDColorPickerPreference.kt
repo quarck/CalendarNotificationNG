@@ -101,7 +101,6 @@ class LEDColorPickerPreference(context: Context, attrs: AttributeSet) : DialogPr
         updateWidgetView()
     }
 
-    @Suppress("DEPRECATION")
     private fun getPrimaryColor(v: View): ColorDrawable {
         if (primaryColor == null)
             primaryColor = ColorDrawable(v.resources.getColor(R.color.primary))

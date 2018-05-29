@@ -33,13 +33,11 @@ class NotificationSettingsFragment : PreferenceFragment(), SharedPreferences.OnS
         addPreferencesFromResource(R.xml.notification_preferences)
     }
 
-    @Suppress("DEPRECATION")
     override fun onResume() {
         super.onResume();
         preferenceScreen.sharedPreferences.registerOnSharedPreferenceChangeListener(this);
     }
 
-    @Suppress("DEPRECATION")
     override fun onPause() {
         super.onPause();
         preferenceScreen.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);

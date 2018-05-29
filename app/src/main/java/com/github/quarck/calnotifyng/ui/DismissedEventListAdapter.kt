@@ -61,7 +61,6 @@ interface DismissedEventListCallback {
     fun onItemRemoved(entry: DismissedEventAlertRecord)
 }
 
-@Suppress("DEPRECATION")
 class DismissedEventListAdapter(
         val context: Context,
         val cardVewResourceId: Int,

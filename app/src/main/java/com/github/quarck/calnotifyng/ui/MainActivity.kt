@@ -253,11 +253,12 @@ class MainActivity : AppCompatActivity(), EventListCallback {
 
     override fun onRequestPermissionsResult(requestCode: Int, @NotNull permissions: Array<out String>, @NotNull grantResults: IntArray) {
 
-        var granted = true
-
+//        var granted = true
+//
         for (result in grantResults) {
-            if (result != PackageManager.PERMISSION_GRANTED)
-                granted = false
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                DevLog.error(this, LOG_TAG, "Permission is not granted!")
+            }
         }
 
         //find<TextView>(R.id.no_permissions_view).visibility = if (granted) View.GONE else View.VISIBLE;

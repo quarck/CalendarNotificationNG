@@ -31,7 +31,6 @@ class TextToSpeechNotificationManager(val context: Context) : TextToSpeechNotifi
         ttsObj
     }
 
-    @Suppress("DEPRECATION")
     override fun playText(text: String) {
         ttsObject.speak(text, TextToSpeech.QUEUE_FLUSH, null)
     }

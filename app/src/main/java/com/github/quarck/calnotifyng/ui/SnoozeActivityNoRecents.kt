@@ -147,7 +147,6 @@ open class SnoozeActivityNoRecents : AppCompatActivity() {
     var snoozeUntil_TimePicker: TimePicker? = null
 
 
-    @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -753,7 +752,7 @@ open class SnoozeActivityNoRecents : AppCompatActivity() {
         builder.create().show()
     }
 
-    @Suppress("unused", "UNUSED_PARAMETER", "DEPRECATION")
+    @Suppress("unused", "UNUSED_PARAMETER")
     fun OnButtonSnoozeUntilClick(v: View?) {
         val currentlySnoozedUntil = event?.snoozedUntil ?: 0L
         snoozeUntilShowDatePickerDialog(currentlySnoozedUntil, currentlySnoozedUntil)
