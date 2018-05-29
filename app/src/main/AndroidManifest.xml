@@ -126,7 +126,6 @@
         <service android:name=".notification.NotificationActionSnoozeService" />
         <service android:name=".notification.NotificationActionMuteToggleService" />
         <service android:name=".ui.UINotifierService" />
-        <service android:name=".notification.TextToSpeechService" />
 
         <receiver android:name=".broadcastreceivers.AppUpdatedBroadcastReceiver">
             <intent-filter>

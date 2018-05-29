@@ -46,7 +46,6 @@ class EventNotificationManager : EventNotificationManagerInterface {
 
         if (Settings(ctx).notificationPlayTts) {
             val text = "${event.title}\n${formatter.formatNotificationSecondaryText(event)}"
-            TextToSpeechService.playText(ctx, text)
         }
     }
 
