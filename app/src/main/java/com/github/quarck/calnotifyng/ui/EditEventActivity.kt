@@ -385,7 +385,7 @@ open class EditEventActivity : AppCompatActivity() {
 
         updateTags(settings, true)
 
-        if (originalEvent == null && settings.enableTagButtons) {
+        if (originalEvent == null) {
 
             taskTagButton.setOnClickListener( {
                 isTask = !isTask
@@ -661,7 +661,7 @@ open class EditEventActivity : AppCompatActivity() {
     @Suppress("DEPRECATION")
     fun updateTags(settings: Settings, updateLayouts: Boolean) {
 
-        val enableTags = originalEvent == null && settings.enableTagButtons
+        val enableTags = originalEvent == null
 
         if (updateLayouts) {
             tagsLayout.visibility = if (enableTags) View.VISIBLE else View.GONE
@@ -670,9 +670,9 @@ open class EditEventActivity : AppCompatActivity() {
         if (enableTags) {
 
             if (updateLayouts) {
-                taskTagButton.visibility = if (settings.enableNotificationTaskTags) View.VISIBLE else View.GONE
-                muteTagButton.visibility = if (settings.enableNotificationMuteTags) View.VISIBLE else View.GONE
-                alarmTagButton.visibility = if (settings.enableNotificationAlarmTags) View.VISIBLE else View.GONE
+                taskTagButton.visibility = View.VISIBLE
+                muteTagButton.visibility = View.VISIBLE
+                alarmTagButton.visibility = View.VISIBLE
             }
 
             if (isTask)

@@ -337,7 +337,7 @@ class MainActivity : AppCompatActivity(), EventListCallback {
 
         val muteAllMenuItem = menu.findItem(R.id.action_mute_all)
         if (muteAllMenuItem != null) {
-            muteAllMenuItem.isVisible = settings.enableNotificationMute
+            muteAllMenuItem.isVisible = true
             muteAllMenuItem.isEnabled = adapter.anyForMute
         }
 

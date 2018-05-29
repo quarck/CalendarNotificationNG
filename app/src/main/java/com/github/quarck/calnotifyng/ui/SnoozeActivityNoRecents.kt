@@ -428,11 +428,9 @@ open class SnoozeActivityNoRecents : AppCompatActivity() {
                 }
             }
 
-            if (settings.enableNotificationMute) {
-                val menuItemMute = popup.menu.findItem(R.id.action_mute_event)
-                if (menuItemMute != null) {
-                    menuItemMute.isVisible = !ev.isMuted && !ev.isTask
-                }
+            val menuItemMute = popup.menu.findItem(R.id.action_mute_event)
+            if (menuItemMute != null) {
+                menuItemMute.isVisible = !ev.isMuted && !ev.isTask
             }
 
             val menuItemUnMute = popup.menu.findItem(R.id.action_unmute_event)
