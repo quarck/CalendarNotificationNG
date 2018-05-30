@@ -47,6 +47,7 @@ import com.github.quarck.calnotifyng.logs.DevLog
 import com.github.quarck.calnotifyng.permissions.PermissionsManager
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.support.v4.content.ContextCompat
 import android.text.method.ScrollingMovementMethod
 import android.text.method.Touch.scrollTo
 
@@ -296,9 +297,9 @@ open class SnoozeActivityNoRecents : AppCompatActivity() {
                 findOrThrow<TextView>(R.id.snooze_view_event_description).text = ev.desc
             }
 
-            var color: Int = ev.color.adjustCalendarColor(settings.darkerCalendarColors)
+            var color: Int = ev.color.adjustCalendarColor()
             if (color == 0)
-                color = resources.getColor(R.color.primary)
+                color = ContextCompat.getColor(this, R.color.primary)
 
             val colorDrawable = ColorDrawable(color)
             findOrThrow<RelativeLayout>(R.id.snooze_view_event_details_layout).background = colorDrawable

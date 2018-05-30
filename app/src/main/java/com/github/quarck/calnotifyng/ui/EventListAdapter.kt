@@ -24,6 +24,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.LayoutInflater
@@ -59,10 +60,6 @@ class EventListAdapter(
     : RecyclerView.Adapter<EventListAdapter.ViewHolder>() {
 
     val cardVewResourceId: Int = R.layout.event_card_compact
-
-    val darkerCalendarColors: Boolean by lazy {
-        Settings(context).darkerCalendarColors
-    }
 
     inner class ViewHolder(itemView: View)
         : RecyclerView.ViewHolder(itemView) {
@@ -143,7 +140,7 @@ class EventListAdapter(
         get() = currentScrollPosition
 
     init {
-        primaryColor = context.resources.getColor(R.color.primary)
+        primaryColor = ContextCompat.getColor(context, R.color.primary)
         changeString = context.resources.getString(R.string.card_view_btn_change);
         snoozeString = context.resources.getString(R.string.card_view_btn_snooze);
     }
@@ -168,8 +165,8 @@ class EventListAdapter(
 
                     internal val escapeVelocityMultiplier = 5.0f
 
-                    internal val background = ColorDrawable(context.resources.getColor(R.color.material_red))
-                    internal var xMark = context.resources.getDrawable(R.drawable.ic_clear_white_24dp)
+                    internal val background = ColorDrawable(ContextCompat.getColor(context, R.color.material_red))
+                    internal var xMark = ContextCompat.getDrawable(context, R.drawable.ic_clear_white_24dp) ?: throw Exception("Now x-mark")
                     internal var xMarkMargin = context.resources.getDimension(R.dimen.ic_clear_margin).toInt()
 
                     init {
@@ -359,7 +356,7 @@ class EventListAdapter(
 
             holder.calendarColor.color =
                     if (event.color != 0)
-                        event.color.adjustCalendarColor(darkerCalendarColors)
+                        event.color.adjustCalendarColor()
                     else
                         primaryColor
             holder.compactViewCalendarColor?.background = holder.calendarColor

@@ -24,6 +24,7 @@ import android.content.Context
 import android.content.res.TypedArray
 import android.graphics.drawable.ColorDrawable
 import android.preference.DialogPreference
+import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewParent
@@ -103,7 +104,7 @@ class LEDColorPickerPreference(context: Context, attrs: AttributeSet) : DialogPr
 
     private fun getPrimaryColor(v: View): ColorDrawable {
         if (primaryColor == null)
-            primaryColor = ColorDrawable(v.resources.getColor(R.color.primary))
+            primaryColor = ColorDrawable(ContextCompat.getColor(v.context, R.color.primary))
         return primaryColor!!
     }
 
@@ -117,7 +118,7 @@ class LEDColorPickerPreference(context: Context, attrs: AttributeSet) : DialogPr
         for (hl in originalColors)
             hl.first.background = hl.second
 
-        var parent: ViewParent = v.parent
+        val parent: ViewParent = v.parent
         if (parent is LinearLayout)
             parent.background = getPrimaryColor(v)
     }

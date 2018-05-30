@@ -41,12 +41,7 @@ import com.github.quarck.calnotifyng.utils.*
 class EventNotificationManager : EventNotificationManagerInterface {
 
     override fun onEventAdded(ctx: Context, formatter: EventFormatterInterface, event: EventAlertRecord) {
-
         postEventNotifications(ctx, formatter, false, event.eventId)
-
-        if (Settings(ctx).notificationPlayTts) {
-            val text = "${event.title}\n${formatter.formatNotificationSecondaryText(event)}"
-        }
     }
 
     override fun onEventRestored(context: Context, formatter: EventFormatterInterface, event: EventAlertRecord) {

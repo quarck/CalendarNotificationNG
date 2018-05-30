@@ -82,9 +82,6 @@ class Settings(context: Context) : PersistentStorageBase(context) {
     val ledColor: Int
         get() = getInt(LED_COLOR_KEY, Consts.DEFAULT_LED_COLOR)
 
-    val notificationPlayTts: Boolean
-        get() = getBoolean(NOTIFICATION_TTS_KEY, false)
-
     val viewAfterEdit: Boolean
         get() = getBoolean(VIEW_AFTER_EDIT_KEY, true)
 
@@ -278,9 +275,6 @@ class Settings(context: Context) : PersistentStorageBase(context) {
     val firstDayOfWeek: Int
         get() = getString(FIRST_DAY_OF_WEEK_KEY, "-1").toIntOrNull() ?: -1
 
-    val darkerCalendarColors: Boolean
-        get() = getBoolean(DARKER_CALENDAR_COLORS_KEY, false)
-
     val shouldKeepLogs: Boolean
         get() = getBoolean(KEEP_APP_LOGS_KEY, false)
 
@@ -320,8 +314,6 @@ class Settings(context: Context) : PersistentStorageBase(context) {
         private const val NOTIFICATION_AUTO_DISMISS_KEY = "notification_auto_dismiss"
         private const val NOTIFICATION_AUTO_DISMISS_DEBUG_KEY = "auto_dismiss_debug"
         private const val NOTIFICATION_ALARM_DELAYS_DEBUG_KEY = "alarm_delays_debug"
-
-        private const val NOTIFICATION_TTS_KEY = "notification_tts"
 
         private const val SNOOZE_PRESET_KEY = "pref_snooze_presets"
         private const val SHOW_CUSTOM_SNOOZE_TIMES_KEY = "show_custom_snooze_and_until"
@@ -375,8 +367,6 @@ class Settings(context: Context) : PersistentStorageBase(context) {
         private const val FIRST_DAY_OF_WEEK_KEY = "first_day_of_week"
 
         private const val USE_ALARM_STREAM_FOR_NOTIFICATION_KEY = "use_alarm_stream_for_notification"
-
-        private const val DARKER_CALENDAR_COLORS_KEY = "darker_calendar_colors"
 
         private const val KEEP_APP_LOGS_KEY = "keep_logs"
 

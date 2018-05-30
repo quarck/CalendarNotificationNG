@@ -29,6 +29,7 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.provider.CalendarContract
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.text.format.DateUtils
@@ -467,8 +468,8 @@ open class EditEventActivity : AppCompatActivity() {
             accountName.text = calendar.name
 
             val color = originalEvent?.color ?: calendar.color
-            eventTitleLayout.background = ColorDrawable(color.adjustCalendarColor(settings.darkerCalendarColors))
-            eventTitleText.background = ColorDrawable(color.adjustCalendarColor(settings.darkerCalendarColors))
+            eventTitleLayout.background = ColorDrawable(color.adjustCalendarColor())
+            eventTitleText.background = ColorDrawable(color.adjustCalendarColor())
 
             window.statusBarColor = color.scaleColor(0.7f)
 
@@ -513,8 +514,8 @@ open class EditEventActivity : AppCompatActivity() {
             switchAllDay.isEnabled = false
 
             accountName.text = calendar.name
-            eventTitleLayout.background = ColorDrawable(eventToEdit.color.adjustCalendarColor(settings.darkerCalendarColors))
-            eventTitleText.background = ColorDrawable(eventToEdit.color.adjustCalendarColor(settings.darkerCalendarColors))
+            eventTitleLayout.background = ColorDrawable(eventToEdit.color.adjustCalendarColor())
+            eventTitleText.background = ColorDrawable(eventToEdit.color.adjustCalendarColor())
 
             window.statusBarColor = eventToEdit.color.scaleColor(0.7f)
 
@@ -554,8 +555,8 @@ open class EditEventActivity : AppCompatActivity() {
         else {
             // Initialize default values
             accountName.text = calendar.name
-            eventTitleLayout.background = ColorDrawable(calendar.color.adjustCalendarColor(settings.darkerCalendarColors))
-            eventTitleText.background = ColorDrawable(calendar.color.adjustCalendarColor(settings.darkerCalendarColors))
+            eventTitleLayout.background = ColorDrawable(calendar.color.adjustCalendarColor())
+            eventTitleText.background = ColorDrawable(calendar.color.adjustCalendarColor())
 
             if (receivedSharedText.isNotEmpty()) {
                 eventTitleText.setText(receivedSharedText)
@@ -672,20 +673,12 @@ open class EditEventActivity : AppCompatActivity() {
                 alarmTagButton.visibility = View.VISIBLE
             }
 
-            if (isTask)
-                taskTagButton.setTextColor(resources.getColor(R.color.event_selected_tag_color))
-            else
-                taskTagButton.setTextColor(resources.getColor(R.color.event_unselected_tag_color))
+            val selectedColor = ContextCompat.getColor(this, R.color.event_selected_tag_color)
+            val unselectedColor = ContextCompat.getColor(this, R.color.event_unselected_tag_color)
 
-            if (isMuted)
-                muteTagButton.setTextColor(resources.getColor(R.color.event_selected_tag_color))
-            else
-                muteTagButton.setTextColor(resources.getColor(R.color.event_unselected_tag_color))
-
-            if (isAlarm)
-                alarmTagButton.setTextColor(resources.getColor(R.color.event_selected_tag_color))
-            else
-                alarmTagButton.setTextColor(resources.getColor(R.color.event_unselected_tag_color))
+            taskTagButton.setTextColor(if (isTask) selectedColor else unselectedColor)
+            muteTagButton.setTextColor(if (isMuted) selectedColor else unselectedColor)
+            alarmTagButton.setTextColor(if (isAlarm) selectedColor else unselectedColor)
         }
     }
 
@@ -764,8 +757,8 @@ open class EditEventActivity : AppCompatActivity() {
 
                 window.statusBarColor = calendar.color.scaleColor(0.7f)
 
-                eventTitleLayout.background = ColorDrawable(calendar.color.adjustCalendarColor(settings.darkerCalendarColors))
-                eventTitleText.background = ColorDrawable(calendar.color.adjustCalendarColor(settings.darkerCalendarColors))
+                eventTitleLayout.background = ColorDrawable(calendar.color.adjustCalendarColor())
+                eventTitleText.background = ColorDrawable(calendar.color.adjustCalendarColor())
 
             }
         }
