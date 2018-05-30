@@ -24,6 +24,7 @@ import android.app.NotificationManager
 import android.content.Context
 import android.media.AudioAttributes
 import android.media.AudioManager
+import com.github.quarck.calnotifyng.Consts
 import com.github.quarck.calnotifyng.NotificationSettingsSnapshot
 import com.github.quarck.calnotifyng.R
 import com.github.quarck.calnotifyng.Settings
@@ -34,11 +35,11 @@ import com.github.quarck.calnotifyng.utils.notificationManager
 object NotificationChannelManager {
 
     const val NOTIFICATION_CHANNEL_ID_DEFAULT = "com.github.calnotifyng.notify.cal"
-    const val NOTIFICATION_CHANNEL_ID_ALARM = "com.github.calnotifyng.notify.calalarm"
+    const val NOTIFICATION_CHANNEL_ID_ALARM = "com.github.calnotifyng.notify.calalrm"
     const val NOTIFICATION_CHANNEL_ID_SILENT = "com.github.calnotifyng.notify.calquiet"
 
     const val NOTIFICATION_CHANNEL_ID_REMINDER = "com.github.calnotifyng.notify.rem"
-    const val NOTIFICAITON_CHANNEL_ID_REMINDER_ALARM = "com.github.calnotifyng.notify.remalarm"
+    const val NOTIFICAITON_CHANNEL_ID_REMINDER_ALARM = "com.github.calnotifyng.notify.remalrm"
 
     fun createDefaultNotificationChannelDebug(context: Context): String {
 
@@ -57,7 +58,7 @@ object NotificationChannelManager {
         notificationChannel.description = context.getString(R.string.debug_notifications_description)
 
         notificationChannel.enableLights(true)
-        notificationChannel.lightColor = settings.ledColor
+        notificationChannel.lightColor = Consts.DEFAULT_LED_COLOR
 
         notificationChannel.enableVibration(true)
         notificationChannel.vibrationPattern = settings.vibrationPattern
@@ -146,20 +147,15 @@ object NotificationChannelManager {
         val notificationChannel = NotificationChannel(channelId, channelName, importance)
         notificationChannel.description = channelDesc
 
-        if (settings.ledNotificationOn) {
-            notificationChannel.enableLights(true)
-            notificationChannel.lightColor = settings.ledColor
-        }
-        else {
-            notificationChannel.enableLights(false)
-        }
+        // If we don't enable it now (at channel creation) - no way to enable it later
+        notificationChannel.enableLights(true)
+        notificationChannel.lightColor = Consts.DEFAULT_LED_COLOR
 
-        val attribBuilder = AudioAttributes.Builder()
-                .setContentType(AudioAttributes.CONTENT_TYPE_UNKNOWN)
+        val attribBuilder = AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_UNKNOWN)
 
         if (soundState == SoundState.Alarm) {
             attribBuilder
-                    //.setFlags(AudioAttributes.FLAG_AUDIBILITY_ENFORCED)
+                    .setFlags(AudioAttributes.FLAG_AUDIBILITY_ENFORCED)
                     .setLegacyStreamType(AudioManager.STREAM_ALARM)
                     .setUsage(AudioAttributes.USAGE_ALARM)
 

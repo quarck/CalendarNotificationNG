@@ -548,6 +548,8 @@
     <string name="event_snoozed_by" formatted="false">Event snoozed by %s</string>
     <string name="debug_notifications">Debug notifications</string>
     <string name="debug_notifications_description">Used for app debugging</string>
+    <string name="older_events_fmt" formatted="false">%d older events</string>
+    <string name="plus_more" formatted="false">+%d more</string>
 
 </resources>
 

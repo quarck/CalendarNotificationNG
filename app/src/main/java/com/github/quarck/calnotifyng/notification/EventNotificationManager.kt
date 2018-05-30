@@ -1,5 +1,5 @@
 //
-//   Calendar Notifications Plus  
+//   Calendar Notifications Plus
 //   Copyright (C) 2016 Sergey Parshin (s.parshin.sc@gmail.com)
 //
 //   This program is free software; you can redistribute it and/or modify
@@ -199,17 +199,15 @@ class EventNotificationManager : EventNotificationManagerInterface {
                         )
             }
 
-            if (collapsedEvents.isNotEmpty()) {
-                postCollapsedNotifications(
-                        context = context,
-                        db = db,
-                        events = collapsedEvents,
-                        force = force,
-                        hasAlarms = anyAlarms,
-                        isQuietPeriodActive = isQuietPeriodActive,
-                        settings = settings
-                )
-            }
+            postCollapsedNotifications(
+                    context = context,
+                    db = db,
+                    events = collapsedEvents,
+                    force = force,
+                    hasAlarms = anyAlarms,
+                    isQuietPeriodActive = isQuietPeriodActive,
+                    settings = settings
+            )
 
             if (recentEvents.isEmpty() && collapsedEvents.isEmpty()) {
                 removeNotification(context, Consts.NOTIFICATION_ID_BUNDLED_GROUP)
@@ -236,10 +234,6 @@ class EventNotificationManager : EventNotificationManagerInterface {
             val lastStatusChange = activeEvents.map { it.lastStatusChangeTime }.max() ?: 0L
 
             if (numActiveEvents > 0) {
-                // TODO: test if this is necessary
-                if (itIsAfterQuietHoursReminder && settings.ledNotificationOn)
-                    postEventNotifications(context, EventFormatter(context), true, null) // Re-post everything to enable LEDs
-
                 postReminderNotification(
                         context,
                         numActiveEvents,
@@ -278,16 +272,13 @@ class EventNotificationManager : EventNotificationManagerInterface {
             hideCollapsedEventsNotification(context)
             return false
         }
-        DevLog.debug(context, LOG_TAG, "Posting ${events.size} notifications in collapsed view")
+        DevLog.info(context, LOG_TAG, "Posting ${events.size} notifications in collapsed view")
 
         val notificationsSettings = settings.notificationSettingsSnapshot
 
         var postedNotification = false
 
         var shouldPlayAndVibrate = false
-
-        //val currentTime = System.currentTimeMillis()
-
 
         // make sure we remove full notifications
         removeNotifications(context, events)
@@ -348,33 +339,16 @@ class EventNotificationManager : EventNotificationManagerInterface {
 
         // now build actual notification and notify
         val intent = Intent(context, MainActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(context, MAIN_ACTIVITY_EVERYTHING_COLLAPSED_CODE, intent, 0)
+        val pendingIntent = PendingIntent.getActivity(context, MAIN_ACTIVITY_NUM_NOTIFICATIONS_COLLAPSED_CODE, intent, 0)
 
         val numEvents = events.size
 
         val title = java.lang.String.format(
-                context.getString(R.string.multiple_events_single_notification),
+                context.getString(R.string.multiple_events),
                 numEvents)
 
         val text = context.getString(com.github.quarck.calnotifyng.R.string.multiple_events_details)
 
-        val bigText =
-                events
-                        .sortedByDescending { it.instanceStartTime }
-                        .take(30)
-                        .fold(
-                                StringBuilder(), {
-                            sb, ev ->
-
-                            val flags =
-                                    if (DateUtils.isToday(ev.displayedStartTime))
-                                        DateUtils.FORMAT_SHOW_TIME
-                                    else
-                                        DateUtils.FORMAT_SHOW_DATE
-
-                            sb.append("${DateUtils.formatDateTime(context, ev.displayedStartTime, flags)}: ${ev.title}\n")
-                        })
-                        .toString()
 
         var soundState = NotificationChannelManager.SoundState.Normal
         if (!shouldPlayAndVibrate)
@@ -387,15 +361,32 @@ class EventNotificationManager : EventNotificationManagerInterface {
                 isReminder = false,
                 soundState = soundState)
 
+        val notificationStyle = Notification.InboxStyle()
+
+        for (ev in events.sortedByDescending { it.instanceStartTime }.take(5)) {
+            val flags =
+                    if (DateUtils.isToday(ev.displayedStartTime))
+                        DateUtils.FORMAT_SHOW_TIME
+                    else
+                        DateUtils.FORMAT_SHOW_DATE
+            notificationStyle.addLine("${DateUtils.formatDateTime(context, ev.displayedStartTime, flags)}: ${ev.title}")
+        }
+
+        notificationStyle.setBigContentTitle("")
+
+        if (events.size > 5) {
+            notificationStyle.setSummaryText(context.getString(R.string.plus_more).format(events.size - 5))
+        }
+
         val builder =
                 Notification.Builder(context, channel)
-                        .setContentTitle(title)
-                        .setContentText(text)
+                        .setContentTitle(context.getString(R.string.older_events_fmt).format(events.size))
+                        .setContentText("")
                         .setSmallIcon(com.github.quarck.calnotifyng.R.drawable.stat_notify_calendar)
                         .setContentIntent(pendingIntent)
                         .setAutoCancel(false)
                         .setOngoing(false)
-                        .setStyle(Notification.BigTextStyle().bigText(bigText))
+                        .setStyle(notificationStyle)
                         .setNumber(numEvents)
                         .setShowWhen(false)
                         .setOnlyAlertOnce(!shouldPlayAndVibrate)
@@ -406,16 +397,17 @@ class EventNotificationManager : EventNotificationManagerInterface {
         snoozeIntent.putExtra(Consts.INTENT_SNOOZE_PRESET, Consts.DEFAULT_SNOOZE_TIME_IF_NONE)
         snoozeIntent.putExtra(Consts.INTENT_SNOOZE_ALL_COLLAPSED_KEY, true)
 
-        val pendingSnoozeIntent =
-                pendingServiceIntent(context, snoozeIntent, EVENT_CODE_DEFAULT_SNOOOZE0_OFFSET)
-
+        val pendingSnoozeIntent = pendingServiceIntent(context, snoozeIntent, EVENT_CODE_DEFAULT_SNOOOZE0_OFFSET)
         builder.setDeleteIntent(pendingSnoozeIntent)
-
 
         val notification = builder.build()
 
-        context.notificationManager.notify(Consts.NOTIFICATION_ID_COLLAPSED, notification) // would update if already exists
-
+        try {
+            context.notificationManager.notify(Consts.NOTIFICATION_ID_COLLAPSED, notification) // would update if already exists
+        }
+        catch (ex: Exception) {
+            DevLog.error(context, LOG_TAG, "Error posting notification: $ex, ${ex.stackTrace}")
+        }
         val reminderState = ReminderState(context)
 
         if (shouldPlayAndVibrate) {
@@ -1128,8 +1120,10 @@ class EventNotificationManager : EventNotificationManagerInterface {
         notificationManager.cancel(notificationId)
     }
 
-    private fun removeNotifications(ctx: Context, events: Collection<EventAlertRecord>) {
-        val notificationManager = ctx.notificationManager
+    private fun removeNotifications(context: Context, events: Collection<EventAlertRecord>) {
+        val notificationManager = context.notificationManager
+
+        DevLog.info(context, LOG_TAG, "Removing 'full' notifications for  ${events.size} events")
 
         for (event in events)
             notificationManager.cancel(event.notificationId)
@@ -1142,7 +1136,6 @@ class EventNotificationManager : EventNotificationManagerInterface {
                 .forEach { notificationManager.cancel(it.notificationId) }
     }
 
-//    @Suppress("UNUSED_PARAMETER")
 //    private fun postNumNotificationsCollapsed(
 //            context: Context,
 //            db: EventsStorage,

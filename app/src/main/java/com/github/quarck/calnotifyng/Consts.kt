@@ -65,7 +65,7 @@ object Consts {
     const val INTENT_MUTE_ACTION = "muteAction"
 
     // max number of notifications displayed on the screen at all the times
-    const val MAX_NOTIFICATIONS = 32
+    const val MAX_NOTIFICATIONS = 8
 
     const val DEFAULT_NOTIFICATIONS = 32
 
@@ -112,7 +112,7 @@ object Consts {
     const val CALENDAR_RESCAN_INTERVAL = 30L * 60L * 1000L // 30 mins
 
     //const val MAX_NUM_EVENTS_BEFORE_COLLAPSING_EVERYTHING = 50
-    const val MAX_UNCOLLAPSED_NOTIFICATIONS = 8
+    const val MAX_UNCOLLAPSED_NOTIFICATIONS = 6
 
     const val MAX_DUE_ALERTS_FOR_MANUAL_SCAN = 100
     const val MAX_SCAN_BACKWARD_DAYS = 31L

@@ -76,12 +76,6 @@ class Settings(context: Context) : PersistentStorageBase(context) {
         get() = getBoolean(NOTIFICATION_ALARM_DELAYS_DEBUG_KEY, false)
         set(value) = setBoolean(NOTIFICATION_ALARM_DELAYS_DEBUG_KEY, value)
 
-    val ledNotificationOn: Boolean
-        get() = getBoolean(LED_ENABLED_KEY, true)
-
-    val ledColor: Int
-        get() = getInt(LED_COLOR_KEY, Consts.DEFAULT_LED_COLOR)
-
     val viewAfterEdit: Boolean
         get() = getBoolean(VIEW_AFTER_EDIT_KEY, true)
 
