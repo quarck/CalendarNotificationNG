@@ -100,17 +100,15 @@ class TimeOfDayPreference(context: Context, attrs: AttributeSet) : DialogPrefere
         }
     }
 
-    fun formatTime(time: Pair<Int, Int>): String {
+    private fun formatTime(hours: Int, minutes: Int): String {
         val timeFormatter = DateFormat.getTimeInstance(DateFormat.SHORT)
-        val date = Date(1, 1, 1, time.component1(), time.component2(), 0)
+        val asUnixMillis = (hours * 3600 + minutes * 60) * 1000L
+        val date = Date(asUnixMillis)
         return timeFormatter.format(date)
     }
 
-    fun updateWidgetView() {
-
-        val wv = widgetView
-        if (wv != null)
-            wv.text = formatTime(timeValue)
+    private fun updateWidgetView() {
+        widgetView?.text = formatTime(timeValue.component1(), timeValue.component2())
     }
 
     override fun onSetInitialValue(restorePersistedValue: Boolean, defaultValue: Any?) {
