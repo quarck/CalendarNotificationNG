@@ -116,38 +116,29 @@ class EventNotificationManager : EventNotificationManagerInterface {
 
     /**
      * @param events - events to sort
-     * @returns pair of lists, where first list contains uncollapsed notifications and second - remaining collapsed
+     * @returns pair of boolean and list, boolean means "all collapsed"
      */
     private fun sortEvents(
             events: List<EventAlertRecord>
-    ): Pair<List<EventAlertRecord>, List<EventAlertRecord>> {
+    ): Pair<Boolean, List<EventAlertRecord>> {
 
-        val collapsedEvents =
-                events.filter { it.displayStatus == EventDisplayStatus.DisplayedCollapsed}
-                        .toMutableList()
+        var allCollapsed = false
 
-        val uncollapsedEvents =
-                events.filter { it.displayStatus != EventDisplayStatus.DisplayedCollapsed}
-                        .sortedBy { it.lastStatusChangeTime }
+        if (events.size > Consts.MAX_UNCOLLAPSED_NOTIFICATIONS)
+            allCollapsed = true
+        else if (events.any {it.displayStatus == EventDisplayStatus.DisplayedCollapsed})
+            allCollapsed = true
 
-        val recentEvents = uncollapsedEvents.takeLast(Consts.MAX_UNCOLLAPSED_NOTIFICATIONS).toMutableList()
-        collapsedEvents += uncollapsedEvents.take(uncollapsedEvents.size - recentEvents.size)
-
-        if (collapsedEvents.size == 1) {
-            recentEvents += collapsedEvents
-            collapsedEvents.clear()
-        }
-
-        return Pair(recentEvents, collapsedEvents)
+        return Pair(allCollapsed, events)
     }
 
     /**
-     * @returns pair of lists, where first list contains uncollapsed notifications and second - remaining collapsed
+     * @returns pair of boolean and list, boolean means "all collapsed"
      */
     private fun sortEvents(
             db: EventsStorage,
             currentTime: Long
-    ): Pair<List<EventAlertRecord>, List<EventAlertRecord>> {
+    ): Pair<Boolean, List<EventAlertRecord>> {
 
         // requests with snoozedUntil == 0 are currently visible ones
         // requests with experied snoozedUntil are the ones to beep about
@@ -176,41 +167,38 @@ class EventNotificationManager : EventNotificationManagerInterface {
         EventsStorage(context).use {
             db ->
 
-            val (recentEvents, collapsedEvents) = sortEvents(db, currentTime)
+            val (allCollapsed, events) = sortEvents(db, currentTime)
 
-            val anyAlarms = recentEvents.any { it.isAlarm } || collapsedEvents.any { it.isAlarm }
+            if (!allCollapsed) {
+                hideCollapsedEventsNotification(context)
 
-            if (recentEvents.isNotEmpty()) {
+                if (!events.isEmpty()) {
+                    postDisplayedEventNotifications(
+                            context = context,
+                            db = db,
+                            settings = settings,
+                            formatter = formatter,
+                            events = events,
+                            force = force,
+                            isQuietPeriodActive = isQuietPeriodActive,
+                            primaryEventId = primaryEventId
+                    )
+                } else {
+                    removeNotification(context, Consts.NOTIFICATION_ID_BUNDLED_GROUP)
+                }
+            }
+            else {
+                removeNotification(context, Consts.NOTIFICATION_ID_BUNDLED_GROUP)
 
-                val ongoingSummary = collapsedEvents.isNotEmpty()
-
-                postDisplayedEventNotifications(
+                postEverythingCollapsed(
                         context = context,
                         db = db,
-                        settings = settings,
-                        formatter = formatter,
-                        events = recentEvents,
+                        events = events,
                         force = force,
                         isQuietPeriodActive = isQuietPeriodActive,
-                        primaryEventId = primaryEventId,
-                        summaryNotificationIsOngoing = ongoingSummary,
-                        numTotalEvents = recentEvents.size + collapsedEvents.size,
-                        hasAlarms = anyAlarms
-                        )
-            }
-
-            postCollapsedNotifications(
-                    context = context,
-                    db = db,
-                    events = collapsedEvents,
-                    force = force,
-                    hasAlarms = anyAlarms,
-                    isQuietPeriodActive = isQuietPeriodActive,
-                    settings = settings
-            )
-
-            if (recentEvents.isEmpty() && collapsedEvents.isEmpty()) {
-                removeNotification(context, Consts.NOTIFICATION_ID_BUNDLED_GROUP)
+                        settings = settings,
+                        primaryEventId = primaryEventId
+                )
             }
         }
     }
@@ -254,25 +242,26 @@ class EventNotificationManager : EventNotificationManagerInterface {
     }
 
     ///
-    /// Post remaining events in collapsed state - the ones that no longer fit into the list
-    /// always post events in silent non-disturbing, unless there was a new notification,
-    /// but new notification would always be at the beginning of the list - would be uncollapsed
+    /// Post events in collapsed state
     ///
-    private fun postCollapsedNotifications(
+    private fun postEverythingCollapsed(
             context: Context,
             db: EventsStorage,
             events: List<EventAlertRecord>,
             settings: Settings,
             force: Boolean,
             isQuietPeriodActive: Boolean,
-            hasAlarms: Boolean
+            primaryEventId: Long?
     ): Boolean {
 
         if (events.isEmpty()) {
             hideCollapsedEventsNotification(context)
             return false
         }
+
         DevLog.info(context, LOG_TAG, "Posting ${events.size} notifications in collapsed view")
+
+        val hasAlarms = events.any { it.isAlarm }
 
         val notificationsSettings = settings.notificationSettingsSnapshot
 
@@ -304,6 +293,7 @@ class EventNotificationManager : EventNotificationManagerInterface {
 
                     var shouldBeQuiet = false
 
+                    @Suppress("CascadeIf")
                     if (force) {
                         // If forced to re-post all notifications - we only have to actually display notifications
                         // so not playing sound / vibration here
@@ -312,19 +302,34 @@ class EventNotificationManager : EventNotificationManagerInterface {
 
                     }
                     else if (event.displayStatus == EventDisplayStatus.DisplayedNormal) {
+
                         //DevLog.debug(LOG_TAG, "event ${event.eventId}: notification was displayed, not playing sound")
                         shouldBeQuiet = true
+
                     }
                     else if (isQuietPeriodActive) {
+
                         // we are in a silent period, normally we should always be quiet, but there
                         // are a few exclusions
-                        shouldBeQuiet = true
+                        @Suppress("LiftReturnOrAssignment")
+                        if (primaryEventId != null && event.eventId == primaryEventId) {
+                            // this is primary event -- play based on use preference for muting
+                            // primary event reminders
+                            //DevLog.debug(LOG_TAG, "event ${event.eventId}: quiet period and this is primary notification - sound according to settings")
+                            shouldBeQuiet = settings.quietHoursMutePrimary && !event.isAlarm
+                        }
+                        else {
+                            // not a primary event -- always silent in silent period
+                            //DevLog.debug(LOG_TAG, "event ${event.eventId}: quiet period and this is NOT primary notification quiet")
+                            shouldBeQuiet = true
+                        }
                     }
 
                     shouldBeQuiet = shouldBeQuiet || event.isMuted
 
                     postedNotification = true
                     shouldPlayAndVibrate = shouldPlayAndVibrate || !shouldBeQuiet
+
                 }
             }
             else {
@@ -343,13 +348,6 @@ class EventNotificationManager : EventNotificationManagerInterface {
 
         val numEvents = events.size
 
-        val title = java.lang.String.format(
-                context.getString(R.string.multiple_events),
-                numEvents)
-
-        val text = context.getString(com.github.quarck.calnotifyng.R.string.multiple_events_details)
-
-
         var soundState = NotificationChannelManager.SoundState.Normal
         if (!shouldPlayAndVibrate)
             soundState = NotificationChannelManager.SoundState.Silent
@@ -359,30 +357,36 @@ class EventNotificationManager : EventNotificationManagerInterface {
         val channel = NotificationChannelManager.createNotificationChannelForPurpose(
                 context = context,
                 isReminder = false,
-                soundState = soundState)
+                soundState = soundState
+        )
 
         val notificationStyle = Notification.InboxStyle()
 
-        for (ev in events.sortedByDescending { it.instanceStartTime }.take(5)) {
-            val flags =
-                    if (DateUtils.isToday(ev.displayedStartTime))
-                        DateUtils.FORMAT_SHOW_TIME
-                    else
-                        DateUtils.FORMAT_SHOW_DATE
-            notificationStyle.addLine("${DateUtils.formatDateTime(context, ev.displayedStartTime, flags)}: ${ev.title}")
+        val eventsSorted = events.sortedByDescending { it.instanceStartTime }
+
+        val appendPlusMoreLine = eventsSorted.size > 5
+        val lines = eventsSorted.take(if (appendPlusMoreLine) 4 else 5).map {
+                    ev ->
+                    val flags =
+                            if (DateUtils.isToday(ev.displayedStartTime))
+                                DateUtils.FORMAT_SHOW_TIME
+                            else
+                                DateUtils.FORMAT_SHOW_DATE
+                    "${DateUtils.formatDateTime(context, ev.displayedStartTime, flags)}: ${ev.title}"
+                }.toMutableList()
+
+        if (appendPlusMoreLine) {
+            lines.add(context.getString(R.string.plus_more).format(events.size - 4))
         }
 
+        lines.forEach { notificationStyle.addLine(it) }
         notificationStyle.setBigContentTitle("")
-
-        if (events.size > 5) {
-            notificationStyle.setSummaryText(context.getString(R.string.plus_more).format(events.size - 5))
-        }
 
         val builder =
                 Notification.Builder(context, channel)
-                        .setContentTitle(context.getString(R.string.older_events_fmt).format(events.size))
-                        .setContentText("")
-                        .setSmallIcon(com.github.quarck.calnotifyng.R.drawable.stat_notify_calendar)
+                        .setContentTitle(context.getString(R.string.multiple_events_single_notification).format(events.size))
+                        .setContentText(if (lines.size > 0) lines[0] else "")
+                        .setSmallIcon(R.drawable.stat_notify_calendar_multiple)
                         .setContentIntent(pendingIntent)
                         .setAutoCancel(false)
                         .setOngoing(false)
@@ -390,8 +394,6 @@ class EventNotificationManager : EventNotificationManagerInterface {
                         .setNumber(numEvents)
                         .setShowWhen(false)
                         .setOnlyAlertOnce(!shouldPlayAndVibrate)
-
-        builder.setGroup(NOTIFICATION_GROUP)
 
         val snoozeIntent = Intent(context, NotificationActionSnoozeService::class.java)
         snoozeIntent.putExtra(Consts.INTENT_SNOOZE_PRESET, Consts.DEFAULT_SNOOZE_TIME_IF_NONE)
@@ -470,15 +472,14 @@ class EventNotificationManager : EventNotificationManagerInterface {
             events: List<EventAlertRecord>,
             force: Boolean,
             isQuietPeriodActive: Boolean,
-            primaryEventId: Long?,
-            summaryNotificationIsOngoing: Boolean,
-            numTotalEvents: Int,
-            hasAlarms: Boolean
+            primaryEventId: Long?
     ): Boolean {
 
         DevLog.debug(context, LOG_TAG, "Posting ${events.size} notifications")
 
         val notificationsSettings = settings.notificationSettingsSnapshot
+
+        val hasAlarms = events.any { it.isAlarm }
 
         var postedNotification = false
         var playedAnySound = false
@@ -487,8 +488,7 @@ class EventNotificationManager : EventNotificationManagerInterface {
 
         postGroupNotification(
                 context,
-                summaryNotificationIsOngoing,
-                numTotalEvents
+                events.size
         )
 
         var currentTime = System.currentTimeMillis()
@@ -766,7 +766,6 @@ class EventNotificationManager : EventNotificationManagerInterface {
 
     private fun postGroupNotification(
             ctx: Context,
-            summaryNotificationIsOngoing: Boolean,
             numTotalEvents: Int
     ) {
         val notificationManager = ctx.notificationManager
@@ -803,9 +802,6 @@ class EventNotificationManager : EventNotificationManagerInterface {
         else {
             groupBuilder.setSmallIcon(R.drawable.stat_notify_calendar)
         }
-
-        if (summaryNotificationIsOngoing)
-            groupBuilder.setOngoing(true)
 
         // swipe does snooze
         val snoozeIntent = Intent(ctx, NotificationActionSnoozeService::class.java)
