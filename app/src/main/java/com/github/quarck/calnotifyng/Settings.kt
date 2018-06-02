@@ -32,7 +32,6 @@ data class NotificationSettingsSnapshot
         val enableNotificationMute: Boolean,
         val notificationOpensSnooze: Boolean,
         val appendEmptyAction: Boolean,
-        val needsSeparateReminderNotification: Boolean,
         val useAlarmStream: Boolean
 )
 
@@ -50,17 +49,6 @@ class Settings(context: Context) : PersistentStorageBase(context) {
 
     val snoozeHideEventDesc: Boolean
         get() = getBoolean(SNOOZE_HIDE_EVENT_DESC_KEY, false)
-
-    val vibraOn: Boolean
-        get() = getBoolean(VIBRATION_ENABLED_KEY, true)
-
-    val vibrationPattern: LongArray
-        get() {
-            val idx = getString(VIBRATION_PATTERN_KEY, "0").toInt()
-
-            val patterns = Consts.VIBRATION_PATTERNS
-            return if (idx < patterns.size && idx >= 0) patterns[idx] else patterns[0]
-        }
 
     val notificationOpensSnooze: Boolean
         get() = getBoolean(NOTIFICATION_OPENS_SNOOZE_KEY, false)
@@ -95,61 +83,8 @@ class Settings(context: Context) : PersistentStorageBase(context) {
     val showCustomSnoozeAndUntil: Boolean
         get() = getBoolean(SHOW_CUSTOM_SNOOZE_TIMES_KEY, true)//
 
-    private fun loadRingtoneUri(settingsKey: String): Uri? {
-        var ringtone: Uri?
-
-        val ringtoneNotSetValue = "--ringtone-not-set-value--"
-
-        val uriValue = getString(settingsKey, ringtoneNotSetValue)
-
-        if (uriValue.isEmpty()) {
-            // Silent mode -- string is empty
-            ringtone = null
-        }
-        else if (uriValue == ringtoneNotSetValue) {
-            // use default -- not set
-            ringtone = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-        }
-        else {
-            // parse URL - custom ringtone
-            try {
-                ringtone = Uri.parse(uriValue)
-            }
-            catch (e: Exception) {
-                e.printStackTrace()
-                ringtone = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-            }
-        }
-
-        return ringtone
-    }
-
-    val ringtoneURI: Uri?
-        get() = loadRingtoneUri(RINGTONE_KEY)
-
-    val reminderRingtoneURI: Uri?
-        get() = loadRingtoneUri(if (reminderCustomRingtone) REMINDERS_RINGTONE_KEY else RINGTONE_KEY)
-
     val notificationUseAlarmStream: Boolean
         get() = getBoolean(USE_ALARM_STREAM_FOR_NOTIFICATION_KEY, false)
-
-    val reminderCustomRingtone: Boolean
-        get() = getBoolean(REMINDERS_CUSTOM_RINGTONE_KEY, false)
-
-    val reminderCustomVibra: Boolean
-        get() = getBoolean(REMINDERS_CUSTOM_VIBRATION_KEY, false)
-
-    val reminderVibraOn: Boolean
-        get() = getBoolean(if (reminderCustomVibra) REMINDERS_VIBRATION_ENABLED_KEY else VIBRATION_ENABLED_KEY, true)
-
-    val reminderVibrationPattern: LongArray
-        get() {
-            val idx = getString(
-                    if (reminderCustomVibra) REMINDERS_VIBRATION_PATTERN_KEY else VIBRATION_PATTERN_KEY, "0").toInt()
-
-            val patterns = Consts.VIBRATION_PATTERNS
-            return if (idx < patterns.size && idx >= 0) patterns[idx] else patterns[0]
-        }
 
     val remindersEnabled: Boolean
         get() = getBoolean(ENABLE_REMINDERS_KEY, false)
@@ -206,9 +141,6 @@ class Settings(context: Context) : PersistentStorageBase(context) {
 
     val quietHoursTo: Pair<Int, Int>
         get() = PreferenceUtils.unpackTime(getInt(QUIET_HOURS_TO_KEY, 0))
-
-    val quietHoursMutePrimary: Boolean
-        get() = getBoolean(QUIET_HOURS_MUTE_PRIMARY_KEY, false)
 
     fun getCalendarIsHandled(calendarId: Long) =
             getBoolean("$CALENDAR_IS_HANDLED_KEY_PREFIX.$calendarId", true)
@@ -290,7 +222,6 @@ class Settings(context: Context) : PersistentStorageBase(context) {
                 enableNotificationMute = remindersEnabled,
                 notificationOpensSnooze = notificationOpensSnooze,
                 appendEmptyAction = notificationAddEmptyAction,
-                needsSeparateReminderNotification = reminderCustomRingtone || reminderCustomVibra,
                 useAlarmStream = notificationUseAlarmStream
         )
 
@@ -331,7 +262,6 @@ class Settings(context: Context) : PersistentStorageBase(context) {
         private const val ENABLE_QUIET_HOURS_KEY = "enable_quiet_hours"
         private const val QUIET_HOURS_FROM_KEY = "quiet_hours_from"
         private const val QUIET_HOURS_TO_KEY = "quiet_hours_to"
-        private const val QUIET_HOURS_MUTE_PRIMARY_KEY = "quiet_hours_mute_primary"
 
         private const val HALO_LIGHT_DATE_PICKER_KEY = "halo_light_date"
         private const val HALO_LIGHT_TIMER_PICKER_KEY = "halo_light_time"

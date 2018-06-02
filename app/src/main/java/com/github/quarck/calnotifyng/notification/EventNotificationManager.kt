@@ -41,7 +41,7 @@ import com.github.quarck.calnotifyng.utils.*
 class EventNotificationManager : EventNotificationManagerInterface {
 
     override fun onEventAdded(ctx: Context, formatter: EventFormatterInterface, event: EventAlertRecord) {
-        postEventNotifications(ctx, formatter, false, event.eventId)
+        postEventNotifications(ctx, formatter, isRepost = false, primaryEventId = event.eventId)
     }
 
     override fun onEventRestored(context: Context, formatter: EventFormatterInterface, event: EventAlertRecord) {
@@ -52,7 +52,7 @@ class EventNotificationManager : EventNotificationManagerInterface {
             }
         }
 
-        postEventNotifications(context, formatter, true, null)
+        postEventNotifications(context, formatter, isRepost = true)
     }
 
     override fun onEventDismissing(context: Context, eventId: Long, notificationId: Int) {
@@ -65,7 +65,7 @@ class EventNotificationManager : EventNotificationManagerInterface {
 
     override fun onEventDismissed(context: Context, formatter: EventFormatterInterface, eventId: Long, notificationId: Int) {
         removeNotification(context, notificationId)
-        postEventNotifications(context, formatter, false, null)
+        postEventNotifications(context, formatter)
     }
 
     override fun onEventsDismissed(context: Context, formatter: EventFormatterInterface, events: Collection<EventAlertRecord>, postNotifications: Boolean, hasActiveEvents: Boolean) {
@@ -79,13 +79,13 @@ class EventNotificationManager : EventNotificationManagerInterface {
         }
 
         if (postNotifications) {
-            postEventNotifications(context, formatter, false, null)
+            postEventNotifications(context, formatter)
         }
     }
 
     override fun onEventSnoozed(context: Context, formatter: EventFormatterInterface, eventId: Long, notificationId: Int) {
         removeNotification(context, notificationId)
-        postEventNotifications(context, formatter, false, null)
+        postEventNotifications(context, formatter)
     }
 
     override fun onEventMuteToggled(context: Context, formatter: EventFormatterInterface, event: EventAlertRecord) {
@@ -102,9 +102,10 @@ class EventNotificationManager : EventNotificationManagerInterface {
                 formatter = formatter,
                 event = event,
                 notificationSettings = notificationSettings,
-                isRepost = true,
+                alertOnlyOnce = true,
                 snoozePresetsNotFiltered = settings.snoozePresets,
-                shouldBeQuiet = true
+                soundState = NotificationChannelManager.SoundState.Silent,
+                isReminder = false
         )
 
         context.notificationManager.cancel(Consts.NOTIFICATION_ID_REMINDER)
@@ -132,30 +133,38 @@ class EventNotificationManager : EventNotificationManagerInterface {
         return Pair(allCollapsed, events)
     }
 
+    // NOTES:
+    // requests with snoozedUntil == 0 are currently visible ones
+    // requests with experied snoozedUntil are the ones to beep about
+    // everything else should be hidden and waiting for the next alarm
+    private fun getCurrentEvents(db: EventsStorage, currentTime: Long)
+            = db.events.filter {
+                ((it.snoozedUntil == 0L) || (it.snoozedUntil < currentTime + Consts.ALARM_THRESHOLD)) &&
+                        it.isNotSpecial
+            }
+
     /**
      * @returns pair of boolean and list, boolean means "all collapsed"
      */
-    private fun sortEvents(
-            db: EventsStorage,
-            currentTime: Long
+    private fun processEvents(
+            context: Context,
+            db: EventsStorage
     ): Pair<Boolean, List<EventAlertRecord>> {
 
-        // requests with snoozedUntil == 0 are currently visible ones
-        // requests with experied snoozedUntil are the ones to beep about
-        // everything else should be hidden and waiting for the next alarm
-
-        val events =
-                db.events.filter {
-                    ((it.snoozedUntil == 0L)
-                            || (it.snoozedUntil < currentTime + Consts.ALARM_THRESHOLD))
-                            && it.isNotSpecial
-                }
-
-        return sortEvents(events)
+        val events = getEventsAndUnSnooze(context, db)
+        return sortEvents(getEventsAndUnSnooze(context, db))
     }
 
-    override fun postEventNotifications(context: Context, formatter: EventFormatterInterface, force: Boolean, primaryEventId: Long?) {
-        //
+    override fun postEventNotifications(
+            context: Context,
+            formatter: EventFormatterInterface?,
+            isRepost: Boolean,
+            primaryEventId: Long?,
+            isReminder: Boolean
+    ) {
+
+        val formatterLocal = formatter ?: EventFormatter(context)
+
         val settings = Settings(context)
 
         val currentTime = System.currentTimeMillis()
@@ -167,21 +176,32 @@ class EventNotificationManager : EventNotificationManagerInterface {
         EventsStorage(context).use {
             db ->
 
-            val (allCollapsed, events) = sortEvents(db, currentTime)
+            val (allCollapsed, events) = processEvents(context, db)
+
+            val notificationRecords = generateNotificationRecords(
+                    context = context,
+                    events = events,
+                    primaryEventId = primaryEventId,
+                    settings = settings,
+                    isQuietPeriodActive = isQuietPeriodActive,
+                    isReminder = isReminder,
+                    isRepost = isRepost
+            )
 
             if (!allCollapsed) {
                 hideCollapsedEventsNotification(context)
 
-                if (!events.isEmpty()) {
+                if (events.isNotEmpty()) {
                     postDisplayedEventNotifications(
                             context = context,
                             db = db,
                             settings = settings,
-                            formatter = formatter,
-                            events = events,
-                            force = force,
+                            formatter = formatterLocal,
+                            notificationRecords = notificationRecords,
+                            isRepost = isRepost,
                             isQuietPeriodActive = isQuietPeriodActive,
-                            primaryEventId = primaryEventId
+                            primaryEventId = primaryEventId,
+                            isReminder = isReminder
                     )
                 } else {
                     removeNotification(context, Consts.NOTIFICATION_ID_BUNDLED_GROUP)
@@ -193,11 +213,10 @@ class EventNotificationManager : EventNotificationManagerInterface {
                 postEverythingCollapsed(
                         context = context,
                         db = db,
-                        events = events,
-                        force = force,
-                        isQuietPeriodActive = isQuietPeriodActive,
+                        notificationRecords = notificationRecords,
                         settings = settings,
-                        primaryEventId = primaryEventId
+                        isQuietPeriodActive = isQuietPeriodActive,
+                        isReminder = isReminder
                 )
             }
         }
@@ -222,14 +241,7 @@ class EventNotificationManager : EventNotificationManagerInterface {
             val lastStatusChange = activeEvents.map { it.lastStatusChangeTime }.max() ?: 0L
 
             if (numActiveEvents > 0) {
-                postReminderNotification(
-                        context,
-                        numActiveEvents,
-                        lastStatusChange,
-                        notificationSettings,
-                        itIsAfterQuietHoursReminder,
-                        hasActiveAlarms
-                )
+                postEventNotifications(context, isReminder = true)
             }
             else {
                 context.notificationManager.cancel(Consts.NOTIFICATION_ID_REMINDER)
@@ -241,105 +253,166 @@ class EventNotificationManager : EventNotificationManagerInterface {
         context.notificationManager.cancel(Consts.NOTIFICATION_ID_REMINDER)
     }
 
+    data class EventAlertNotificationRecord(
+            val event: EventAlertRecord,
+            val soundState: NotificationChannelManager.SoundState,
+            val isPrimary: Boolean,
+            val newNotification: Boolean, // un-snoozed or primary
+            val isReminder: Boolean,
+            val alertOnlyOnce: Boolean
+    )
+
+    private fun getEventsAndUnSnooze(
+            context: Context,
+            db: EventsStorage
+    ): List<EventAlertRecord> {
+
+        var currentTime = System.currentTimeMillis()
+
+        val events = getCurrentEvents(db, currentTime)
+
+        val eventsToUpdate = mutableListOf<EventAlertRecord>()
+
+        for (event in events) {
+            if (event.snoozedUntil == 0L)
+                continue
+
+            DevLog.info(context, LOG_TAG, "Snoozed notification id ${event.notificationId}, eventId ${event.eventId}, switching to un-snoozed state")
+
+            // Update this time before posting notification as this is now used as a sort-key
+            currentTime++ // so last change times are not all the same
+            event.lastStatusChangeTime = currentTime
+            event.snoozedUntil = 0
+            event.displayStatus = EventDisplayStatus.Hidden // so we need to show it
+
+            eventsToUpdate.add(event)
+        }
+
+        db.updateEvents(eventsToUpdate)
+
+        return events
+    }
+
+    private fun generateNotificationRecords(
+            context: Context,
+            events: List<EventAlertRecord>,
+            primaryEventId: Long?,
+            settings: Settings,
+            isQuietPeriodActive: Boolean,
+            isReminder: Boolean,
+            isRepost: Boolean
+    ): MutableList<EventAlertNotificationRecord> {
+
+        val ret = mutableListOf<EventAlertNotificationRecord>()
+
+        val notificationsSettings = settings.notificationSettingsSnapshot
+
+        val eventsSorted = events.sortedByDescending { it.instanceStartTime }
+
+        var firstReminder = isReminder
+        var needNotifyPostQuietHours = false
+        var didAnySound = false
+
+        for (event in eventsSorted) {
+            // currently not displayed or forced -- post notifications
+            val isPrimary = event.eventId == primaryEventId
+            val isNew = isPrimary || (event.displayStatus == EventDisplayStatus.Hidden)
+
+            var soundState = NotificationChannelManager.SoundState.Normal
+
+            if (firstReminder) {
+                if (events.any { it.isUnmutedAlarm } )
+                    soundState = NotificationChannelManager.SoundState.Alarm
+            }
+            else if (!isQuietPeriodActive) {
+                if (notificationsSettings.useAlarmStream)
+                    soundState = NotificationChannelManager.SoundState.Alarm
+                else if (event.isUnmutedAlarm)
+                    soundState = NotificationChannelManager.SoundState.Alarm
+                else if (event.isMuted)
+                    soundState = NotificationChannelManager.SoundState.Silent
+            }
+            else {
+                // ignoring notificationSettings.useAlarmStream
+                // ignoring event.isMuted
+                if (event.isUnmutedAlarm)
+                    soundState = NotificationChannelManager.SoundState.Alarm
+                else
+                    soundState = NotificationChannelManager.SoundState.Silent
+            }
+
+            DevLog.info(context, LOG_TAG, "Notification id ${event.notificationId}, eventId ${event.eventId}: primary=$isPrimary, new=$isNew, " +
+                    "reminder=$isReminder, soundState=$soundState")
+
+            ret.add(EventAlertNotificationRecord(
+                    event,
+                    soundState,
+                    isPrimary,
+                    isNew,
+                    firstReminder,
+                    alertOnlyOnce = !firstReminder || isRepost))
+
+            firstReminder = false
+
+            if ((isNew || isPrimary) && isQuietPeriodActive && soundState != NotificationChannelManager.SoundState.Alarm) {
+                needNotifyPostQuietHours = true
+            }
+
+            if (soundState != NotificationChannelManager.SoundState.Silent)
+                didAnySound = true
+        }
+
+        if (!isRepost) {
+            val reminderState = ReminderState(context)
+
+            if (didAnySound) {
+                context.persistentState.notificationLastFireTime = System.currentTimeMillis()
+                if (!isReminder)
+                    reminderState.numRemindersFired = 0
+            } else if (needNotifyPostQuietHours && !didAnySound) {
+                DevLog.info(context, LOG_TAG, "Was quiet due to quiet hours - would remind after snooze period")
+
+                if (!reminderState.quietHoursOneTimeReminderEnabled)
+                    reminderState.quietHoursOneTimeReminderEnabled = true
+            }
+        }
+
+        return ret;
+    }
+
+
     ///
     /// Post events in collapsed state
     ///
     private fun postEverythingCollapsed(
             context: Context,
             db: EventsStorage,
-            events: List<EventAlertRecord>,
+            notificationRecords: MutableList<EventAlertNotificationRecord>,
             settings: Settings,
-            force: Boolean,
             isQuietPeriodActive: Boolean,
-            primaryEventId: Long?
-    ): Boolean {
-
-        if (events.isEmpty()) {
+            isReminder: Boolean
+    ) {
+        if (notificationRecords.isEmpty()) {
             hideCollapsedEventsNotification(context)
-            return false
+            return
         }
 
-        DevLog.info(context, LOG_TAG, "Posting ${events.size} notifications in collapsed view")
-
-        val hasAlarms = events.any { it.isAlarm }
+        DevLog.info(context, LOG_TAG, "Posting ${notificationRecords.size} notifications in collapsed view")
 
         val notificationsSettings = settings.notificationSettingsSnapshot
 
-        var postedNotification = false
-
-        var shouldPlayAndVibrate = false
+        val events = notificationRecords.map{ it.event }
 
         // make sure we remove full notifications
         removeNotifications(context, events)
 
-        val eventsToUpdate = events
-                .filter {
-                    it.snoozedUntil != 0L || it.displayStatus != EventDisplayStatus.DisplayedCollapsed
-                }
-
-        db.updateEvents(
-                eventsToUpdate,
-                snoozedUntil = 0L,
-                displayStatus = EventDisplayStatus.DisplayedCollapsed
-        )
-
-        for (event in events) {
-
-            if (event.snoozedUntil == 0L) {
-
-                if ((event.displayStatus != EventDisplayStatus.DisplayedCollapsed) || force) {
-                    // currently not displayed or forced -- post notifications
-//                    DevLog.debug(LOG_TAG, "Posting notification id ${event.notificationId}, eventId ${event.eventId}")
-
-                    var shouldBeQuiet = false
-
-                    @Suppress("CascadeIf")
-                    if (force) {
-                        // If forced to re-post all notifications - we only have to actually display notifications
-                        // so not playing sound / vibration here
-                        //DevLog.debug(LOG_TAG, "event ${event.eventId}: 'forced' notification - staying quiet")
-                        shouldBeQuiet = true
-
-                    }
-                    else if (event.displayStatus == EventDisplayStatus.DisplayedNormal) {
-
-                        //DevLog.debug(LOG_TAG, "event ${event.eventId}: notification was displayed, not playing sound")
-                        shouldBeQuiet = true
-
-                    }
-                    else if (isQuietPeriodActive) {
-
-                        // we are in a silent period, normally we should always be quiet, but there
-                        // are a few exclusions
-                        @Suppress("LiftReturnOrAssignment")
-                        if (primaryEventId != null && event.eventId == primaryEventId) {
-                            // this is primary event -- play based on use preference for muting
-                            // primary event reminders
-                            //DevLog.debug(LOG_TAG, "event ${event.eventId}: quiet period and this is primary notification - sound according to settings")
-                            shouldBeQuiet = settings.quietHoursMutePrimary && !event.isAlarm
-                        }
-                        else {
-                            // not a primary event -- always silent in silent period
-                            //DevLog.debug(LOG_TAG, "event ${event.eventId}: quiet period and this is NOT primary notification quiet")
-                            shouldBeQuiet = true
-                        }
-                    }
-
-                    shouldBeQuiet = shouldBeQuiet || event.isMuted
-
-                    postedNotification = true
-                    shouldPlayAndVibrate = shouldPlayAndVibrate || !shouldBeQuiet
-
-                }
-            }
-            else {
-                // This event is currently snoozed and switching to "Shown" state
-
-                //DevLog.debug(LOG_TAG, "Posting snoozed notification id ${event.notificationId}, eventId ${event.eventId}, isQuietPeriodActive=$isQuietPeriodActive")
-
-                postedNotification = true
-                shouldPlayAndVibrate = shouldPlayAndVibrate || (!isQuietPeriodActive && !event.isMuted)
-            }
+        val eventsToUpdate = events.filter { it.displayStatus != EventDisplayStatus.DisplayedCollapsed }
+        if (eventsToUpdate.isNotEmpty()) {
+            db.updateEvents(
+                    eventsToUpdate,
+                    snoozedUntil = 0L,
+                    displayStatus = EventDisplayStatus.DisplayedCollapsed
+            )
         }
 
         // now build actual notification and notify
@@ -349,16 +422,29 @@ class EventNotificationManager : EventNotificationManagerInterface {
         val numEvents = events.size
 
         var soundState = NotificationChannelManager.SoundState.Normal
-        if (!shouldPlayAndVibrate)
-            soundState = NotificationChannelManager.SoundState.Silent
-        else if (notificationsSettings.useAlarmStream)
-            soundState = NotificationChannelManager.SoundState.Alarm
 
-        val channel = NotificationChannelManager.createNotificationChannelForPurpose(
-                context = context,
-                isReminder = false,
-                soundState = soundState
-        )
+        if (isReminder) {
+            if (notificationRecords.any {it.event.isUnmutedAlarm})
+                soundState = NotificationChannelManager.SoundState.Alarm
+        }
+        else if (!isQuietPeriodActive) {
+            if (notificationsSettings.useAlarmStream)
+                soundState = NotificationChannelManager.SoundState.Alarm
+            else if (notificationRecords.any { it.event.isUnmutedAlarm && it.newNotification })
+                soundState = NotificationChannelManager.SoundState.Alarm
+            else if (notificationRecords.all { it.event.isMuted && it.newNotification})
+                soundState = NotificationChannelManager.SoundState.Silent
+        }
+        else {
+            // ignoring notificationSettings.useAlarmStream
+            // ignoring event.isMuted
+            if (notificationRecords.any { it.event.isUnmutedAlarm && it.newNotification})
+                soundState = NotificationChannelManager.SoundState.Alarm
+            else
+                soundState = NotificationChannelManager.SoundState.Silent
+        }
+
+        val channel = NotificationChannelManager.createNotificationChannel(context, soundState, isReminder)
 
         val notificationStyle = Notification.InboxStyle()
 
@@ -382,9 +468,18 @@ class EventNotificationManager : EventNotificationManagerInterface {
         lines.forEach { notificationStyle.addLine(it) }
         notificationStyle.setBigContentTitle("")
 
+        var contentTitle = context.getString(R.string.multiple_events_single_notification).format(events.size)
+
+        if (isReminder) {
+            val currentTime = System.currentTimeMillis()
+            contentTitle += context.getString(R.string.reminder_at).format(
+                    DateUtils.formatDateTime(context, currentTime, DateUtils.FORMAT_SHOW_TIME)
+            )
+        }
+
         val builder =
                 Notification.Builder(context, channel)
-                        .setContentTitle(context.getString(R.string.multiple_events_single_notification).format(events.size))
+                        .setContentTitle(contentTitle)
                         .setContentText(if (lines.size > 0) lines[0] else "")
                         .setSmallIcon(R.drawable.stat_notify_calendar_multiple)
                         .setContentIntent(pendingIntent)
@@ -393,7 +488,7 @@ class EventNotificationManager : EventNotificationManagerInterface {
                         .setStyle(notificationStyle)
                         .setNumber(numEvents)
                         .setShowWhen(false)
-                        .setOnlyAlertOnce(!shouldPlayAndVibrate)
+                        .setOnlyAlertOnce(notificationRecords.all{it.alertOnlyOnce})
 
         val snoozeIntent = Intent(context, NotificationActionSnoozeService::class.java)
         snoozeIntent.putExtra(Consts.INTENT_SNOOZE_PRESET, Consts.DEFAULT_SNOOZE_TIME_IF_NONE)
@@ -410,22 +505,6 @@ class EventNotificationManager : EventNotificationManagerInterface {
         catch (ex: Exception) {
             DevLog.error(context, LOG_TAG, "Error posting notification: $ex, ${ex.stackTrace}")
         }
-        val reminderState = ReminderState(context)
-
-        if (shouldPlayAndVibrate) {
-            context.persistentState.notificationLastFireTime = System.currentTimeMillis()
-            reminderState.numRemindersFired = 0
-        }
-
-        if (isQuietPeriodActive && events.isNotEmpty() && !shouldPlayAndVibrate && !hasAlarms) {
-
-            DevLog.debug(LOG_TAG, "Would remind after snooze period")
-
-            if (!reminderState.quietHoursOneTimeReminderEnabled)
-                reminderState.quietHoursOneTimeReminderEnabled = true
-        }
-
-        return postedNotification
     }
 
 
@@ -461,7 +540,7 @@ class EventNotificationManager : EventNotificationManagerInterface {
 //        postNumNotificationsCollapsed(context, db, settings, events, isQuietPeriodActive)
 //    }
 
-    // force - if true - would re-post all active notifications. Normally only new notifications are posted to
+    // isRepost - if true - would re-post all active notifications. Normally only new notifications are posted to
     // avoid excessive blinking in the notifications area. Forced notifications are posted without sound or vibra
     @Suppress("UNUSED_PARAMETER")
     private fun postDisplayedEventNotifications(
@@ -469,167 +548,63 @@ class EventNotificationManager : EventNotificationManagerInterface {
             db: EventsStorage,
             settings: Settings,
             formatter: EventFormatterInterface,
-            events: List<EventAlertRecord>,
-            force: Boolean,
+            notificationRecords: MutableList<EventAlertNotificationRecord>,
+            isRepost: Boolean,
             isQuietPeriodActive: Boolean,
-            primaryEventId: Long?
-    ): Boolean {
-
-        DevLog.debug(context, LOG_TAG, "Posting ${events.size} notifications")
+            primaryEventId: Long?,
+            isReminder: Boolean
+    ) {
+        DevLog.debug(context, LOG_TAG, "Posting ${notificationRecords.size} notifications")
 
         val notificationsSettings = settings.notificationSettingsSnapshot
 
-        val hasAlarms = events.any { it.isAlarm }
+        //val hasAlarms = events.any { it.isUnmutedAlarm }
 
-        var postedNotification = false
         var playedAnySound = false
 
         val snoozePresets = settings.snoozePresets
 
+        val events = notificationRecords.map {it.event}
+
+        val eventsToUpdate = events.filter { it.displayStatus != EventDisplayStatus.DisplayedNormal }
+        if (eventsToUpdate.isNotEmpty()) {
+            db.updateEvents(
+                    eventsToUpdate,
+                    snoozedUntil = 0L,
+                    displayStatus = EventDisplayStatus.DisplayedNormal
+            )
+        }
+
         postGroupNotification(
                 context,
-                events.size
+                notificationRecords.size
         )
+
 
         var currentTime = System.currentTimeMillis()
 
-        for (event in events) {
+        for (ntf in notificationRecords) {
 
-            currentTime++ // so last change times are not all the same
-
-            if (event.snoozedUntil == 0L) {
-                // snooze zero could mean
-                // - this is a new event -- we have to display it, it would have displayStatus == hidden
-                // - this is an old event returning from "collapsed" state
-                // - this is currently potentially displayed event but we are doing "force re-post" to
-                //   ensure all requests are displayed (like at boot or after app upgrade
-
-                var wasCollapsed = false
-
-                if ((event.displayStatus != EventDisplayStatus.DisplayedNormal) || force) {
-                    // currently not displayed or forced -- post notifications
-                    DevLog.info(context, LOG_TAG, "Posting notification id ${event.notificationId}, eventId ${event.eventId}")
-
-                    var shouldBeQuiet = false
-
-                    @Suppress("CascadeIf")
-                    if (force) {
-                        // If forced to re-post all notifications - we only have to actually display notifications
-                        // so not playing sound / vibration here
-                        DevLog.info(context, LOG_TAG, "event ${event.eventId}: 'forced' notification - staying quiet")
-                        shouldBeQuiet = true
-                    }
-                    else if (event.displayStatus == EventDisplayStatus.DisplayedCollapsed) {
-                        // This event was already visible as "collapsed", user just removed some other notification
-                        // and so we automatically expanding some of the requests, this one was lucky.
-                        // No sound / vibration should be played here
-                        DevLog.info(context, LOG_TAG, "event ${event.eventId}: notification was collapsed, not playing sound")
-                        shouldBeQuiet = true
-                        wasCollapsed = true
-
-                    }
-                    else if (isQuietPeriodActive) {
-                        // we are in a silent period, normally we should always be quiet, but there
-                        // are a few exclusions
-                        @Suppress("LiftReturnOrAssignment")
-                        if (primaryEventId != null && event.eventId == primaryEventId) {
-                            // this is primary event -- play based on use preference for muting
-                            // primary event reminders
-                            DevLog.info(context, LOG_TAG, "event ${event.eventId}: quiet period and this is primary notification - sound according to settings")
-                            shouldBeQuiet = settings.quietHoursMutePrimary && !event.isAlarm
-                        }
-                        else {
-                            // not a primary event -- always silent in silent period
-                            DevLog.info(context, LOG_TAG, "event ${event.eventId}: quiet period and this is NOT primary notification quiet")
-                            shouldBeQuiet = true
-                        }
-                    }
-
-                    DevLog.debug(LOG_TAG, "event ${event.eventId}: shouldBeQuiet = $shouldBeQuiet, isMuted=${event.isMuted}")
-
-                    shouldBeQuiet = shouldBeQuiet || event.isMuted
-
-                    postNotification(
-                            ctx = context,
-                            formatter = formatter,
-                            event = event,
-                            notificationSettings = notificationsSettings,
-                            isRepost = force,
-                            snoozePresetsNotFiltered = snoozePresets,
-                            shouldBeQuiet = isQuietPeriodActive || wasCollapsed
-                    )
-
-                    // Update db to indicate that this event is currently actively displayed
-                    db.updateEvent(event, displayStatus = EventDisplayStatus.DisplayedNormal)
-
-                    postedNotification = true
-                    playedAnySound = playedAnySound || !shouldBeQuiet
-
-                }
-                else {
-                    DevLog.info(context, LOG_TAG, "Not re-posting notification id ${event.notificationId}, eventId ${event.eventId} - already on the screen")
-                }
+            if (!isRepost && !ntf.isReminder && !ntf.newNotification) {
+                // not a reminder and not a new notification
+                // not need to post already visible notification, unless it is a repost where
+                // we want to post everything
+                continue
             }
-            else {
-                // This event is currently snoozed and switching to "Shown" state
 
-                DevLog.info(context, LOG_TAG, "Posting snoozed notification id ${event.notificationId}, eventId ${event.eventId}, isQuietPeriodActive=$isQuietPeriodActive")
+            postNotification(
+                    ctx = context,
+                    formatter = formatter,
+                    event = ntf.event,
+                    notificationSettings = notificationsSettings,
+                    snoozePresetsNotFiltered = snoozePresets,
+                    isReminder = ntf.isReminder,
+                    alertOnlyOnce = ntf.alertOnlyOnce,
+                    soundState = ntf.soundState
+            )
 
-                // Update this time before posting notification as this is now used as a sort-key
-                event.lastStatusChangeTime = currentTime
-
-                postNotification(
-                        ctx = context,
-                        formatter = formatter,
-                        event = event,
-                        notificationSettings = notificationsSettings,
-                        isRepost = force,
-                        snoozePresetsNotFiltered = snoozePresets,
-                        shouldBeQuiet = isQuietPeriodActive || event.isMuted
-                )
-
-                if (event.snoozedUntil + Consts.ALARM_THRESHOLD < currentTime) {
-
-                    val warningMessage = "snooze alarm is very late: expected at ${event.snoozedUntil}, " +
-                            "received at $currentTime, late by ${currentTime - event.snoozedUntil} us"
-
-                    DevLog.warn(context, LOG_TAG, warningMessage)
-
-                    if (settings.debugAlarmDelays)
-                        postNotificationsAlarmDelayDebugMessage(context,
-                                "Snooze alarm was late!", "Late by ${(currentTime - event.snoozedUntil) / 1000L}s")
-
-                }
-                // Update Db to indicate that event is currently displayed and no longer snoozed
-                // Since it is displayed now -- it is no longer snoozed, set snoozedUntil to zero
-                // also update 'lastVisible' time since event just re-appeared
-                db.updateEvent(event,
-                        snoozedUntil = 0,
-                        displayStatus = EventDisplayStatus.DisplayedNormal,
-                        lastStatusChangeTime = currentTime)
-
-                postedNotification = true
-                playedAnySound = playedAnySound || !isQuietPeriodActive
-            }
         }
-
-        val reminderState = ReminderState(context)
-
-        if (playedAnySound) {
-            context.persistentState.notificationLastFireTime = System.currentTimeMillis()
-            reminderState.numRemindersFired = 0
-        }
-
-        if (isQuietPeriodActive && events.isNotEmpty() && !playedAnySound) {
-
-            DevLog.info(context, LOG_TAG, "Was quiet due to quiet hours - would remind after snooze period")
-
-            if (!reminderState.quietHoursOneTimeReminderEnabled)
-                reminderState.quietHoursOneTimeReminderEnabled = true
-        }
-
-        return postedNotification
-    }
+   }
 
     private fun lastStatusChangeToSortingKey(lastStatusChangeTime: Long, eventId: Long): String {
 
@@ -658,103 +633,6 @@ class EventNotificationManager : EventNotificationManagerInterface {
         return sb.reverse().toString()
     }
 
-    private fun postReminderNotification(
-            ctx: Context,
-            numActiveEvents: Int,
-            lastStatusChange: Long,
-            notificationSettings: NotificationSettingsSnapshot,
-            itIsAfterQuietHoursReminder: Boolean,
-            forceAlarmStream: Boolean
-    ) {
-        val notificationManager = ctx.notificationManager
-
-        val intent = Intent(ctx, MainActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(ctx, MAIN_ACTIVITY_REMINDER_CODE, intent, 0)
-
-        val persistentState = ctx.persistentState
-
-        val currentTime = System.currentTimeMillis()
-        val msAgo: Long = (currentTime - persistentState.notificationLastFireTime)
-
-        val resources = ctx.resources
-
-        val title =
-            when {
-                itIsAfterQuietHoursReminder ->
-                        resources.getString(R.string.reminder_after_quiet_time)
-                numActiveEvents == 1 ->
-                    resources.getString(R.string.reminder_you_have_missed_event)
-                else ->
-                    resources.getString(R.string.reminder_you_have_missed_events)
-            }
-
-        var text = ""
-
-        if (!itIsAfterQuietHoursReminder) {
-
-            val currentReminder = ReminderState(ctx).numRemindersFired + 1
-            val totalReminders = Settings(ctx).maxNumberOfReminders
-
-            val textTemplate = resources.getString(R.string.last_notification_s_ago)
-
-            text = String.format(textTemplate,
-                    EventFormatter(ctx).formatTimeDuration(msAgo),
-                    currentReminder, totalReminders)
-        }
-        else {
-            val textTemplate = resources.getString(R.string.last_event_s_ago)
-
-            text = String.format(textTemplate,
-                    EventFormatter(ctx).formatTimeDuration(msAgo))
-        }
-
-        val channel = NotificationChannelManager.createNotificationChannelForPurpose(
-                ctx, isReminder = true,
-                soundState = if (notificationSettings.useAlarmStream || forceAlarmStream)
-                    NotificationChannelManager.SoundState.Alarm
-                else NotificationChannelManager.SoundState.Normal)
-
-        val builder = Notification.Builder(ctx, channel)
-                .setContentTitle(title)
-                .setContentText(text)
-                .setSmallIcon(R.drawable.stat_notify_calendar)
-                .setContentIntent(
-                        pendingIntent
-                )
-                .setAutoCancel(true)
-                .setOngoing(false)
-                .setStyle(
-                        Notification.BigTextStyle().bigText(text)
-                )
-                .setWhen(
-                        lastStatusChange
-                )
-                .setShowWhen(false)
-                .setSortKey(
-                        lastStatusChangeToSortingKey(lastStatusChange, 0)
-                )
-                .setCategory(
-                        Notification.CATEGORY_REMINDER
-                )
-                .setOnlyAlertOnce(false)
-
-        builder.setGroup(NOTIFICATION_GROUP)
-
-        val notification = builder.build()
-
-        try {
-            DevLog.info(ctx, LOG_TAG, "adding reminder notification")
-
-            notificationManager.notify(
-                    Consts.NOTIFICATION_ID_REMINDER,
-                    notification
-            )
-        }
-        catch (ex: Exception) {
-            DevLog.error(ctx, LOG_TAG, "Exception: ${ex.detailed}")
-        }
-    }
-
     @Suppress("unused")
     private fun isNotificationVisible(ctx: Context, event: EventAlertRecord): Boolean {
 
@@ -776,10 +654,9 @@ class EventNotificationManager : EventNotificationManagerInterface {
 
         val text = ctx.resources.getString(R.string.N_calendar_events).format(numTotalEvents)
 
-        val channel = NotificationChannelManager.createNotificationChannelForPurpose(
-                ctx,
-                isReminder = false,
-                soundState = NotificationChannelManager.SoundState.Silent)
+        val channel = NotificationChannelManager.createNotificationChannel(ctx,
+                NotificationChannelManager.SoundState.Silent,
+                false)
 
         val groupBuilder = Notification.Builder(ctx, channel)
                 .setContentTitle(ctx.resources.getString(R.string.calendar))
@@ -829,9 +706,10 @@ class EventNotificationManager : EventNotificationManagerInterface {
             formatter: EventFormatterInterface,
             event: EventAlertRecord,
             notificationSettings: NotificationSettingsSnapshot,
-            isRepost: Boolean, // == isRepost || wasCollapsed
             snoozePresetsNotFiltered: LongArray,
-            shouldBeQuiet: Boolean
+            isReminder: Boolean,
+            alertOnlyOnce: Boolean,
+            soundState: NotificationChannelManager.SoundState
     ) {
         val notificationManager = ctx.notificationManager
 
@@ -860,7 +738,13 @@ class EventNotificationManager : EventNotificationManagerInterface {
         val currentTime = System.currentTimeMillis()
 
         val notificationTextString = formatter.formatNotificationSecondaryText(event)
-        val title = event.title
+        var title = event.title
+
+        if (isReminder) {
+            title += ctx.getString(R.string.reminder_at).format(
+                    DateUtils.formatDateTime(ctx, currentTime, DateUtils.FORMAT_SHOW_TIME)
+            )
+        }
 
         val sortKey = lastStatusChangeToSortingKey(event.lastStatusChangeTime, event.eventId)
 
@@ -878,17 +762,10 @@ class EventNotificationManager : EventNotificationManagerInterface {
         else if (event.isMuted)
             iconId = R.drawable.stat_notify_calendar_muted
 
-        var soundState = NotificationChannelManager.SoundState.Normal
-
-        if (shouldBeQuiet)
-            soundState = NotificationChannelManager.SoundState.Silent
-        else if (notificationSettings.useAlarmStream || event.isAlarm)
-            soundState = NotificationChannelManager.SoundState.Alarm
-
-        val channel = NotificationChannelManager.createNotificationChannelForPurpose(
+        val channel = NotificationChannelManager.createNotificationChannel(
                 ctx,
                 soundState = soundState,
-                isReminder = false
+                isReminder = isReminder
         )
 
         val builder = Notification.Builder(ctx, channel)
@@ -903,7 +780,7 @@ class EventNotificationManager : EventNotificationManagerInterface {
                 .setShowWhen(false)
                 .setSortKey(sortKey)
                 .setCategory(Notification.CATEGORY_EVENT)
-                .setOnlyAlertOnce(isRepost || (soundState == NotificationChannelManager.SoundState.Silent))
+                .setOnlyAlertOnce(alertOnlyOnce)
 
         builder.setGroup(NOTIFICATION_GROUP)
 

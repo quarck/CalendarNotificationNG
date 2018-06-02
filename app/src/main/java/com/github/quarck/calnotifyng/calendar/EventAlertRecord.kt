@@ -148,6 +148,9 @@ data class EventAlertRecord(
         get() = flags.isFlagSet(EventAlertFlags.IS_ALARM)
         set(value) { flags = flags.setFlag(EventAlertFlags.IS_ALARM, value) }
 
+    val isUnmutedAlarm: Boolean
+        get() = isAlarm && !isMuted
+
     val key: EventAlertRecordKey
         get() = EventAlertRecordKey(eventId, instanceStartTime)
 }

@@ -22,12 +22,4 @@
             android:dependency="enable_quiet_hours"
             />
 
-        <CheckBoxPreference
-            android:key="quiet_hours_mute_primary"
-            android:title="@string/quiet_hours_mute_primary"
-            android:summary="@string/quiet_hours_mute_primary_summary"
-            android:dependency="enable_quiet_hours"
-            android:defaultValue="false"
-            />
-
 </PreferenceScreen>

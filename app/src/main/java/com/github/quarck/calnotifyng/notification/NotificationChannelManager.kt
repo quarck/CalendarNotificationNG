@@ -24,6 +24,7 @@ import android.app.NotificationManager
 import android.content.Context
 import android.media.AudioAttributes
 import android.media.AudioManager
+import android.media.RingtoneManager
 import com.github.quarck.calnotifyng.Consts
 import com.github.quarck.calnotifyng.NotificationSettingsSnapshot
 import com.github.quarck.calnotifyng.R
@@ -34,12 +35,12 @@ import com.github.quarck.calnotifyng.utils.notificationManager
 
 object NotificationChannelManager {
 
-    const val NOTIFICATION_CHANNEL_ID_DEFAULT = "com.github.calnotifyng.notify.cal"
-    const val NOTIFICATION_CHANNEL_ID_ALARM = "com.github.calnotifyng.notify.calalrm"
-    const val NOTIFICATION_CHANNEL_ID_SILENT = "com.github.calnotifyng.notify.calquiet"
+    const val NOTIFICATION_CHANNEL_ID_DEFAULT = "com.github.calnotifyng.notify.v0.cal"
+    const val NOTIFICATION_CHANNEL_ID_ALARM = "com.github.calnotifyng.notify.v0.calalrm"
+    const val NOTIFICATION_CHANNEL_ID_SILENT = "com.github.calnotifyng.notify.v0.calquiet"
 
-    const val NOTIFICATION_CHANNEL_ID_REMINDER = "com.github.calnotifyng.notify.rem"
-    const val NOTIFICAITON_CHANNEL_ID_REMINDER_ALARM = "com.github.calnotifyng.notify.remalrm"
+    const val NOTIFICATION_CHANNEL_ID_REMINDER = "com.github.calnotifyng.notify.v0.rem"
+    const val NOTIFICAITON_CHANNEL_ID_REMINDER_ALARM = "com.github.calnotifyng.notify.v0.remalrm"
 
     fun createDefaultNotificationChannelDebug(context: Context): String {
 
@@ -61,7 +62,7 @@ object NotificationChannelManager {
         notificationChannel.lightColor = Consts.DEFAULT_LED_COLOR
 
         notificationChannel.enableVibration(true)
-        notificationChannel.vibrationPattern = settings.vibrationPattern
+        notificationChannel.vibrationPattern = Consts.VIBRATION_PATTERN_DEFAULT
 
         notificationChannel.importance = NotificationManager.IMPORTANCE_DEFAULT;
 
@@ -70,7 +71,10 @@ object NotificationChannelManager {
 
         attribBuilder.setUsage(AudioAttributes.USAGE_NOTIFICATION_EVENT)
 
-        notificationChannel.setSound(settings.ringtoneURI, attribBuilder.build())
+        notificationChannel.setSound(
+                RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION),
+                attribBuilder.build()
+        )
 
         context.notificationManager.createNotificationChannel(notificationChannel)
 
@@ -83,9 +87,8 @@ object NotificationChannelManager {
         Silent
     }
 
-    fun createNotificationChannelForPurpose(
+    private fun createNotificationChannelForSoundState(
             context: Context,
-            isReminder: Boolean,
             soundState: SoundState
     ): String {
 
@@ -97,50 +100,29 @@ object NotificationChannelManager {
 
         var importance = NotificationManager.IMPORTANCE_DEFAULT
 
-        if (!isReminder) {
-            // Regular notification - NOT a reminder
-            // Non-repost - initial notification
-            when (soundState) {
-                NotificationChannelManager.SoundState.Normal -> {
-                    channelId = NOTIFICATION_CHANNEL_ID_DEFAULT
-                    channelName = context.getString(R.string.notification_channel_default)
-                    channelDesc = context.getString(R.string.notification_channel_default_desc)
-                    importance = NotificationManager.IMPORTANCE_DEFAULT
-                }
-                NotificationChannelManager.SoundState.Alarm -> {
-                    channelId = NOTIFICATION_CHANNEL_ID_ALARM
-                    channelName = context.getString(R.string.notification_channel_alarm)
-                    channelDesc = context.getString(R.string.notification_channel_alarm_desc)
-                    importance = NotificationManager.IMPORTANCE_HIGH
-                }
-                NotificationChannelManager.SoundState.Silent -> {
-                    channelId = NOTIFICATION_CHANNEL_ID_SILENT
-                    channelName = context.getString(R.string.notification_channel_silent)
-                    channelDesc = context.getString(R.string.notification_channel_silent_desc)
-                    importance = NotificationManager.IMPORTANCE_LOW
-                }
+        // Regular notification - NOT a reminder
+        when (soundState) {
+            NotificationChannelManager.SoundState.Normal -> {
+                channelId = NOTIFICATION_CHANNEL_ID_DEFAULT
+                channelName = context.getString(R.string.notification_channel_default)
+                channelDesc = context.getString(R.string.notification_channel_default_desc)
+                importance = NotificationManager.IMPORTANCE_DEFAULT
             }
-        }
-        else { // if (!isReminder) {
-            // Reminder notification
-            // isRepost is ignored
-            if (soundState == SoundState.Alarm) {
-                // use alarm reminder channel
-                channelId = NOTIFICAITON_CHANNEL_ID_REMINDER_ALARM
-                channelName = context.getString(R.string.notification_channel_alarm_reminders)
-                channelDesc = context.getString(R.string.notification_channel_alarm_reminders_desc)
+            NotificationChannelManager.SoundState.Alarm -> {
+                channelId = NOTIFICATION_CHANNEL_ID_ALARM
+                channelName = context.getString(R.string.notification_channel_alarm)
+                channelDesc = context.getString(R.string.notification_channel_alarm_desc)
                 importance = NotificationManager.IMPORTANCE_HIGH
             }
-            else { // if (soundState == SoundState.Alarm) {
-                // use regular channel - there are no silent reminders
-                channelId = NOTIFICATION_CHANNEL_ID_REMINDER
-                channelName = context.getString(R.string.notification_channel_reminders)
-                channelDesc = context.getString(R.string.notification_channel_reminders_desc)
-                importance = NotificationManager.IMPORTANCE_DEFAULT
+            NotificationChannelManager.SoundState.Silent -> {
+                channelId = NOTIFICATION_CHANNEL_ID_SILENT
+                channelName = context.getString(R.string.notification_channel_silent)
+                channelDesc = context.getString(R.string.notification_channel_silent_desc)
+                importance = NotificationManager.IMPORTANCE_LOW
             }
         }
 
-        DevLog.info(context, LOG_TAG, "Notification channel for state $soundState, is reminder: $isReminder," +
+        DevLog.info(context, LOG_TAG, "Notification channel for state $soundState " +
                 " -> channel ID $channelId, importance $importance")
 
         // Configure the notification channel.
@@ -166,35 +148,105 @@ object NotificationChannelManager {
         }
 
         if (soundState != SoundState.Silent) {
-            if (!isReminder) {
-                notificationChannel.setSound(settings.ringtoneURI, attribBuilder.build())
+            notificationChannel.setSound(
+                    RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION),
+                    attribBuilder.build()
+            )
 
-                if (settings.vibraOn) {
-                    notificationChannel.enableVibration(true)
-                    notificationChannel.vibrationPattern = settings.vibrationPattern
-                } else {
-                    notificationChannel.enableVibration(false)
-                }
-            }
-            else {
-                notificationChannel.setSound(settings.reminderRingtoneURI, attribBuilder.build())
+            notificationChannel.enableVibration(true)
 
-                if (settings.reminderVibraOn) {
-                    notificationChannel.enableVibration(true)
-                    notificationChannel.vibrationPattern = settings.reminderVibrationPattern
-                } else {
-                    notificationChannel.enableVibration(false)
-                }
-            }
-        }
-
-        if (isReminder) {
-            notificationChannel.setShowBadge(false)
+            if (soundState == SoundState.Normal)
+                notificationChannel.vibrationPattern = Consts.VIBRATION_PATTERN_DEFAULT
+            else
+                notificationChannel.vibrationPattern = Consts.VIBRATION_PATTERN_ALARM
         }
 
         context.notificationManager.createNotificationChannel(notificationChannel)
 
         return channelId
+    }
+
+    private fun createReminderNotificationChannelForSoundState(
+            context: Context,
+            soundState: SoundState
+    ): String {
+
+        val channelId: String
+        val channelName: String
+        val channelDesc: String
+
+        val settings = Settings(context)
+
+        var importance = NotificationManager.IMPORTANCE_DEFAULT
+
+        // Reminder notification
+        // isRepost is ignored
+        if (soundState == SoundState.Alarm) {
+            // use alarm reminder channel
+            channelId = NOTIFICAITON_CHANNEL_ID_REMINDER_ALARM
+            channelName = context.getString(R.string.notification_channel_alarm_reminders)
+            channelDesc = context.getString(R.string.notification_channel_alarm_reminders_desc)
+            importance = NotificationManager.IMPORTANCE_HIGH
+        }
+        else { // if (soundState == SoundState.Alarm) {
+            // use regular channel - there are no silent reminders
+            channelId = NOTIFICATION_CHANNEL_ID_REMINDER
+            channelName = context.getString(R.string.notification_channel_reminders)
+            channelDesc = context.getString(R.string.notification_channel_reminders_desc)
+            importance = NotificationManager.IMPORTANCE_DEFAULT
+        }
+
+        DevLog.info(context, LOG_TAG, "Notification channel for reminder state $soundState" +
+                " -> channel ID $channelId, importance $importance")
+
+        // Configure the notification channel.
+        val notificationChannel = NotificationChannel(channelId, channelName, importance)
+        notificationChannel.description = channelDesc
+
+        // If we don't enable it now (at channel creation) - no way to enable it later
+        notificationChannel.enableLights(true)
+        notificationChannel.lightColor = Consts.DEFAULT_LED_COLOR
+
+        val attribBuilder = AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_UNKNOWN)
+
+        if (soundState == SoundState.Alarm) {
+            attribBuilder
+                    .setFlags(AudioAttributes.FLAG_AUDIBILITY_ENFORCED)
+                    .setLegacyStreamType(AudioManager.STREAM_ALARM)
+                    .setUsage(AudioAttributes.USAGE_ALARM)
+
+            DevLog.info(context, LOG_TAG, "Alarm attributes applied")
+        }
+        else {
+            attribBuilder.setUsage(AudioAttributes.USAGE_NOTIFICATION_EVENT)
+        }
+
+        notificationChannel.setSound(
+                RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION),
+                attribBuilder.build()
+        )
+
+        notificationChannel.enableVibration(true)
+
+        if (soundState == SoundState.Normal)
+            notificationChannel.vibrationPattern = Consts.VIBRATION_PATTERN_REMINDER
+        else
+            notificationChannel.vibrationPattern = Consts.VIBRATION_PATTERN_ALARM_REMINDER
+
+        context.notificationManager.createNotificationChannel(notificationChannel)
+
+        return channelId
+    }
+
+    fun createNotificationChannel(
+            context: Context,
+            soundState: SoundState,
+            isReminder: Boolean
+    ): String {
+        return if (!isReminder)
+            createNotificationChannelForSoundState(context, soundState)
+        else
+            createReminderNotificationChannelForSoundState(context, soundState)
     }
 
     private const val LOG_TAG = "NotificationChannelManager"

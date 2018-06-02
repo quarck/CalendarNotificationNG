@@ -106,7 +106,7 @@ object ApplicationController : EventMovedHandler {
         val currentTime = System.currentTimeMillis()
 
         context.globalState?.lastTimerBroadcastReceived = System.currentTimeMillis()
-        notificationManager.postEventNotifications(context, EventFormatter(context), false, null);
+        notificationManager.postEventNotifications(context)
         alarmScheduler.rescheduleAlarms(context, getSettings(context), quietHoursManager);
 
 
@@ -120,7 +120,7 @@ object ApplicationController : EventMovedHandler {
         DevLog.info(context, LOG_TAG, "Application updated")
 
         // this will post event notifications for existing known requests
-        notificationManager.postEventNotifications(context, EventFormatter(context), true, null);
+        notificationManager.postEventNotifications(context, isRepost = true);
         alarmScheduler.rescheduleAlarms(context, getSettings(context), quietHoursManager);
         CalendarMonitorPeriodicJobService.schedule(context)
     }
@@ -130,7 +130,7 @@ object ApplicationController : EventMovedHandler {
         DevLog.info(context, LOG_TAG, "OS boot is complete")
 
         // this will post event notifications for existing known requests
-        notificationManager.postEventNotifications(context, EventFormatter(context), true, null);
+        notificationManager.postEventNotifications(context, isRepost = true);
 
         alarmScheduler.rescheduleAlarms(context, getSettings(context), quietHoursManager);
 
@@ -152,12 +152,7 @@ object ApplicationController : EventMovedHandler {
         }
 
         if (changes) {
-            notificationManager.postEventNotifications(
-                    context,
-                    EventFormatter(context),
-                    force = true,
-                    primaryEventId = null
-            );
+            notificationManager.postEventNotifications(context, isRepost = true)
 
             alarmScheduler.rescheduleAlarms(context, getSettings(context), quietHoursManager);
 
@@ -180,17 +175,12 @@ object ApplicationController : EventMovedHandler {
         DevLog.debug(LOG_TAG, "calendarReloadFromService: ${changes}")
 
         if (changes) {
-            notificationManager.postEventNotifications(
-                    context,
-                    EventFormatter(context),
-                    force = true,
-                    primaryEventId = null
-            );
+            notificationManager.postEventNotifications(context, isRepost = true)
 
-            alarmScheduler.rescheduleAlarms(context, getSettings(context), quietHoursManager);
+            alarmScheduler.rescheduleAlarms(context, getSettings(context), quietHoursManager)
 
             val isUserAction = (System.currentTimeMillis() < userActionUntil)
-            UINotifierService.notifyUI(context, isUserAction);
+            UINotifierService.notifyUI(context, isUserAction)
         }
         else {
             DevLog.debug(LOG_TAG, "No calendar changes detected")
@@ -245,7 +235,7 @@ object ApplicationController : EventMovedHandler {
         if (events.size == 1)
             notificationManager.onEventAdded(context, EventFormatter(context), events.first())
         else
-            notificationManager.postEventNotifications(context, EventFormatter(context), false, null)
+            notificationManager.postEventNotifications(context)
 
     }
 
@@ -808,12 +798,7 @@ object ApplicationController : EventMovedHandler {
             cleanupEventReminder(context)
 
             if (shouldRepost) {
-                notificationManager.postEventNotifications(
-                        context,
-                        EventFormatter(context),
-                        force = true,
-                        primaryEventId = null
-                )
+                notificationManager.postEventNotifications(context, isRepost = true)
                 context.globalState?.lastNotificationRePost = System.currentTimeMillis()
             }
 
@@ -1048,7 +1033,7 @@ object ApplicationController : EventMovedHandler {
     // used for debug purpose
     @Suppress("unused")
     fun forceRepostNotifications(context: Context) {
-        notificationManager.postEventNotifications(context, EventFormatter(context), true, null);
+        notificationManager.postEventNotifications(context, isRepost = true)
     }
 
     // used for debug purpose

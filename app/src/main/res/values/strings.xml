@@ -245,7 +245,8 @@
     <string name="collapse_everything">Collapse everything on exceeding</string>
     <string name="collapse_everything_summary">When number of total active notifications exceeds max notifications, everything would be collapsed into a single group notification</string>
 
-    <string name="multiple_events_single_notification">%d calendar events</string>
+    <string name="multiple_events_single_notification" formatted="false">%d calendar events</string>
+    <string name="reminder_at" formatted="false"> (reminder at %s)</string>
     <string name="advanced">Advanced</string>
 
     <string name="open_wiki">OPEN WIKI</string>
