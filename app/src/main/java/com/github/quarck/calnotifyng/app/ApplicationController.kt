@@ -117,6 +117,8 @@ object ApplicationController : EventMovedHandler {
 
     fun onAppUpdated(context: Context) {
 
+        DevLog.clear(context)
+
         DevLog.info(context, LOG_TAG, "Application updated")
 
         // this will post event notifications for existing known requests

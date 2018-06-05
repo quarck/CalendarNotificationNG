@@ -477,10 +477,13 @@ class EventNotificationManager : EventNotificationManagerInterface {
             )
         }
 
+        val alertOnlyOnce = notificationRecords.all{it.alertOnlyOnce}
+        val contentText = if (lines.size > 0) lines[0] else ""
+
         val builder =
                 Notification.Builder(context, channel)
                         .setContentTitle(contentTitle)
-                        .setContentText(if (lines.size > 0) lines[0] else "")
+                        .setContentText(contentText)
                         .setSmallIcon(R.drawable.stat_notify_calendar_multiple)
                         .setContentIntent(pendingIntent)
                         .setAutoCancel(false)
@@ -488,11 +491,13 @@ class EventNotificationManager : EventNotificationManagerInterface {
                         .setStyle(notificationStyle)
                         .setNumber(numEvents)
                         .setShowWhen(false)
-                        .setOnlyAlertOnce(notificationRecords.all{it.alertOnlyOnce})
+                        .setOnlyAlertOnce(alertOnlyOnce)
+
+        DevLog.info(context, LOG_TAG, "Building collapsed notification: alertOnlyOnce=$alertOnlyOnce, contentTitle=$contentTitle, number=$numEvents, channel=$channel")
 
         val snoozeIntent = Intent(context, NotificationActionSnoozeService::class.java)
         snoozeIntent.putExtra(Consts.INTENT_SNOOZE_PRESET, Consts.DEFAULT_SNOOZE_TIME_IF_NONE)
-        snoozeIntent.putExtra(Consts.INTENT_SNOOZE_ALL_COLLAPSED_KEY, true)
+        snoozeIntent.putExtra(Consts.INTENT_SNOOZE_ALL_KEY, true)
 
         val pendingSnoozeIntent = pendingServiceIntent(context, snoozeIntent, EVENT_CODE_DEFAULT_SNOOOZE0_OFFSET)
         builder.setDeleteIntent(pendingSnoozeIntent)
