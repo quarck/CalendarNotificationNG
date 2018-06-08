@@ -35,12 +35,14 @@ import com.github.quarck.calnotifyng.utils.notificationManager
 
 object NotificationChannelManager {
 
-    const val NOTIFICATION_CHANNEL_ID_DEFAULT = "com.github.calnotifyng.notify.v0.cal"
-    const val NOTIFICATION_CHANNEL_ID_ALARM = "com.github.calnotifyng.notify.v0.calalrm"
-    const val NOTIFICATION_CHANNEL_ID_SILENT = "com.github.calnotifyng.notify.v0.calquiet"
+    const val CHANNEL_VER = 1
 
-    const val NOTIFICATION_CHANNEL_ID_REMINDER = "com.github.calnotifyng.notify.v0.rem"
-    const val NOTIFICAITON_CHANNEL_ID_REMINDER_ALARM = "com.github.calnotifyng.notify.v0.remalrm"
+    const val NOTIFICATION_CHANNEL_ID_DEFAULT = "com.github.calnotifyng.notify.v$CHANNEL_VER.cal"
+    const val NOTIFICATION_CHANNEL_ID_ALARM = "com.github.calnotifyng.notify.v$CHANNEL_VER.calalrm"
+    const val NOTIFICATION_CHANNEL_ID_SILENT = "com.github.calnotifyng.notify.v$CHANNEL_VER.calquiet"
+
+    const val NOTIFICATION_CHANNEL_ID_REMINDER = "com.github.calnotifyng.notify.v$CHANNEL_VER.rem"
+    const val NOTIFICAITON_CHANNEL_ID_REMINDER_ALARM = "com.github.calnotifyng.notify.v$CHANNEL_VER.remalrm"
 
     fun createDefaultNotificationChannelDebug(context: Context): String {
 
@@ -137,9 +139,11 @@ object NotificationChannelManager {
 
         if (soundState == SoundState.Alarm) {
             attribBuilder
-                    .setFlags(AudioAttributes.FLAG_AUDIBILITY_ENFORCED)
+                    //.setFlags(AudioAttributes.FLAG_AUDIBILITY_ENFORCED)
                     .setLegacyStreamType(AudioManager.STREAM_ALARM)
                     .setUsage(AudioAttributes.USAGE_ALARM)
+
+            notificationChannel.setBypassDnd(true)
 
             DevLog.info(context, LOG_TAG, "Alarm attributes applied")
         }
@@ -211,9 +215,11 @@ object NotificationChannelManager {
 
         if (soundState == SoundState.Alarm) {
             attribBuilder
-                    .setFlags(AudioAttributes.FLAG_AUDIBILITY_ENFORCED)
+                    //.setFlags(AudioAttributes.FLAG_AUDIBILITY_ENFORCED)
                     .setLegacyStreamType(AudioManager.STREAM_ALARM)
                     .setUsage(AudioAttributes.USAGE_ALARM)
+
+            notificationChannel.setBypassDnd(true)
 
             DevLog.info(context, LOG_TAG, "Alarm attributes applied")
         }
