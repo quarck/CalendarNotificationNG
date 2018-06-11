@@ -30,7 +30,6 @@ import com.github.quarck.calnotifyng.utils.toIntOrNull
 data class NotificationSettingsSnapshot
 (
         val enableNotificationMute: Boolean,
-        val notificationOpensSnooze: Boolean,
         val appendEmptyAction: Boolean,
         val useAlarmStream: Boolean
 )
@@ -43,15 +42,6 @@ class Settings(context: Context) : PersistentStorageBase(context) {
 
     val notificationAddEmptyAction: Boolean
         get() = getBoolean(NOTIFICATION_ADD_EMPTY_ACTION_KEY, false)
-
-    val snoozeTapOpensCalendar: Boolean
-        get() = getBoolean(OPEN_CALENDAR_FROM_SNOOZE_KEY, true)
-
-    val snoozeHideEventDesc: Boolean
-        get() = getBoolean(SNOOZE_HIDE_EVENT_DESC_KEY, false)
-
-    val notificationOpensSnooze: Boolean
-        get() = getBoolean(NOTIFICATION_OPENS_SNOOZE_KEY, false)
 
     val notificationAutoDismissOnReschedule: Boolean
         get() = getBoolean(NOTIFICATION_AUTO_DISMISS_KEY, false)
@@ -220,7 +210,6 @@ class Settings(context: Context) : PersistentStorageBase(context) {
         get() = NotificationSettingsSnapshot(
                 ////notificationSwipeDoesSnooze = notificationSwipeDoesSnooze,
                 enableNotificationMute = remindersEnabled,
-                notificationOpensSnooze = notificationOpensSnooze,
                 appendEmptyAction = notificationAddEmptyAction,
                 useAlarmStream = notificationUseAlarmStream
         )
@@ -229,13 +218,8 @@ class Settings(context: Context) : PersistentStorageBase(context) {
 
         // Preferences keys
 
-        private const val RINGTONE_KEY = "pref_key_ringtone"
-        private const val VIBRATION_ENABLED_KEY = "vibra_on"
         const val VIBRATION_PATTERN_KEY = "pref_vibration_pattern"
-        private const val LED_ENABLED_KEY = "notification_led"
-        private const val LED_COLOR_KEY = "notification_led_color"
 
-        private const val NOTIFICATION_OPENS_SNOOZE_KEY = "notification_opens_snooze"
         private const val NOTIFICATION_AUTO_DISMISS_KEY = "notification_auto_dismiss"
         private const val NOTIFICATION_AUTO_DISMISS_DEBUG_KEY = "auto_dismiss_debug"
         private const val NOTIFICATION_ALARM_DELAYS_DEBUG_KEY = "alarm_delays_debug"
@@ -298,10 +282,6 @@ class Settings(context: Context) : PersistentStorageBase(context) {
         private const val NOTIFY_ON_EMAIL_ONLY_EVENTS_KEY = "notify_on_email_only_events"
 
         private const val DEVELOPER_MODE_KEY = "dev"
-
-        private const val OPEN_CALENDAR_FROM_SNOOZE_KEY = "open_calendar_from_snooze"
-
-        private const val SNOOZE_HIDE_EVENT_DESC_KEY = "snooze_hide_event_description"
 
         private const val NOTIFICATION_ADD_EMPTY_ACTION_KEY = "add_empty_action_to_the_end"
 

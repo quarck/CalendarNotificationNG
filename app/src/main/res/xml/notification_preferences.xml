@@ -59,18 +59,6 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="@string/advanced"
-        android:key="_notifications_advanced">
-
-        <CheckBoxPreference
-            android:key="notification_opens_snooze"
-            android:title="@string/notfication_opens_snooze"
-            android:summary="@string/notfication_opens_snooze_summary"
-            android:defaultValue="false" />
-
-    </PreferenceCategory>
-
-    <PreferenceCategory
         android:title="@string/notifications_pure_hacks"
         android:key="_notification_hacks"
         >

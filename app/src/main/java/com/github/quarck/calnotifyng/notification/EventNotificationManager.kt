@@ -718,14 +718,14 @@ class EventNotificationManager : EventNotificationManagerInterface {
     ) {
         val notificationManager = ctx.notificationManager
 
-        val calendarIntent = CalendarIntents.getCalendarViewIntent(event)
-
-        val calendarPendingIntent =
-                TaskStackBuilder.create(ctx)
-                        .addNextIntentWithParentStack(calendarIntent)
-                        .getPendingIntent(
-                                event.notificationId * EVENT_CODES_TOTAL + EVENT_CODE_OPEN_OFFSET,
-                                PendingIntent.FLAG_UPDATE_CURRENT)
+//        val calendarIntent = CalendarIntents.getCalendarViewIntent(event)
+//
+//        val calendarPendingIntent =
+//                TaskStackBuilder.create(ctx)
+//                        .addNextIntentWithParentStack(calendarIntent)
+//                        .getPendingIntent(
+//                                event.notificationId * EVENT_CODES_TOTAL + EVENT_CODE_OPEN_OFFSET,
+//                                PendingIntent.FLAG_UPDATE_CURRENT)
 
         val snoozeActivityIntent =
                 pendingActivityIntent(ctx,
@@ -755,11 +755,11 @@ class EventNotificationManager : EventNotificationManagerInterface {
 
         DevLog.info(ctx, LOG_TAG, "SortKey: ${event.eventId} -> ${event.lastStatusChangeTime} -> $sortKey")
 
-        val primaryPendingIntent =
-                if (notificationSettings.notificationOpensSnooze)
-                    snoozeActivityIntent
-                else
-                    calendarPendingIntent
+        val primaryPendingIntent = snoozeActivityIntent
+//                if (notificationSettings.notificationOpensSnooze)
+//                    snoozeActivityIntent
+//                else
+//                    calendarPendingIntent
 
         var iconId = R.drawable.stat_notify_calendar
         if (event.isTask)
@@ -816,10 +816,10 @@ class EventNotificationManager : EventNotificationManagerInterface {
                 ).build()
 
 
-        if (!notificationSettings.notificationOpensSnooze) {
-            DevLog.debug(LOG_TAG, "adding pending intent for snooze, event id ${event.eventId}, notificationId ${event.notificationId}")
-            builder.addAction(snoozeAction)
-        }
+//        if (!notificationSettings.notificationOpensSnooze) {
+//            DevLog.debug(LOG_TAG, "adding pending intent for snooze, event id ${event.eventId}, notificationId ${event.notificationId}")
+//            builder.addAction(snoozeAction)
+//        }
 
         val extender = Notification.WearableExtender()
 

@@ -270,28 +270,18 @@ open class SnoozeActivityNoRecents : AppCompatActivity() {
             else
                 dateTimeSecondLine.text = line2;
 
-            if (settings.snoozeTapOpensCalendar) {
-                val onClick = View.OnClickListener { CalendarIntents.viewCalendarEvent(this, ev) }
+            dateTimeFirstLine.isClickable = false
+            dateTimeSecondLine.isClickable = false
+            title.isClickable = false
 
-                dateTimeFirstLine.setOnClickListener(onClick)
-                dateTimeSecondLine.setOnClickListener(onClick)
-                title.isClickable = true
-                title.setOnClickListener(onClick)
+            title.setMovementMethod(ScrollingMovementMethod())
+            title.post {
+                val y = title.getLayout().getLineTop(0)
+                title.scrollTo(0, y)
             }
-            else {
-                dateTimeFirstLine.isClickable = false
-                dateTimeSecondLine.isClickable = false
-                title.isClickable = false
+            title.setTextIsSelectable(true)
 
-                title.setMovementMethod(ScrollingMovementMethod())
-                title.post {
-                    val y = title.getLayout().getLineTop(0)
-                    title.scrollTo(0, y)
-                }
-                title.setTextIsSelectable(true)
-            }
-
-            if (!settings.snoozeHideEventDesc && ev.desc.isNotEmpty()) {
+            if (ev.desc.isNotEmpty()) {
                 // Show the event desc
                 findOrThrow<RelativeLayout>(R.id.layout_event_description).visibility = View.VISIBLE
                 findOrThrow<TextView>(R.id.snooze_view_event_description).text = ev.desc
