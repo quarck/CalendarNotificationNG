@@ -552,6 +552,8 @@
     <string name="plus_more" formatted="false">+%d more events</string>
     <string name="delete_event">Delete</string>
     <string name="delete_event_question">Delete Event?</string>
+    <string name="view_event">View Event</string>
+    <string name="content_desc_menu">menu</string>
 
 </resources>
 

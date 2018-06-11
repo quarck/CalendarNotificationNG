@@ -35,7 +35,6 @@ import android.text.format.DateUtils
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Button
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.github.quarck.calnotifyng.Consts
@@ -44,7 +43,6 @@ import com.github.quarck.calnotifyng.Settings
 import com.github.quarck.calnotifyng.app.ApplicationController
 import com.github.quarck.calnotifyng.app.UndoManager
 import com.github.quarck.calnotifyng.app.UndoState
-import com.github.quarck.calnotifyng.calendar.CalendarIntents
 import com.github.quarck.calnotifyng.calendar.EventAlertRecord
 import com.github.quarck.calnotifyng.calendar.isSpecial
 import com.github.quarck.calnotifyng.calendarmonitor.CalendarMonitorState
@@ -368,7 +366,7 @@ class MainActivity : AppCompatActivity(), EventListCallback {
         when (item.itemId) {
             R.id.action_snooze_all ->
                 startActivity(
-                        Intent(this, SnoozeActivity::class.java)
+                        Intent(this, SnoozeAllActivity::class.java)
                                 .putExtra(Consts.INTENT_SNOOZE_ALL_IS_CHANGE, !adapter.hasActiveEvents)
                                 .putExtra(Consts.INTENT_SNOOZE_FROM_MAIN_ACTIVITY, true)
                                 .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
@@ -500,7 +498,7 @@ class MainActivity : AppCompatActivity(), EventListCallback {
 
         if (event != null && !event.isSpecial) {
            startActivity(
-                    Intent(this, SnoozeActivity::class.java)
+                    Intent(this, ViewEventActivity::class.java)
                             .putExtra(Consts.INTENT_NOTIFICATION_ID_KEY, event.notificationId)
                             .putExtra(Consts.INTENT_EVENT_ID_KEY, event.eventId)
                             .putExtra(Consts.INTENT_INSTANCE_START_TIME_KEY, event.instanceStartTime)
@@ -560,7 +558,7 @@ class MainActivity : AppCompatActivity(), EventListCallback {
 
         if (event != null) {
             startActivity(
-                    Intent(this, SnoozeActivity::class.java)
+                    Intent(this, ViewEventActivity::class.java)
                             .putExtra(Consts.INTENT_NOTIFICATION_ID_KEY, event.notificationId)
                             .putExtra(Consts.INTENT_EVENT_ID_KEY, event.eventId)
                             .putExtra(Consts.INTENT_INSTANCE_START_TIME_KEY, event.instanceStartTime)

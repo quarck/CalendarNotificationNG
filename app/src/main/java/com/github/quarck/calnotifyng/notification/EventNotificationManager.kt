@@ -34,7 +34,6 @@ import com.github.quarck.calnotifyng.reminders.ReminderState
 import com.github.quarck.calnotifyng.textutils.EventFormatter
 import com.github.quarck.calnotifyng.textutils.EventFormatterInterface
 import com.github.quarck.calnotifyng.ui.MainActivity
-import com.github.quarck.calnotifyng.ui.SnoozeActivityNoRecents
 import com.github.quarck.calnotifyng.utils.*
 
 @Suppress("VARIABLE_WITH_REDUNDANT_INITIALIZER")
@@ -944,7 +943,7 @@ class EventNotificationManager : EventNotificationManagerInterface {
 
     private fun snoozeIntent(ctx: Context, eventId: Long, instanceStartTime: Long, notificationId: Int): Intent {
 
-        val intent = Intent(ctx, SnoozeActivityNoRecents::class.java)
+        val intent = Intent(ctx, ViewEventActivityNoRecents::class.java)
         intent.putExtra(Consts.INTENT_NOTIFICATION_ID_KEY, notificationId)
         intent.putExtra(Consts.INTENT_EVENT_ID_KEY, eventId)
         intent.putExtra(Consts.INTENT_INSTANCE_START_TIME_KEY, instanceStartTime)
