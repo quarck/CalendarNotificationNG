@@ -406,16 +406,9 @@ open class SnoozeActivityNoRecents : AppCompatActivity() {
 
         val ev = event
         if (ev != null) {
-            if (settings.enableDismissAndDelete) {
-                val menuItem = popup.menu.findItem(
-                        if (!ev.isTask)
-                            R.id.action_dismiss_and_delete
-                        else
-                            R.id.action_done_and_delete
-                )
-                if (menuItem != null) {
-                    menuItem.isVisible = !ev.isRepeating
-                }
+            val menuItem = popup.menu.findItem(R.id.action_delete_event)
+            if (menuItem != null) {
+                menuItem.isVisible = !ev.isRepeating
             }
 
             val menuItemMute = popup.menu.findItem(R.id.action_mute_event)
@@ -464,18 +457,30 @@ open class SnoozeActivityNoRecents : AppCompatActivity() {
                     true
                 }
 
-                R.id.action_dismiss_and_delete, R.id.action_done_and_delete -> {
-                    var success = false
-                    if (ev != null) {
-                        success = ApplicationController.dismissAndDeleteEvent(this, EventDismissType.ManuallyDismissedFromActivity, ev)
-                        if (success) {
-                            undoManager.addUndoState(
-                                    UndoState(undo = Runnable { ApplicationController.restoreEvent(applicationContext, ev) }))
-                        }
-                    }
+                R.id.action_delete_event -> {
 
-                    if (success)
-                        finish()
+                    if (ev != null) {
+                        AlertDialog.Builder(this)
+                                .setMessage(getString(R.string.delete_event_question))
+                                .setCancelable(false)
+                                .setPositiveButton(android.R.string.yes) { _, _ ->
+
+                                    DevLog.info(this, LOG_TAG, "Deleting event ${ev.eventId} per user request")
+
+                                    val success = ApplicationController.dismissAndDeleteEvent(
+                                            this, EventDismissType.ManuallyDismissedFromActivity, ev
+                                    )
+                                    if (success) {
+                                        undoManager.addUndoState(
+                                                UndoState(undo = Runnable { ApplicationController.restoreEvent(applicationContext, ev) }))
+                                    }
+                                    finish()
+                                }
+                                .setNegativeButton(R.string.cancel) { _, _ ->
+                                }
+                                .create()
+                                .show()
+                    }
 
                     true
                 }

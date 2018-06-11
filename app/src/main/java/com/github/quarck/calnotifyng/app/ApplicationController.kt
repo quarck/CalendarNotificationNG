@@ -552,9 +552,6 @@ object ApplicationController : EventMovedHandler {
     ): Boolean {
         var ret = false
 
-        if (!getSettings(context).notificationAutoDismissOnReschedule)
-            return false
-
         if (newStartTime - oldStartTime > Consts.EVENT_MOVE_THRESHOLD) {
             if (newAlertTime > System.currentTimeMillis() + Consts.ALARM_THRESHOLD) {
 
@@ -572,24 +569,24 @@ object ApplicationController : EventMovedHandler {
 
     fun onReminderAlarmLate(context: Context, currentTime: Long, alarmWasExpectedAt: Long) {
 
-        if (getSettings(context).debugAlarmDelays) {
-
-            val warningMessage = "Expected: $alarmWasExpectedAt, " +
-                    "received: $currentTime, ${(currentTime - alarmWasExpectedAt) / 1000L}s late"
-
-            notificationManager.postNotificationsAlarmDelayDebugMessage(context, "Reminder alarm was late!", warningMessage)
-        }
+//        if (getSettings(context).debugAlarmDelays) {
+//
+//            val warningMessage = "Expected: $alarmWasExpectedAt, " +
+//                    "received: $currentTime, ${(currentTime - alarmWasExpectedAt) / 1000L}s late"
+//
+//            notificationManager.postNotificationsAlarmDelayDebugMessage(context, "Reminder alarm was late!", warningMessage)
+//        }
     }
 
     fun onSnoozeAlarmLate(context: Context, currentTime: Long, alarmWasExpectedAt: Long) {
 
-        if (getSettings(context).debugAlarmDelays) {
-
-            val warningMessage = "Expected: $alarmWasExpectedAt, " +
-                    "received: $currentTime, ${(currentTime - alarmWasExpectedAt) / 1000L}s late"
-
-            notificationManager.postNotificationsSnoozeAlarmDelayDebugMessage(context, "Snooze alarm was late!", warningMessage)
-        }
+//        if (getSettings(context).debugAlarmDelays) {
+//
+//            val warningMessage = "Expected: $alarmWasExpectedAt, " +
+//                    "received: $currentTime, ${(currentTime - alarmWasExpectedAt) / 1000L}s late"
+//
+//            notificationManager.postNotificationsSnoozeAlarmDelayDebugMessage(context, "Snooze alarm was late!", warningMessage)
+//        }
     }
 
     fun toggleMuteForEvent(context: Context, eventId: Long, instanceStartTime: Long, muteAction: Int): Boolean {

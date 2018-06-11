@@ -43,17 +43,6 @@ class Settings(context: Context) : PersistentStorageBase(context) {
     val notificationAddEmptyAction: Boolean
         get() = getBoolean(NOTIFICATION_ADD_EMPTY_ACTION_KEY, false)
 
-    val notificationAutoDismissOnReschedule: Boolean
-        get() = getBoolean(NOTIFICATION_AUTO_DISMISS_KEY, false)
-
-    var debugNotificationAutoDismiss: Boolean
-        get() = getBoolean(NOTIFICATION_AUTO_DISMISS_DEBUG_KEY, false)
-        set(value) = setBoolean(NOTIFICATION_AUTO_DISMISS_DEBUG_KEY, value)
-
-    var debugAlarmDelays: Boolean
-        get() = getBoolean(NOTIFICATION_ALARM_DELAYS_DEBUG_KEY, false)
-        set(value) = setBoolean(NOTIFICATION_ALARM_DELAYS_DEBUG_KEY, value)
-
     val viewAfterEdit: Boolean
         get() = getBoolean(VIEW_AFTER_EDIT_KEY, true)
 
@@ -203,9 +192,6 @@ class Settings(context: Context) : PersistentStorageBase(context) {
     val notifyOnEmailOnlyEvents: Boolean
         get() = getBoolean(NOTIFY_ON_EMAIL_ONLY_EVENTS_KEY, false)
 
-    val enableDismissAndDelete: Boolean
-        get() = getBoolean(SNOOZE_ENABLE_DISMISS_AND_DELETE_KEY, false)
-
     val notificationSettingsSnapshot: NotificationSettingsSnapshot
         get() = NotificationSettingsSnapshot(
                 ////notificationSwipeDoesSnooze = notificationSwipeDoesSnooze,
@@ -219,10 +205,6 @@ class Settings(context: Context) : PersistentStorageBase(context) {
         // Preferences keys
 
         const val VIBRATION_PATTERN_KEY = "pref_vibration_pattern"
-
-        private const val NOTIFICATION_AUTO_DISMISS_KEY = "notification_auto_dismiss"
-        private const val NOTIFICATION_AUTO_DISMISS_DEBUG_KEY = "auto_dismiss_debug"
-        private const val NOTIFICATION_ALARM_DELAYS_DEBUG_KEY = "alarm_delays_debug"
 
         private const val SNOOZE_PRESET_KEY = "pref_snooze_presets"
         private const val SHOW_CUSTOM_SNOOZE_TIMES_KEY = "show_custom_snooze_and_until"
@@ -284,8 +266,6 @@ class Settings(context: Context) : PersistentStorageBase(context) {
         private const val DEVELOPER_MODE_KEY = "dev"
 
         private const val NOTIFICATION_ADD_EMPTY_ACTION_KEY = "add_empty_action_to_the_end"
-
-        private const val SNOOZE_ENABLE_DISMISS_AND_DELETE_KEY = "enable_dismiss_and_delete"
 
         // Default values
         internal const val DEFAULT_SNOOZE_PRESET = "15m, 1h, 4h, 1d, -5m"

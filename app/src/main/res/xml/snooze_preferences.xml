@@ -19,22 +19,4 @@
             android:summary="@string/custom_snooze_options_summary"
             android:defaultValue="true" />
 
-        <PreferenceCategory
-            android:title="@string/advanced"
-            android:key="_snooze_advanced">
-
-                <CheckBoxPreference
-                    android:key="notification_auto_dismiss"
-                    android:title="@string/notification_auto_dismiss_on_reschedule"
-                    android:summary="@string/notification_auto_dismiss_on_reschedule_summary"
-                    android:defaultValue="false" />
-
-                <CheckBoxPreference
-                        android:key="enable_dismiss_and_delete"
-                        android:title="@string/enable_dismiss_and_delete_title"
-                        android:summary="@string/enable_dismiss_and_delete_summary"
-                        android:defaultValue="false"
-                        />
-        </PreferenceCategory>
-
 </PreferenceScreen>

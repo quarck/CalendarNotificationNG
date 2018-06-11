@@ -110,10 +110,6 @@ object CalendarReloadManager : CalendarReloadManagerInterface {
                     EventDismissType.AutoDismissedDueToCalendarMove,
                     true
             )
-
-            if (settings.debugNotificationAutoDismiss) {
-                ApplicationController.postNotificationsAutoDismissedDebugMessage(context)
-            }
         }
 
         if (!eventsToUpdate.isEmpty()) {
@@ -175,9 +171,6 @@ object CalendarReloadManager : CalendarReloadManagerInterface {
 
         val settings = Settings(context)
 
-        if (!settings.notificationAutoDismissOnReschedule)
-            return false
-
         val events = db.events.filter {
             event ->
             event.origin != EventOrigin.FullManual
@@ -222,9 +215,6 @@ object CalendarReloadManager : CalendarReloadManagerInterface {
                     true
             )
 
-            if (settings.debugNotificationAutoDismiss) {
-                ApplicationController.postNotificationsAutoDismissedDebugMessage(context)
-            }
         }
 
         return changedDetected
@@ -252,8 +242,7 @@ object CalendarReloadManager : CalendarReloadManagerInterface {
 
         // Quick short-cut for non-repeating requests: quickly check if instance time is different now
         // - can't use the same for repeating requests
-        if (settings.notificationAutoDismissOnReschedule &&
-                movedHandler != null &&
+        if (movedHandler != null &&
                 !event.isRepeating) {
 
             val newEvent = calendarProvider.getEvent(context, event.eventId)

@@ -550,6 +550,8 @@
     <string name="debug_notifications">Debug notifications</string>
     <string name="debug_notifications_description">Used for app debugging</string>
     <string name="plus_more" formatted="false">+%d more events</string>
+    <string name="delete_event">Delete</string>
+    <string name="delete_event_question">Delete Event?</string>
 
 </resources>
 
