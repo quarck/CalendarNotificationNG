@@ -72,7 +72,7 @@ object CalendarReloadManager : CalendarReloadManagerInterface {
         for (event in events) {
 
             try {
-                val reloadResult = reloadCalendarEventAlert(context, settings, calendar, event, currentTime, movedHandler)
+                val reloadResult = reloadCalendarEventAlert(context, calendar, event, currentTime, movedHandler)
 
                 when (reloadResult.code) {
                 // nothing required
@@ -169,7 +169,7 @@ object CalendarReloadManager : CalendarReloadManagerInterface {
             movedHandler: EventMovedHandler
     ): Boolean {
 
-        val settings = Settings(context)
+        //val settings = Settings(context)
 
         val events = db.events.filter {
             event ->
@@ -233,7 +233,6 @@ object CalendarReloadManager : CalendarReloadManagerInterface {
 
     fun reloadCalendarEventAlert(
             context: Context,
-            settings: Settings,
             calendarProvider: CalendarProviderInterface,
             event: EventAlertRecord,
             currentTime: Long,

@@ -34,6 +34,7 @@ import com.github.quarck.calnotifyng.reminders.ReminderState
 import com.github.quarck.calnotifyng.textutils.EventFormatter
 import com.github.quarck.calnotifyng.textutils.EventFormatterInterface
 import com.github.quarck.calnotifyng.ui.MainActivity
+import com.github.quarck.calnotifyng.ui.ViewEventActivityNoRecents
 import com.github.quarck.calnotifyng.utils.*
 
 @Suppress("VARIABLE_WITH_REDUNDANT_INITIALIZER")
@@ -150,7 +151,7 @@ class EventNotificationManager : EventNotificationManagerInterface {
             db: EventsStorage
     ): Pair<Boolean, List<EventAlertRecord>> {
 
-        val events = getEventsAndUnSnooze(context, db)
+        //val events = getEventsAndUnSnooze(context, db)
         return sortEvents(getEventsAndUnSnooze(context, db))
     }
 
@@ -166,7 +167,7 @@ class EventNotificationManager : EventNotificationManagerInterface {
 
         val settings = Settings(context)
 
-        val currentTime = System.currentTimeMillis()
+        //val currentTime = System.currentTimeMillis()
 
         val isQuietPeriodActive = QuietHoursManager.getSilentUntil(settings) != 0L
 
@@ -231,15 +232,14 @@ class EventNotificationManager : EventNotificationManagerInterface {
         EventsStorage(context).use {
             db ->
 
-            val notificationSettings =
-                    settings.notificationSettingsSnapshot
+            //val notificationSettings =
+             //       settings.notificationSettingsSnapshot
 
             val activeEvents = db.events.filter { it.isNotSnoozed && it.isNotSpecial && !it.isTask  && !it.isMuted}
 
-            val numActiveEvents = activeEvents.count()
-            val lastStatusChange = activeEvents.map { it.lastStatusChangeTime }.max() ?: 0L
+            //val lastStatusChange = activeEvents.map { it.lastStatusChangeTime }.max() ?: 0L
 
-            if (numActiveEvents > 0) {
+            if (activeEvents.count() > 0) {
                 postEventNotifications(context, isReminder = true)
             }
             else {
@@ -564,7 +564,7 @@ class EventNotificationManager : EventNotificationManagerInterface {
 
         //val hasAlarms = events.any { it.isUnmutedAlarm }
 
-        var playedAnySound = false
+//        var playedAnySound = false
 
         val snoozePresets = settings.snoozePresets
 
@@ -585,7 +585,7 @@ class EventNotificationManager : EventNotificationManagerInterface {
         )
 
 
-        var currentTime = System.currentTimeMillis()
+//        var currentTime = System.currentTimeMillis()
 
         for (ntf in notificationRecords) {
 
@@ -800,12 +800,12 @@ class EventNotificationManager : EventNotificationManagerInterface {
         if (snoozePresets.isEmpty())
             snoozePresets = longArrayOf(Consts.DEFAULT_SNOOZE_TIME_IF_NONE)
 
-        val snoozeAction =
-                Notification.Action.Builder(
-                        Icon.createWithResource(ctx, R.drawable.ic_update_white_24dp),
-                        ctx.getString(com.github.quarck.calnotifyng.R.string.snooze),
-                        snoozeActivityIntent
-                ).build()
+//        val snoozeAction =
+//                Notification.Action.Builder(
+//                        Icon.createWithResource(ctx, R.drawable.ic_update_white_24dp),
+//                        ctx.getString(com.github.quarck.calnotifyng.R.string.snooze),
+//                        snoozeActivityIntent
+//                ).build()
 
         val dismissAction =
                 Notification.Action.Builder(

@@ -107,12 +107,7 @@ object ApplicationController : EventMovedHandler {
 
         context.globalState?.lastTimerBroadcastReceived = System.currentTimeMillis()
         notificationManager.postEventNotifications(context)
-        alarmScheduler.rescheduleAlarms(context, getSettings(context), quietHoursManager);
-
-
-        if (currentTime > alarmWasExpectedAt + Consts.ALARM_THRESHOLD) {
-            this.onSnoozeAlarmLate(context, currentTime, alarmWasExpectedAt)
-        }
+        alarmScheduler.rescheduleAlarms(context, getSettings(context), quietHoursManager)
     }
 
     fun onAppUpdated(context: Context) {
@@ -564,29 +559,6 @@ object ApplicationController : EventMovedHandler {
         }
 
         return ret
-    }
-
-
-    fun onReminderAlarmLate(context: Context, currentTime: Long, alarmWasExpectedAt: Long) {
-
-//        if (getSettings(context).debugAlarmDelays) {
-//
-//            val warningMessage = "Expected: $alarmWasExpectedAt, " +
-//                    "received: $currentTime, ${(currentTime - alarmWasExpectedAt) / 1000L}s late"
-//
-//            notificationManager.postNotificationsAlarmDelayDebugMessage(context, "Reminder alarm was late!", warningMessage)
-//        }
-    }
-
-    fun onSnoozeAlarmLate(context: Context, currentTime: Long, alarmWasExpectedAt: Long) {
-
-//        if (getSettings(context).debugAlarmDelays) {
-//
-//            val warningMessage = "Expected: $alarmWasExpectedAt, " +
-//                    "received: $currentTime, ${(currentTime - alarmWasExpectedAt) / 1000L}s late"
-//
-//            notificationManager.postNotificationsSnoozeAlarmDelayDebugMessage(context, "Snooze alarm was late!", warningMessage)
-//        }
     }
 
     fun toggleMuteForEvent(context: Context, eventId: Long, instanceStartTime: Long, muteAction: Int): Boolean {

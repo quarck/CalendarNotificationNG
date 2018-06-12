@@ -48,7 +48,7 @@ object NotificationChannelManager {
 
         val channelId = NOTIFICATION_CHANNEL_ID_DEFAULT
 
-        val settings = Settings(context)
+//        val settings = Settings(context)
 
         val notificationChannel =
                 NotificationChannel(
@@ -98,7 +98,7 @@ object NotificationChannelManager {
         val channelName: String
         val channelDesc: String
 
-        val settings = Settings(context)
+//        val settings = Settings(context)
 
         var importance = NotificationManager.IMPORTANCE_DEFAULT
 
@@ -179,9 +179,9 @@ object NotificationChannelManager {
         val channelName: String
         val channelDesc: String
 
-        val settings = Settings(context)
+//        val settings = Settings(context)
 
-        var importance = NotificationManager.IMPORTANCE_DEFAULT
+        val importance: Int
 
         // Reminder notification
         // isRepost is ignored

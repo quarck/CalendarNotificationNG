@@ -138,13 +138,6 @@ open class ReminderAlarmGenericBroadcastReceiver : BroadcastReceiver() {
                         shouldFire = true
 
                         DevLog.info(context, LOG_TAG, "Good to fire, since last: ${sinceLastFire}, interval[next]: ${nextReminderInterval}, next fire expected at $nextFireAt")
-
-                        if (currentTime > reminderState.nextFireExpectedAt + Consts.ALARM_THRESHOLD) {
-                            DevLog.error(context, LOG_TAG, "WARNING: reminder alarm expected at ${reminderState.nextFireExpectedAt}, " +
-                                    "received $currentTime, ${(currentTime - reminderState.nextFireExpectedAt) / 1000L}s late")
-
-                            ApplicationController.onReminderAlarmLate(context, currentTime, reminderState.nextFireExpectedAt)
-                        }
                     }
                 }
                 else {
