@@ -63,7 +63,7 @@ object CalendarReloadManager : CalendarReloadManagerInterface {
 
         val currentTime = System.currentTimeMillis()
 
-        val settings = Settings(context)
+        //val settings = Settings(context)
 
         val eventsToAutoDismiss = arrayListOf<ReloadCalendarResult>()
         val eventsToUpdate = arrayListOf<ReloadCalendarResult>()

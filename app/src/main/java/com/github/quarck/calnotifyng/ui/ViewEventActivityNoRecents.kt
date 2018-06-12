@@ -95,8 +95,7 @@ open class ViewEventActivityNoRecents : AppCompatActivity() {
 
     var state = ViewEventActivityState()
 
-    // var originalEvent: EventAlertRecord? = null
-    var event: EventAlertRecord? = null
+    lateinit var event: EventAlertRecord
 
     lateinit var snoozePresets: LongArray
 
@@ -107,7 +106,7 @@ open class ViewEventActivityNoRecents : AppCompatActivity() {
     val calendarReloadManager: CalendarReloadManagerInterface = CalendarReloadManager
     val calendarProvider: CalendarProviderInterface = CalendarProvider
 
-    var snoozeAllIsChange = false
+//    var snoozeAllIsChange = false
 
     var snoozeFromMainActivity = false
 
@@ -169,7 +168,7 @@ open class ViewEventActivityNoRecents : AppCompatActivity() {
         val eventId = intent.getLongExtra(Consts.INTENT_EVENT_ID_KEY, -1)
         val instanceStartTime = intent.getLongExtra(Consts.INTENT_INSTANCE_START_TIME_KEY, -1L)
 
-        snoozeAllIsChange = intent.getBooleanExtra(Consts.INTENT_SNOOZE_ALL_IS_CHANGE, false)
+        //snoozeAllIsChange = intent.getBooleanExtra(Consts.INTENT_SNOOZE_ALL_IS_CHANGE, false)
 
         snoozeFromMainActivity = intent.getBooleanExtra(Consts.INTENT_SNOOZE_FROM_MAIN_ACTIVITY, false)
 
@@ -179,28 +178,29 @@ open class ViewEventActivityNoRecents : AppCompatActivity() {
         EventsStorage(this).use {
             db ->
 
-            val eventFromDB = db.getEvent(eventId, instanceStartTime)
-            if (eventFromDB != null) {
+            var dbEvent = db.getEvent(eventId, instanceStartTime)
 
-                val eventReloaded = eventFromDB.copy()
-                calendarReloadManager.reloadSingleEvent(this, db, eventReloaded, calendarProvider, null) // would leave it for later for now
-                event = eventReloaded
+            if (dbEvent != null) {
+                val eventDidChange = calendarReloadManager.reloadSingleEvent(this, db, dbEvent, calendarProvider, null)
+                if (eventDidChange) {
+                    dbEvent = db.getEvent(eventId, instanceStartTime)
+                }
             }
-        }
 
-        val ev = event // so we can check it only once for null
+            if (dbEvent == null) {
+                DevLog.error(this, LOG_TAG, "ViewActivity started for non-existing eveng id $eventId, st $instanceStartTime\n")
+                finish()
+                return
+            }
 
-        if (ev == null) {
-            DevLog.error(this, LOG_TAG, "ViewActivity started for non-existing eveng id $eventId, st $instanceStartTime\n")
-            finish()
-            return
+            event = dbEvent
         }
 
         snoozePresets = settings.snoozePresets
 
         // remove "MM minutes before event" snooze presents for "Snooze All"
         // and when event time has passed already
-        if (ev.displayedStartTime < currentTime)
+        if (event.displayedStartTime < currentTime)
             snoozePresets = snoozePresets.filter { it > 0L }.toLongArray()
 
         val isQuiet =
@@ -238,18 +238,18 @@ open class ViewEventActivityNoRecents : AppCompatActivity() {
         if (snoozeCustom != null)
             snoozeCustom.visibility = showCustomSnoozeVisibility
 
-        val location = ev.location;
+        val location = event.location;
         if (location != "") {
             findOrThrow<View>(R.id.snooze_view_location_layout).visibility = View.VISIBLE;
             val locationView = findOrThrow<TextView>(R.id.snooze_view_location)
             locationView.text = location;
-            locationView.setOnClickListener { MapsIntents.openLocation(this, ev.location) }
+            locationView.setOnClickListener { MapsIntents.openLocation(this, event.location) }
         }
 
         val title = findOrThrow<TextView>(R.id.snooze_view_title)
-        title.text = if (ev.title.isNotEmpty()) ev.title else this.resources.getString(R.string.empty_title);
+        title.text = if (event.title.isNotEmpty()) event.title else this.resources.getString(R.string.empty_title);
 
-        val (line1, line2) = formatter.formatDateTimeTwoLines(ev);
+        val (line1, line2) = formatter.formatDateTimeTwoLines(event);
 
         val dateTimeFirstLine = findOrThrow<TextView>(R.id.snooze_view_event_date_line1)
         val dateTimeSecondLine = findOrThrow<TextView>(R.id.snooze_view_event_date_line2)
@@ -272,13 +272,13 @@ open class ViewEventActivityNoRecents : AppCompatActivity() {
         }
         title.setTextIsSelectable(true)
 
-        if (ev.desc.isNotEmpty()) {
+        if (event.desc.isNotEmpty()) {
             // Show the event desc
             findOrThrow<RelativeLayout>(R.id.layout_event_description).visibility = View.VISIBLE
-            findOrThrow<TextView>(R.id.snooze_view_event_description).text = ev.desc
+            findOrThrow<TextView>(R.id.snooze_view_event_description).text = event.desc
         }
 
-        var color: Int = ev.color.adjustCalendarColor()
+        var color: Int = event.color.adjustCalendarColor()
         if (color == 0)
             color = ContextCompat.getColor(this, R.color.primary)
 
@@ -287,7 +287,7 @@ open class ViewEventActivityNoRecents : AppCompatActivity() {
 
         window.statusBarColor = color.scaleColor(0.7f)
 
-        val shouldOfferMove = (!ev.isRepeating) && (DateTimeUtils.isUTCTodayOrInThePast(ev.startTime))
+        val shouldOfferMove = (!event.isRepeating) && (DateTimeUtils.isUTCTodayOrInThePast(event.startTime))
         if (shouldOfferMove) {
             findOrThrow<RelativeLayout>(R.id.snooze_reschedule_layout).visibility = View.VISIBLE
         }
@@ -295,7 +295,7 @@ open class ViewEventActivityNoRecents : AppCompatActivity() {
             find<View?>(R.id.snooze_view_inter_view_divider)?.visibility = View.GONE
         }
 
-        if (ev.snoozedUntil != 0L) {
+        if (event.snoozedUntil != 0L) {
             findOrThrow<TextView>(R.id.snooze_snooze_for).text = resources.getString(R.string.change_snooze_to)
         }
 
@@ -304,7 +304,7 @@ open class ViewEventActivityNoRecents : AppCompatActivity() {
 
         if (nextReminderLayout != null && nextReminderText != null) {
 
-            val nextReminder = calendarProvider.getNextEventReminderTime(this, ev)
+            val nextReminder = calendarProvider.getNextEventReminderTime(this, event)
 
             if (nextReminder != 0L) {
                 nextReminderLayout.visibility = View.VISIBLE
@@ -319,11 +319,11 @@ open class ViewEventActivityNoRecents : AppCompatActivity() {
 
         val fab = findOrThrow<FloatingActionButton>(R.id.floating_edit_button)
 
-        if (!ev.isRepeating) {
+        if (!event.isRepeating) {
             fab.setOnClickListener {
                 _ ->
                 val intent = Intent(this, EditEventActivity::class.java)
-                intent.putExtra(EditEventActivity.EVENT_ID, ev.eventId)
+                intent.putExtra(EditEventActivity.EVENT_ID, event.eventId)
                 startActivity(intent)
                 finish()
             }
@@ -333,8 +333,8 @@ open class ViewEventActivityNoRecents : AppCompatActivity() {
             )
 
             val colors = intArrayOf(
-                    ev.color.adjustCalendarColor(false),
-                    ev.color.adjustCalendarColor(true)
+                    event.color.adjustCalendarColor(false),
+                    event.color.adjustCalendarColor(true)
             )
 
             fab.backgroundTintList = ColorStateList(states, colors)
@@ -356,30 +356,27 @@ open class ViewEventActivityNoRecents : AppCompatActivity() {
         val inflater = popup.menuInflater
         inflater.inflate(R.menu.snooze, popup.menu)
 
-        val ev = event
-        if (ev != null) {
-            val menuItem = popup.menu.findItem(R.id.action_delete_event)
-            if (menuItem != null) {
-                menuItem.isVisible = !ev.isRepeating
-            }
+        val menuItem = popup.menu.findItem(R.id.action_delete_event)
+        if (menuItem != null) {
+            menuItem.isVisible = !event.isRepeating
+        }
 
-            val menuItemMute = popup.menu.findItem(R.id.action_mute_event)
-            if (menuItemMute != null) {
-                menuItemMute.isVisible = !ev.isMuted && !ev.isTask
-            }
+        val menuItemMute = popup.menu.findItem(R.id.action_mute_event)
+        if (menuItemMute != null) {
+            menuItemMute.isVisible = !event.isMuted && !event.isTask
+        }
 
-            val menuItemUnMute = popup.menu.findItem(R.id.action_unmute_event)
-            if (menuItemUnMute != null) {
-                menuItemUnMute.isVisible = ev.isMuted
-            }
+        val menuItemUnMute = popup.menu.findItem(R.id.action_unmute_event)
+        if (menuItemUnMute != null) {
+            menuItemUnMute.isVisible = event.isMuted
+        }
 
-            if (ev.isTask) {
-                val menuItemDismiss = popup.menu.findItem(R.id.action_dismiss_event)
-                val menuItemDone = popup.menu.findItem(R.id.action_done_event)
-                if (menuItemDismiss != null && menuItemDone != null) {
-                    menuItemDismiss.isVisible = false
-                    menuItemDone.isVisible = true
-                }
+        if (event.isTask) {
+            val menuItemDismiss = popup.menu.findItem(R.id.action_dismiss_event)
+            val menuItemDone = popup.menu.findItem(R.id.action_done_event)
+            if (menuItemDismiss != null && menuItemDone != null) {
+                menuItemDismiss.isVisible = false
+                menuItemDone.isVisible = true
             }
         }
 
@@ -400,64 +397,54 @@ open class ViewEventActivityNoRecents : AppCompatActivity() {
 
             when (item.itemId) {
                 R.id.action_dismiss_event, R.id.action_done_event -> {
-                    if (ev != null) {
-                        ApplicationController.dismissEvent(this, EventDismissType.ManuallyDismissedFromActivity, ev)
-                        undoManager.addUndoState(
-                                UndoState(undo = Runnable { ApplicationController.restoreEvent(applicationContext, ev) }))
-                    }
+                    ApplicationController.dismissEvent(this, EventDismissType.ManuallyDismissedFromActivity, event)
+                    undoManager.addUndoState(
+                            UndoState(undo = Runnable { ApplicationController.restoreEvent(applicationContext, event) }))
                     finish()
                     true
                 }
 
                 R.id.action_delete_event -> {
 
-                    if (ev != null) {
-                        AlertDialog.Builder(this)
-                                .setMessage(getString(R.string.delete_event_question))
-                                .setCancelable(false)
-                                .setPositiveButton(android.R.string.yes) { _, _ ->
+                    AlertDialog.Builder(this)
+                            .setMessage(getString(R.string.delete_event_question))
+                            .setCancelable(false)
+                            .setPositiveButton(android.R.string.yes) { _, _ ->
 
-                                    DevLog.info(this, LOG_TAG, "Deleting event ${ev.eventId} per user request")
+                                DevLog.info(this, LOG_TAG, "Deleting event ${event.eventId} per user request")
 
-                                    val success = ApplicationController.dismissAndDeleteEvent(
-                                            this, EventDismissType.ManuallyDismissedFromActivity, ev
-                                    )
-                                    if (success) {
-                                        undoManager.addUndoState(
-                                                UndoState(undo = Runnable { ApplicationController.restoreEvent(applicationContext, ev) }))
-                                    }
-                                    finish()
+                                val success = ApplicationController.dismissAndDeleteEvent(
+                                        this, EventDismissType.ManuallyDismissedFromActivity, event
+                                )
+                                if (success) {
+                                    undoManager.addUndoState(
+                                            UndoState(undo = Runnable { ApplicationController.restoreEvent(applicationContext, event) }))
                                 }
-                                .setNegativeButton(R.string.cancel) { _, _ ->
-                                }
-                                .create()
-                                .show()
-                    }
+                                finish()
+                            }
+                            .setNegativeButton(R.string.cancel) { _, _ ->
+                            }
+                            .create()
+                            .show()
 
                     true
                 }
 
                 R.id.action_mute_event -> {
-                    if (ev != null) {
-                        ApplicationController.toggleMuteForEvent(this, ev.eventId, ev.instanceStartTime, 0)
-                        ev.isMuted = true
-                    }
+                    ApplicationController.toggleMuteForEvent(this, event.eventId, event.instanceStartTime, 0)
+                    event.isMuted = true
 
                     true
                 }
 
                 R.id.action_unmute_event -> {
-                    if (ev != null) {
-                        ApplicationController.toggleMuteForEvent(this, ev.eventId, ev.instanceStartTime, 1)
-                        ev.isMuted = false
-                    }
-
+                    ApplicationController.toggleMuteForEvent(this, event.eventId, event.instanceStartTime, 1)
+                    event.isMuted = false
                     true
                 }
 
                 R.id.action_open_in_calendar -> {
-                    if (ev != null)
-                        CalendarIntents.viewCalendarEvent(this, ev)
+                    CalendarIntents.viewCalendarEvent(this, event)
                     finish()
                     true
                 }
@@ -515,48 +502,17 @@ open class ViewEventActivityNoRecents : AppCompatActivity() {
 
     @Suppress("unused", "UNUSED_PARAMETER")
     fun OnButtonEventDetailsClick(v: View?) {
-        val ev = event
-        if (ev != null)
-            CalendarIntents.viewCalendarEvent(this, ev)
+        CalendarIntents.viewCalendarEvent(this, event)
     }
 
     private fun snoozeEvent(snoozeDelay: Long) {
-        val ev = event
-        if (ev != null) {
-            DevLog.debug(LOG_TAG, "Snoozing event id ${ev.eventId}, snoozeDelay=${snoozeDelay / 1000L}")
+        DevLog.debug(LOG_TAG, "Snoozing event id ${event.eventId}, snoozeDelay=${snoozeDelay / 1000L}")
 
-            val result = ApplicationController.snoozeEvent(this, ev.eventId, ev.instanceStartTime, snoozeDelay);
-            if (result != null) {
-                result.toast(this)
-            }
-            finish()
-
+        val result = ApplicationController.snoozeEvent(this, event.eventId, event.instanceStartTime, snoozeDelay);
+        if (result != null) {
+            result.toast(this)
         }
-        else {
-            AlertDialog.Builder(this)
-                    .setMessage(
-                            if (snoozeAllIsChange)
-                                R.string.change_all_notification
-                            else
-                                R.string.snooze_all_confirmation)
-                    .setCancelable(false)
-                    .setPositiveButton(android.R.string.yes) {
-                        _, _ ->
-
-                        DevLog.debug(LOG_TAG, "Snoozing (change=$snoozeAllIsChange) all requests, snoozeDelay=${snoozeDelay / 1000L}")
-
-                        val result = ApplicationController.snoozeAllEvents(this, snoozeDelay, snoozeAllIsChange, false);
-                        if (result != null) {
-                            result.toast(this)
-                        }
-                        finish()
-                    }
-                    .setNegativeButton(R.string.cancel) {
-                        _, _ ->
-                    }
-                    .create()
-                    .show()
-        }
+        finish()
     }
 
     @Suppress("unused", "UNUSED_PARAMETER")
@@ -702,8 +658,7 @@ open class ViewEventActivityNoRecents : AppCompatActivity() {
 
     @Suppress("unused", "UNUSED_PARAMETER")
     fun OnButtonSnoozeUntilClick(v: View?) {
-        val currentlySnoozedUntil = event?.snoozedUntil ?: 0L
-        snoozeUntilShowDatePickerDialog(currentlySnoozedUntil, currentlySnoozedUntil)
+        snoozeUntilShowDatePickerDialog(event.snoozedUntil, event.snoozedUntil)
     }
 
     fun inflateDatePickerDialog() =
@@ -846,26 +801,22 @@ open class ViewEventActivityNoRecents : AppCompatActivity() {
 
     fun reschedule(addTime: Long) {
 
-        val ev = event
+        DevLog.info(this, LOG_TAG, "Moving event ${event.eventId} by ${addTime / 1000L} seconds");
 
-        if (ev != null) {
-            DevLog.info(this, LOG_TAG, "Moving event ${ev.eventId} by ${addTime / 1000L} seconds");
+        val moved = ApplicationController.moveEvent(this, event, addTime)
 
-            val moved = ApplicationController.moveEvent(this, ev, addTime)
+        if (moved) {
+            // Show
+            if (Settings(this).viewAfterEdit)
+                CalendarIntents.viewCalendarEvent(this, event)
+            else
+                SnoozeResult(SnoozeType.Moved, event.startTime, 0L).toast(this)
 
-            if (moved) {
-                // Show
-                if (Settings(this).viewAfterEdit)
-                    CalendarIntents.viewCalendarEvent(this, ev)
-                else
-                    SnoozeResult(SnoozeType.Moved, ev.startTime, 0L).toast(this)
-
-                // terminate ourselves
-                finish();
-            }
-            else {
-                DevLog.info(this, LOG_TAG, "snooze: Failed to move event ${ev.eventId} by ${addTime / 1000L} seconds")
-            }
+            // terminate ourselves
+            finish();
+        }
+        else {
+            DevLog.info(this, LOG_TAG, "snooze: Failed to move event ${event.eventId} by ${addTime / 1000L} seconds")
         }
     }
 
