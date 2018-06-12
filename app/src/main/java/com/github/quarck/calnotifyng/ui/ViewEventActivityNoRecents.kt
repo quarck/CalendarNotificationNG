@@ -183,12 +183,17 @@ open class ViewEventActivityNoRecents : AppCompatActivity() {
             if (dbEvent != null) {
                 val eventDidChange = calendarReloadManager.reloadSingleEvent(this, db, dbEvent, calendarProvider, null)
                 if (eventDidChange) {
-                    dbEvent = db.getEvent(eventId, instanceStartTime)
+                    val newDbEvent = db.getEvent(eventId, instanceStartTime)
+                    if (newDbEvent != null) {
+                        dbEvent = newDbEvent
+                    } else {
+                        DevLog.error(this, LOG_TAG, "ViewActivity: cannot find event after calendar reload, event $eventId, inst $instanceStartTime")
+                    }
                 }
             }
 
             if (dbEvent == null) {
-                DevLog.error(this, LOG_TAG, "ViewActivity started for non-existing eveng id $eventId, st $instanceStartTime\n")
+                DevLog.error(this, LOG_TAG, "ViewActivity started for non-existing eveng id $eventId, st $instanceStartTime")
                 finish()
                 return
             }

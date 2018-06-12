@@ -120,7 +120,7 @@ data class EventAlertRecord(
         var alertTime: Long,
         var notificationId: Int,
         var title: String,
-        val desc: String,
+        var desc: String,
         var startTime: Long,
         var endTime: Long,
         var instanceStartTime: Long,
@@ -163,6 +163,11 @@ fun EventAlertRecord.updateFrom(newEvent: EventAlertRecord): Boolean {
         ret = true
     }
 
+    if (desc != newEvent.desc) {
+        desc = newEvent.desc
+        ret = true
+    }
+
     if (alertTime != newEvent.alertTime) {
         alertTime = newEvent.alertTime
         ret = true
@@ -177,6 +182,17 @@ fun EventAlertRecord.updateFrom(newEvent: EventAlertRecord): Boolean {
         endTime = newEvent.endTime
         ret = true
     }
+
+    if (instanceStartTime != newEvent.instanceStartTime) {
+        instanceStartTime = newEvent.instanceStartTime
+        ret = true
+    }
+
+    if (instanceEndTime != newEvent.instanceEndTime) {
+        instanceEndTime = newEvent.instanceEndTime
+        ret = true
+    }
+
 
     if (isAllDay != newEvent.isAllDay) {
         isAllDay = newEvent.isAllDay
@@ -216,6 +232,16 @@ fun EventAlertRecord.updateFrom(newEvent: EventRecord): Boolean {
 
     if (title != newEvent.title) {
         title = newEvent.title
+        ret = true
+    }
+
+    if (desc != newEvent.desc) {
+        desc = newEvent.desc
+        ret = true
+    }
+
+    if (location != newEvent.location) {
+        location = newEvent.location
         ret = true
     }
 
