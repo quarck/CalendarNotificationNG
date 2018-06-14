@@ -63,37 +63,4 @@
 
     </PreferenceCategory>
 
-    <!-- PreferenceCategory
-        android:title="@string/mute_options"
-        android:key="pref_key_mute_category">
-
-        <CheckBoxPreference
-            android:key="enable_notification_mute_tags"
-            android:title="@string/enable_mute_tag_title"
-            android:summary="@string/enable_mute_tag_summary"
-            android:defaultValue="false"
-            />
-
-        <CheckBoxPreference
-            android:key="enable_notification_task_tags"
-            android:title="@string/enable_task_tag_title"
-            android:summary="@string/enable_task_tag_summary"
-            android:defaultValue="false"
-            />
-
-        <CheckBoxPreference
-            android:key="enable_notification_alarm_tags"
-            android:title="@string/enable_alarm_tag_title"
-            android:summary="@string/enable_alarm_tag_summary"
-            android:defaultValue="false"
-            /-->
-
-        <!-- CheckBoxPreference
-            android:key="enable_tag_buttons"
-            android:title="Quick add #tags"
-            android:summary="Add UI elements on the New event activity to quickly add event tags (would only show tags that are enabled)"
-            android:defaultValue="false"
-            />
-    </PreferenceCategory -->
-
 </PreferenceScreen>

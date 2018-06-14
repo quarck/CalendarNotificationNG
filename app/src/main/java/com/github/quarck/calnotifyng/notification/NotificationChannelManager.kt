@@ -35,14 +35,14 @@ import com.github.quarck.calnotifyng.utils.notificationManager
 
 object NotificationChannelManager {
 
-    const val CHANNEL_VER = 1
+    // Note: don't forget to change notification_preferences.xml and reminder_preferences.xml if
+    // channel name is changed!
+    const val NOTIFICATION_CHANNEL_ID_DEFAULT = "com.github.calnotifyng.notify.v1.cal"
+    const val NOTIFICATION_CHANNEL_ID_ALARM = "com.github.calnotifyng.notify.v1.calalrm"
+    const val NOTIFICATION_CHANNEL_ID_SILENT = "com.github.calnotifyng.notify.v1.calquiet"
 
-    const val NOTIFICATION_CHANNEL_ID_DEFAULT = "com.github.calnotifyng.notify.v$CHANNEL_VER.cal"
-    const val NOTIFICATION_CHANNEL_ID_ALARM = "com.github.calnotifyng.notify.v$CHANNEL_VER.calalrm"
-    const val NOTIFICATION_CHANNEL_ID_SILENT = "com.github.calnotifyng.notify.v$CHANNEL_VER.calquiet"
-
-    const val NOTIFICATION_CHANNEL_ID_REMINDER = "com.github.calnotifyng.notify.v$CHANNEL_VER.rem"
-    const val NOTIFICAITON_CHANNEL_ID_REMINDER_ALARM = "com.github.calnotifyng.notify.v$CHANNEL_VER.remalrm"
+    const val NOTIFICATION_CHANNEL_ID_REMINDER = "com.github.calnotifyng.notify.v1.rem"
+    const val NOTIFICAITON_CHANNEL_ID_REMINDER_ALARM = "com.github.calnotifyng.notify.v1.remalrm"
 
     fun createDefaultNotificationChannelDebug(context: Context): String {
 

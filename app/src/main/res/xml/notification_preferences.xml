@@ -5,15 +5,6 @@
         android:title="@string/ringtone"
         android:key="_notifications_ringtone">
 
-        <!--<RingtonePreference-->
-            <!--android:key="pref_key_ringtone"-->
-            <!--android:summary="@string/ringtone_selection_summary"-->
-            <!--android:title="@string/ringtone_selection"-->
-            <!--android:ringtoneType="notification"-->
-            <!--android:showSilent="true"-->
-            <!--android:showDefault="true"-->
-            <!--/>-->
-
         <CheckBoxPreference
             android:key="use_alarm_stream_for_notification"
             android:title="@string/use_alarm_stream"
@@ -21,42 +12,25 @@
             android:defaultValue="false"
             />
 
+        <com.github.quarck.calnotifyng.prefs.NotificationChannelActivityShortcutPreference
+            android:key="dummy_key_1"
+            android:title="@string/regular_notification_settings"
+            android:defaultValue="com.github.calnotifyng.notify.v1.cal"
+            />
+
+        <com.github.quarck.calnotifyng.prefs.NotificationChannelActivityShortcutPreference
+            android:key="dummy_key_1"
+            android:title="@string/quiet_hours_notification_settings"
+            android:defaultValue="com.github.calnotifyng.notify.v1.calquiet"
+            />
+
+        <com.github.quarck.calnotifyng.prefs.NotificationChannelActivityShortcutPreference
+            android:key="dummy_key_1"
+            android:title="@string/alarm_notification_settings"
+            android:defaultValue="com.github.calnotifyng.notify.v1.calalrm"
+            />
+
     </PreferenceCategory>
-
-    <!--<PreferenceCategory-->
-        <!--android:title="@string/vibration"-->
-        <!--android:key="_notifications_vibration">-->
-        <!--<CheckBoxPreference android:key="vibra_on"-->
-            <!--android:title="@string/vibra_on"-->
-            <!--android:defaultValue="true"/>-->
-
-        <!--<ListPreference-->
-            <!--android:key="pref_vibration_pattern"-->
-            <!--android:title="@string/vibration_pattern"-->
-            <!--android:dialogTitle="@string/vibration_pattern"-->
-            <!--android:entries="@array/pref_vibration_pattern_entries"-->
-            <!--android:entryValues="@array/pref_vibration_pattern_values"-->
-            <!--android:defaultValue="0" />-->
-
-
-    <!--</PreferenceCategory>-->
-
-
-    <!--<PreferenceCategory-->
-        <!--android:title="@string/led"-->
-        <!--android:key="_notifications_led">-->
-        <!--<CheckBoxPreference-->
-            <!--android:key="notification_led"-->
-            <!--android:summary="@string/notification_light_summary"-->
-            <!--android:title="@string/notification_light_title"-->
-            <!--android:defaultValue="true" />-->
-
-        <!--<com.github.quarck.calnotifyng.prefs.LEDColorPickerPreference-->
-            <!--android:key="notification_led_color"-->
-            <!--android:title="@string/led_color"-->
-            <!--android:dependency="notification_led" />-->
-
-    <!--</PreferenceCategory>-->
 
     <PreferenceCategory
         android:title="@string/notifications_pure_hacks"
@@ -68,7 +42,6 @@
             android:summary="@string/add_empty_action_to_the_end_summary"
             android:defaultValue="false"
             />
-
     </PreferenceCategory>
 
 </PreferenceScreen>

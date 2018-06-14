@@ -554,6 +554,11 @@
     <string name="delete_event_question">Delete Event?</string>
     <string name="view_event">View Event</string>
     <string name="content_desc_menu">menu</string>
+    <string name="regular_notification_settings">Regular notification settings</string>
+    <string name="quiet_hours_notification_settings">Quiet hours notification settings</string>
+    <string name="alarm_notification_settings">Alarm notification settings</string>
+    <string name="reminder_notification_settings">Reminder notification settings</string>
+    <string name="alarm_reminder_notification_settings">Alarm notification settings</string>
 
 </resources>
 
