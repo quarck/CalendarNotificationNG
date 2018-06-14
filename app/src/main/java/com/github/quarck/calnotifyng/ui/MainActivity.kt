@@ -342,8 +342,8 @@ class MainActivity : AppCompatActivity(), EventListCallback {
 
         val dismissedEventsMenuItem = menu.findItem(R.id.action_dismissed_events)
         if (dismissedEventsMenuItem != null) {
-            dismissedEventsMenuItem.isEnabled = settings.keepHistory
-            dismissedEventsMenuItem.isVisible = settings.keepHistory
+            dismissedEventsMenuItem.isEnabled = true
+            dismissedEventsMenuItem.isVisible = true
         }
 
         val dismissAll = menu.findItem(R.id.action_dismiss_all)
@@ -411,12 +411,7 @@ class MainActivity : AppCompatActivity(), EventListCallback {
     private fun reloadData() {
 
         background {
-            if (!settings.keepHistory) {
-                DismissedEventsStorage(this).use { it.clearHistory() }
-            }
-            else {
-                DismissedEventsStorage(this).use { it.purgeOld(System.currentTimeMillis(), settings.keepHistoryMilliseconds) }
-            }
+            DismissedEventsStorage(this).use { it.purgeOld(System.currentTimeMillis(), Consts.BIN_KEEP_HISTORY_MILLISECONDS) }
 
             val events =
                     EventsStorage(this).use {

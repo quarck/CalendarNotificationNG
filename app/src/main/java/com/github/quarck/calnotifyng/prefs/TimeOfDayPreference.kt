@@ -48,11 +48,7 @@ class TimeOfDayPreference(context: Context, attrs: AttributeSet) : DialogPrefere
     init {
         val settings = Settings(getContext())
 
-        dialogLayoutResource =
-                if (settings.haloLightTimePicker)
-                    R.layout.dialog_time_of_day_halo_light
-                else
-                    R.layout.dialog_time_of_day
+        dialogLayoutResource = R.layout.dialog_time_of_day
 
         widgetLayoutResource = R.layout.dialog_time_of_day_widget
 

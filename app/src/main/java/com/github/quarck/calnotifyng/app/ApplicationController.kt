@@ -778,8 +778,6 @@ object ApplicationController : EventMovedHandler {
             // this might fire new notifications
             // This would automatically launch the rescan of calendar and monitor
             calendarMonitorInternal.onAppResumed(context, monitorSettingsChanged)
-
-            DevLog.checkAndPerformCleanup(context)
         }
     }
 
@@ -797,7 +795,7 @@ object ApplicationController : EventMovedHandler {
 
         DevLog.info(context, LOG_TAG, "Dismissing ${events.size}  requests")
 
-        if (dismissType.shouldKeep && Settings(context).keepHistory) {
+        if (dismissType.shouldKeep) {
             DismissedEventsStorage(context).use {
                 it.addEvents(dismissType, events)
             }
@@ -882,7 +880,7 @@ object ApplicationController : EventMovedHandler {
 
         DevLog.info(context, LOG_TAG, "Dismissing event id ${event.eventId} / instance ${event.instanceStartTime}")
 
-        if (dismissType.shouldKeep && Settings(context).keepHistory && event.isNotSpecial) {
+        if (dismissType.shouldKeep && event.isNotSpecial) {
             DismissedEventsStorage(context).use {
                 it.addEvent(dismissType, event)
             }

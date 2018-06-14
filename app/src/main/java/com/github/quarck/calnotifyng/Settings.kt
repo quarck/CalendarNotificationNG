@@ -59,9 +59,6 @@ class Settings(context: Context) : PersistentStorageBase(context) {
             return ret;
         }
 
-    val showCustomSnoozeAndUntil: Boolean
-        get() = getBoolean(SHOW_CUSTOM_SNOOZE_TIMES_KEY, true)//
-
     val notificationUseAlarmStream: Boolean
         get() = getBoolean(USE_ALARM_STREAM_FOR_NOTIFICATION_KEY, false)
 
@@ -126,21 +123,6 @@ class Settings(context: Context) : PersistentStorageBase(context) {
 
     fun setCalendarIsHandled(calendarId: Long, enabled: Boolean) =
             setBoolean("$CALENDAR_IS_HANDLED_KEY_PREFIX.$calendarId", enabled)
-
-    val haloLightDatePicker: Boolean
-        get() = getBoolean(HALO_LIGHT_DATE_PICKER_KEY, false)
-
-    val haloLightTimePicker: Boolean
-        get() = getBoolean(HALO_LIGHT_TIMER_PICKER_KEY, false)
-
-    val keepHistory: Boolean
-        get() = getBoolean(KEEP_HISTORY_KEY, true)
-
-    val keepHistoryDays: Int
-        get() = getString(KEEP_HISTORY_DAYS_KEY, "").toIntOrNull() ?: 3
-
-    val keepHistoryMilliseconds: Long
-        get() = keepHistoryDays.toLong() * Consts.DAY_IN_MILLISECONDS
 
     var versionCodeFirstInstalled: Long
         get() = getLong(VERSION_CODE_FIRST_INSTALLED_KEY, 0L)
@@ -207,7 +189,6 @@ class Settings(context: Context) : PersistentStorageBase(context) {
         const val VIBRATION_PATTERN_KEY = "pref_vibration_pattern"
 
         private const val SNOOZE_PRESET_KEY = "pref_snooze_presets"
-        private const val SHOW_CUSTOM_SNOOZE_TIMES_KEY = "show_custom_snooze_and_until"
 
         private const val VIEW_AFTER_EDIT_KEY = "show_event_after_reschedule"
 
@@ -218,19 +199,9 @@ class Settings(context: Context) : PersistentStorageBase(context) {
 
         private const val MAX_REMINDERS_KEY = "reminder_max_reminders"
 
-        private const val REMINDERS_CUSTOM_RINGTONE_KEY = "reminders_custom_ringtone"
-        private const val REMINDERS_CUSTOM_VIBRATION_KEY = "reminders_custom_vibration"
-        private const val REMINDERS_RINGTONE_KEY = "reminder_pref_key_ringtone"
-        private const val REMINDERS_VIBRATION_ENABLED_KEY = "reminder_vibra_on"
-        private const val REMINDERS_VIBRATION_PATTERN_KEY = "reminder_pref_vibration_pattern"
-
-
         private const val ENABLE_QUIET_HOURS_KEY = "enable_quiet_hours"
         private const val QUIET_HOURS_FROM_KEY = "quiet_hours_from"
         private const val QUIET_HOURS_TO_KEY = "quiet_hours_to"
-
-        private const val HALO_LIGHT_DATE_PICKER_KEY = "halo_light_date"
-        private const val HALO_LIGHT_TIMER_PICKER_KEY = "halo_light_time"
 
         private const val CALENDAR_IS_HANDLED_KEY_PREFIX = "calendar_handled_"
 
@@ -238,9 +209,6 @@ class Settings(context: Context) : PersistentStorageBase(context) {
 
         private const val BEHAVIOR_USE_SET_ALARM_CLOCK_KEY = "use_set_alarm_clock"
         private const val BEHAVIOR_USE_SET_ALARM_CLOCK_FOR_FAILBACK_KEY = "use_set_alarm_clock_for_failback"
-
-        const val KEEP_HISTORY_KEY = "keep_history"
-        private const val KEEP_HISTORY_DAYS_KEY = "keep_history_days"
 
         private const val SHOULD_REMIND_FOR_EVENTS_WITH_NO_REMINDERS_KEY = "remind_events_no_rmdnrs"
         private const val DEFAULT_REMINDER_TIME_FOR_EVENTS_WITH_NO_REMINDER_KEY = "default_rminder_time"

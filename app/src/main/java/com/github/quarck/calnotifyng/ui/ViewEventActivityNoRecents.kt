@@ -237,7 +237,7 @@ open class ViewEventActivityNoRecents : AppCompatActivity() {
         }
 
         // need to hide these guys
-        val showCustomSnoozeVisibility = if (settings.showCustomSnoozeAndUntil) View.VISIBLE else View.GONE
+        val showCustomSnoozeVisibility = View.VISIBLE
         findOrThrow<TextView>(R.id.snooze_view_snooze_custom).visibility = showCustomSnoozeVisibility
         val snoozeCustom = find<TextView?>(R.id.snooze_view_snooze_until)
         if (snoozeCustom != null)
@@ -666,22 +666,10 @@ open class ViewEventActivityNoRecents : AppCompatActivity() {
         snoozeUntilShowDatePickerDialog(event.snoozedUntil, event.snoozedUntil)
     }
 
-    fun inflateDatePickerDialog() =
-            layoutInflater?.inflate(
-                    if (settings.haloLightDatePicker)
-                        R.layout.dialog_date_picker_halo_light
-                    else
-                        R.layout.dialog_date_picker,
-                    null)
+    fun inflateDatePickerDialog() = layoutInflater?.inflate(R.layout.dialog_date_picker, null)
 
-    fun inflateTimePickerDialog() =
-            layoutInflater?.inflate(
-                    if (settings.haloLightTimePicker)
-                        R.layout.dialog_time_picker_halo_light
-                    else
-                        R.layout.dialog_time_picker, null)
+    fun inflateTimePickerDialog() = layoutInflater?.inflate(R.layout.dialog_time_picker, null)
 
-    @SuppressLint("NewApi")
     fun snoozeUntilShowDatePickerDialog(initialValueForDate: Long, initialValueForTime: Long) {
 
         val dialogDate = inflateDatePickerDialog() ?: return

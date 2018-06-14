@@ -23,11 +23,11 @@
 
         <!-- MaxRemindersPreference -->
 
-        <CheckBoxPreference android:key="reminders_custom_ringtone"
-            android:title="@string/reminder_custom_ringtone"
-            android:summary="@string/reminder_custom_ringtone_summary"
-            android:defaultValue="false"
-            android:dependency="enable_reminding_key"/>
+        <!--<CheckBoxPreference android:key="reminders_custom_ringtone"-->
+            <!--android:title="@string/reminder_custom_ringtone"-->
+            <!--android:summary="@string/reminder_custom_ringtone_summary"-->
+            <!--android:defaultValue="false"-->
+            <!--android:dependency="enable_reminding_key"/>-->
 
         <!--<RingtonePreference-->
             <!--android:key="reminder_pref_key_ringtone"-->
