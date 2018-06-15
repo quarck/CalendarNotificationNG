@@ -9,33 +9,33 @@
     </header>
 
     <header
-        android:fragment="com.github.quarck.calnotifyng.prefs.fragments.NotificationSettingsFragment"
+        android:fragment="com.github.quarck.calnotifyng.prefs.activities.NotificationSettingsActivity"
         android:title="@string/notification_settings"
         android:summary="" />
 
     <header
-        android:fragment="com.github.quarck.calnotifyng.prefs.fragments.SnoozeSettingsFragment"
+        android:fragment="com.github.quarck.calnotifyng.prefs.activities.SnoozeSettingsActivity"
         android:title="@string/snooze_presets"
         android:summary="" />
 
     <header
-        android:fragment="com.github.quarck.calnotifyng.prefs.fragments.ReminderSettingsFragment"
+        android:fragment="com.github.quarck.calnotifyng.prefs.activities.ReminderSettingsFragment"
         android:title="@string/reminders_section"
         android:summary="" />
 
     <header
-        android:fragment="com.github.quarck.calnotifyng.prefs.fragments.QuietHoursSettingsFragment"
+        android:fragment="com.github.quarck.calnotifyng.prefs.activities.QuietHoursSettingsActivity"
         android:title="@string/quiet_hours_section"
         android:summary="" />
 
     <header
-        android:fragment="com.github.quarck.calnotifyng.prefs.fragments.BehaviorSettingsFragment"
+        android:fragment="com.github.quarck.calnotifyng.prefs.activities.BehaviorSettingsActivity"
         android:title="@string/app_behavior"
         android:summary=""
         />
 
     <header
-        android:fragment="com.github.quarck.calnotifyng.prefs.fragments.MiscSettingsFragment"
+        android:fragment="com.github.quarck.calnotifyng.prefs.activities.MiscSettingsActivity"
         android:title="@string/misc_settings"
         android:summary="" />
 

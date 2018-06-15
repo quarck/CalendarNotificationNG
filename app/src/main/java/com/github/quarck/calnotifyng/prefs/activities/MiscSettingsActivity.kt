@@ -17,16 +17,17 @@
 //   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 //
 
-package com.github.quarck.calnotifyng.prefs.fragments
+package com.github.quarck.calnotifyng.prefs.activities
 
 import android.os.Bundle
+import android.preference.PreferenceActivity
 import android.preference.PreferenceFragment
 import com.github.quarck.calnotifyng.R
 
-class QuietHoursSettingsFragment : PreferenceFragment() {
+class MiscSettingsActivity : PreferenceActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.xml.quiet_hours_preferences)
+        addPreferencesFromResource(R.xml.misc_preferences)
     }
 }

@@ -559,6 +559,7 @@
     <string name="alarm_notification_settings">Alarm notification settings</string>
     <string name="reminder_notification_settings">Reminder notification settings</string>
     <string name="alarm_reminder_notification_settings">Alarm notification settings</string>
+    <string name="content_desc_navigate_back">navigate back</string>
 
 </resources>
 

@@ -23,6 +23,7 @@ import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Icon
+import android.support.v4.app.NotificationCompat
 import android.text.format.DateUtils
 import com.github.quarck.calnotifyng.*
 import com.github.quarck.calnotifyng.calendar.*
@@ -445,7 +446,7 @@ class EventNotificationManager : EventNotificationManagerInterface {
 
         val channel = NotificationChannelManager.createNotificationChannel(context, soundState, isReminder)
 
-        val notificationStyle = Notification.InboxStyle()
+        val notificationStyle = NotificationCompat.InboxStyle()
 
         val eventsSorted = events.sortedByDescending { it.instanceStartTime }
 
@@ -480,7 +481,7 @@ class EventNotificationManager : EventNotificationManagerInterface {
         val contentText = if (lines.size > 0) lines[0] else ""
 
         val builder =
-                Notification.Builder(context, channel)
+                NotificationCompat.Builder(context, channel)
                         .setContentTitle(contentTitle)
                         .setContentText(contentText)
                         .setSmallIcon(R.drawable.stat_notify_calendar_multiple)
@@ -662,7 +663,7 @@ class EventNotificationManager : EventNotificationManagerInterface {
                 NotificationChannelManager.SoundState.Silent,
                 false)
 
-        val groupBuilder = Notification.Builder(ctx, channel)
+        val groupBuilder = NotificationCompat.Builder(ctx, channel)
                 .setContentTitle(ctx.resources.getString(R.string.calendar))
                 .setContentText(text)
                 .setSubText(text)
@@ -670,7 +671,7 @@ class EventNotificationManager : EventNotificationManagerInterface {
                 .setGroup(NOTIFICATION_GROUP)
                 .setContentIntent(pendingIntent)
                 .setCategory(
-                        Notification.CATEGORY_EVENT
+                        NotificationCompat.CATEGORY_EVENT
                 )
                 .setWhen(System.currentTimeMillis())
                 .setShowWhen(false)
@@ -772,18 +773,18 @@ class EventNotificationManager : EventNotificationManagerInterface {
                 isReminder = isReminder
         )
 
-        val builder = Notification.Builder(ctx, channel)
+        val builder = NotificationCompat.Builder(ctx, channel)
                 .setContentTitle(title)
                 .setContentText(notificationTextString)
                 .setSmallIcon(iconId)
                 .setContentIntent(primaryPendingIntent)
                 .setAutoCancel(false)
                 .setOngoing(false)
-                .setStyle(Notification.BigTextStyle().bigText(notificationTextString))
+                .setStyle(NotificationCompat.BigTextStyle().bigText(notificationTextString))
                 .setWhen(event.lastStatusChangeTime)
                 .setShowWhen(false)
                 .setSortKey(sortKey)
-                .setCategory(Notification.CATEGORY_EVENT)
+                .setCategory(NotificationCompat.CATEGORY_EVENT)
                 .setOnlyAlertOnce(alertOnlyOnce)
 
         builder.setGroup(NOTIFICATION_GROUP)
@@ -801,15 +802,15 @@ class EventNotificationManager : EventNotificationManagerInterface {
             snoozePresets = longArrayOf(Consts.DEFAULT_SNOOZE_TIME_IF_NONE)
 
 //        val snoozeAction =
-//                Notification.Action.Builder(
+//                NotificationCompat.Action.Builder(
 //                        Icon.createWithResource(ctx, R.drawable.ic_update_white_24dp),
 //                        ctx.getString(com.github.quarck.calnotifyng.R.string.snooze),
 //                        snoozeActivityIntent
 //                ).build()
 
         val dismissAction =
-                Notification.Action.Builder(
-                        Icon.createWithResource(ctx, R.drawable.ic_clear_white_24dp),
+                NotificationCompat.Action.Builder(
+                        R.drawable.ic_clear_white_24dp,
                         ctx.getString(if (event.isTask) R.string.done else R.string.dismiss),
                         dismissPendingIntent
                 ).build()
@@ -820,7 +821,7 @@ class EventNotificationManager : EventNotificationManagerInterface {
 //            builder.addAction(snoozeAction)
 //        }
 
-        val extender = Notification.WearableExtender()
+        val extender = NotificationCompat.WearableExtender()
 
         if ((notificationSettings.enableNotificationMute && !event.isTask) || event.isMuted) {
             // build and append
@@ -839,16 +840,16 @@ class EventNotificationManager : EventNotificationManagerInterface {
 
             val actionBuilder =
                     if (event.isMuted) {
-                        Notification.Action.Builder(
-                                Icon.createWithResource(ctx, R.drawable.ic_volume_off_white_24dp),
+                        NotificationCompat.Action.Builder(
+                                R.drawable.ic_volume_off_white_24dp,
                                 ctx.getString(R.string.un_mute_notification),
                                 muteTogglePendingIntent
                         )
 
                     }
                     else {
-                        Notification.Action.Builder(
-                                Icon.createWithResource(ctx, R.drawable.ic_volume_up_white_24dp),
+                        NotificationCompat.Action.Builder(
+                                R.drawable.ic_volume_up_white_24dp,
                                 ctx.getString(R.string.mute_notification),
                                 muteTogglePendingIntent
                         )
@@ -875,8 +876,8 @@ class EventNotificationManager : EventNotificationManagerInterface {
 
         if (notificationSettings.appendEmptyAction) {
             builder.addAction(
-                    Notification.Action.Builder(
-                            Icon.createWithResource(ctx, R.drawable.ic_empty),
+                    NotificationCompat.Action.Builder(
+                            R.drawable.ic_empty,
                             "",
                             primaryPendingIntent
                     ).build())
@@ -902,8 +903,8 @@ class EventNotificationManager : EventNotificationManagerInterface {
                     )
 
             val action =
-                    Notification.Action.Builder(
-                            Icon.createWithResource(ctx, R.drawable.ic_update_white_24dp),
+                    NotificationCompat.Action.Builder(
+                            R.drawable.ic_update_white_24dp,
                             ctx.getString(com.github.quarck.calnotifyng.R.string.snooze) + " " +
                                     PreferenceUtils.formatSnoozePreset(snoozePreset),
                             snoozeIntent
@@ -916,8 +917,8 @@ class EventNotificationManager : EventNotificationManagerInterface {
         // add another "Dismiss Event" wearable action so to make it possible to actually dismiss
         // the event form wearable
         val dismissEventAction =
-                Notification.Action.Builder(
-                        Icon.createWithResource(ctx, R.drawable.ic_clear_white_24dp),
+                NotificationCompat.Action.Builder(
+                        R.drawable.ic_clear_white_24dp,
                         ctx.getString(com.github.quarck.calnotifyng.R.string.dismiss_event),
                         dismissPendingIntent
                 ).build()
@@ -1056,14 +1057,14 @@ class EventNotificationManager : EventNotificationManagerInterface {
 //        )
 //
 //        val builder =
-//                Notification.Builder(context, channel)
+//                NotificationCompat.Builder(context, channel)
 //                        .setContentTitle(title)
 //                        .setContentText(text)
 //                        .setSmallIcon(com.github.quarck.calnotifyng.R.drawable.stat_notify_calendar)
 //                        .setContentIntent(pendingIntent)
 //                        .setAutoCancel(false)
 //                        .setOngoing(true)
-//                        .setStyle(Notification.BigTextStyle().bigText(bigText))
+//                        .setStyle(NotificationCompat.BigTextStyle().bigText(bigText))
 //                        .setShowWhen(false)
 //                        .setOnlyAlertOnce(true)
 //
@@ -1087,14 +1088,14 @@ class EventNotificationManager : EventNotificationManagerInterface {
         val appPendingIntent = pendingActivityIntent(context,
                 Intent(context, MainActivity::class.java), notificationId)
 
-        val builder = Notification.Builder(context, NotificationChannelManager.createDefaultNotificationChannelDebug(context))
+        val builder = NotificationCompat.Builder(context, NotificationChannelManager.createDefaultNotificationChannelDebug(context))
                 .setContentTitle(title)
                 .setContentText(text)
                 .setSmallIcon(R.drawable.stat_notify_calendar)
                 .setContentIntent(appPendingIntent)
                 .setAutoCancel(false)
                 .setShowWhen(false)
-                .setCategory(Notification.CATEGORY_ERROR)
+                .setCategory(NotificationCompat.CATEGORY_ERROR)
                 .setOnlyAlertOnce(true)
 
         builder.setGroup(NOTIFICATION_GROUP)

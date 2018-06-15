@@ -17,16 +17,30 @@
 //   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 //
 
-package com.github.quarck.calnotifyng.prefs.fragments
+package com.github.quarck.calnotifyng.prefs.activities
 
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.preference.PreferenceActivity
 import android.preference.PreferenceFragment
 import com.github.quarck.calnotifyng.R
+import com.github.quarck.calnotifyng.Settings
 
-class SnoozeSettingsFragment : PreferenceFragment() {
+class NotificationSettingsActivity : PreferenceActivity(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.xml.snooze_preferences)
+        addPreferencesFromResource(R.xml.notification_preferences)
     }
+
+    override fun onResume() {
+        super.onResume();
+//        preferenceScreen.sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+    }
+
+    override fun onPause() {
+        super.onPause();
+  //      preferenceScreen.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
+    }
+
 }

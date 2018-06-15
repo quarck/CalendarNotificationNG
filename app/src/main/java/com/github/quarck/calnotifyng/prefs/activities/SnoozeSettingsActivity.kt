@@ -17,16 +17,17 @@
 //   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 //
 
-package com.github.quarck.calnotifyng.prefs.fragments
+package com.github.quarck.calnotifyng.prefs.activities
 
 import android.os.Bundle
+import android.preference.PreferenceActivity
 import android.preference.PreferenceFragment
 import com.github.quarck.calnotifyng.R
 
-class ReminderSettingsFragment : PreferenceFragment() {
+class SnoozeSettingsActivity : PreferenceActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.xml.reminder_preferences)
+        addPreferencesFromResource(R.xml.snooze_preferences)
     }
 }

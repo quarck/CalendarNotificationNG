@@ -107,5 +107,9 @@
 
 
     <dimen name="add_event_view_title_height">110dp</dimen>
+    <dimen name="dimen_main_settings_padding_bottom">15dp</dimen>
+    <dimen name="dimen_main_settings_padding_end">20dp</dimen>
+    <dimen name="dimen_main_settings_padding_start">20dp</dimen>
+    <dimen name="dimen_main_settings_padding_top">15dp</dimen>
 
 </resources>

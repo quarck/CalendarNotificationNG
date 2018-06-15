@@ -25,6 +25,7 @@ import android.content.Context
 import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.RingtoneManager
+import android.os.Build
 import com.github.quarck.calnotifyng.Consts
 import com.github.quarck.calnotifyng.NotificationSettingsSnapshot
 import com.github.quarck.calnotifyng.R
@@ -45,6 +46,10 @@ object NotificationChannelManager {
     const val NOTIFICAITON_CHANNEL_ID_REMINDER_ALARM = "com.github.calnotifyng.notify.v1.remalrm"
 
     fun createDefaultNotificationChannelDebug(context: Context): String {
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            return ""
+        }
 
         val channelId = NOTIFICATION_CHANNEL_ID_DEFAULT
 
@@ -124,6 +129,10 @@ object NotificationChannelManager {
             }
         }
 
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            return channelId
+        }
+
         DevLog.info(context, LOG_TAG, "Notification channel for state $soundState " +
                 " -> channel ID $channelId, importance $importance")
 
@@ -198,6 +207,10 @@ object NotificationChannelManager {
             channelName = context.getString(R.string.notification_channel_reminders)
             channelDesc = context.getString(R.string.notification_channel_reminders_desc)
             importance = NotificationManager.IMPORTANCE_DEFAULT
+        }
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            return channelId
         }
 
         DevLog.info(context, LOG_TAG, "Notification channel for reminder state $soundState" +

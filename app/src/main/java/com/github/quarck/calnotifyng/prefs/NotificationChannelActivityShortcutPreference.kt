@@ -34,6 +34,10 @@ class NotificationChannelActivityShortcutPreference(context: Context, val attrs:
 
     override fun onBindView(view: View) {
         super.onBindView(view)
+    }
+
+    override fun onBindDialogView(view: View) {
+        super.onBindDialogView(view)
 
         val channel = attrs.getAttributeValue(XML_NS, XML_ATTR)
         if (channel != null) {
@@ -49,10 +53,6 @@ class NotificationChannelActivityShortcutPreference(context: Context, val attrs:
         }
     }
 
-    override fun onBindDialogView(view: View) {
-        super.onBindDialogView(view)
-    }
-
     override fun onDialogClosed(positiveResult: Boolean) {
         super.onDialogClosed(positiveResult)
     }
@@ -61,7 +61,7 @@ class NotificationChannelActivityShortcutPreference(context: Context, val attrs:
     }
 
     override fun onGetDefaultValue(a: TypedArray, index: Int): Any {
-        return a.getInteger(index, 0)
+        return ""
     }
 
     companion object {

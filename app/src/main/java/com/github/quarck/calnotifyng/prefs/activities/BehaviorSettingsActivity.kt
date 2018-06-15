@@ -17,13 +17,13 @@
 //   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 //
 
-package com.github.quarck.calnotifyng.prefs.fragments
+package com.github.quarck.calnotifyng.prefs.activities
 
 import android.os.Bundle
-import android.preference.PreferenceFragment
+import android.preference.PreferenceActivity
 import com.github.quarck.calnotifyng.R
 
-class BehaviorSettingsFragment : PreferenceFragment() {
+class BehaviorSettingsActivity : PreferenceActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState);
