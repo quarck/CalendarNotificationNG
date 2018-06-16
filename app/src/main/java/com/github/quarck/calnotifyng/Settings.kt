@@ -40,8 +40,9 @@ class Settings(context: Context) : PersistentStorageBase(context) {
         get() = getBoolean(DEVELOPER_MODE_KEY, false)
         set(value) = setBoolean(DEVELOPER_MODE_KEY, value)
 
-    val notificationAddEmptyAction: Boolean
+    var notificationAddEmptyAction: Boolean
         get() = getBoolean(NOTIFICATION_ADD_EMPTY_ACTION_KEY, false)
+        set(value) = setBoolean(NOTIFICATION_ADD_EMPTY_ACTION_KEY, value)
 
     val viewAfterEdit: Boolean
         get() = getBoolean(VIEW_AFTER_EDIT_KEY, true)
@@ -59,8 +60,9 @@ class Settings(context: Context) : PersistentStorageBase(context) {
             return ret;
         }
 
-    val notificationUseAlarmStream: Boolean
+    var notificationUseAlarmStream: Boolean
         get() = getBoolean(USE_ALARM_STREAM_FOR_NOTIFICATION_KEY, false)
+        set(value) = setBoolean(USE_ALARM_STREAM_FOR_NOTIFICATION_KEY, value)
 
     val remindersEnabled: Boolean
         get() = getBoolean(ENABLE_REMINDERS_KEY, false)

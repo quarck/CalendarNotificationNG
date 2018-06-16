@@ -19,28 +19,63 @@
 
 package com.github.quarck.calnotifyng.prefs.activities
 
+import android.content.Intent
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceActivity
 import android.preference.PreferenceFragment
+import android.support.v7.app.AppCompatActivity
+import android.view.View
+import android.widget.Switch
 import com.github.quarck.calnotifyng.R
 import com.github.quarck.calnotifyng.Settings
+import com.github.quarck.calnotifyng.notification.NotificationChannelManager
+import com.github.quarck.calnotifyng.utils.findOrThrow
 
-class NotificationSettingsActivity : PreferenceActivity(){
+class NotificationSettingsActivity : AppCompatActivity(){
+
+    lateinit var settings: Settings
+    lateinit var switchAlarmVol: Switch
+    lateinit var switchAppendEmpty: Switch
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.xml.notification_preferences)
+        //addPreferencesFromResource(R.xml.notification_preferences)
+        setContentView(R.layout.activity_pref_notification)
+        settings = Settings(this)
+
+        switchAlarmVol = findOrThrow(R.id.notification_pref_switch_alarm_volume)
+        switchAppendEmpty = findOrThrow(R.id.notification_pref_switch_empty_action)
+
+        switchAlarmVol.isChecked = settings.notificationUseAlarmStream
+        switchAppendEmpty.isChecked = settings.notificationAddEmptyAction
     }
 
-    override fun onResume() {
-        super.onResume();
-//        preferenceScreen.sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+    fun onChannelSettings(v: View?) {
+        NotificationChannelManager.launchSystemSettingForChannel(this,
+                NotificationChannelManager.SoundState.Normal,
+                false)
     }
 
-    override fun onPause() {
-        super.onPause();
-  //      preferenceScreen.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
+
+    fun onSilentChannelSettings(v: View?) {
+        NotificationChannelManager.launchSystemSettingForChannel(this,
+                NotificationChannelManager.SoundState.Silent,
+                false)
     }
 
+    fun onAlarmChannelSettings(v: View?) {
+        NotificationChannelManager.launchSystemSettingForChannel(this,
+                NotificationChannelManager.SoundState.Alarm,
+                false)
+    }
+
+    fun onAlarmVolumeSettings(v: View?) {
+        settings.notificationUseAlarmStream = switchAlarmVol.isChecked
+    }
+
+    fun onAppendEmptyActionSettings(v: View?) {
+        settings.notificationAddEmptyAction = switchAppendEmpty.isChecked
+    }
 }

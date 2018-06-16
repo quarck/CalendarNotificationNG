@@ -20,11 +20,6 @@ class SettingsActivityNew : AppCompatActivity() {
         setContentView(R.layout.activity_settings)
 
         DevLog.info(this, LOG_TAG, "onCreate")
-
-//        val toolbar = find<Toolbar?>(R.id.toolbar)
-//        setSupportActionBar(toolbar)
-//        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-//        supportActionBar?.setDisplayShowHomeEnabled(true)
     }
 
     @Suppress("unused", "UNUSED_PARAMETER")

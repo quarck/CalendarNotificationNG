@@ -22,6 +22,7 @@ package com.github.quarck.calnotifyng.notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.Intent
 import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.RingtoneManager
@@ -266,6 +267,17 @@ object NotificationChannelManager {
             createNotificationChannelForSoundState(context, soundState)
         else
             createReminderNotificationChannelForSoundState(context, soundState)
+    }
+
+    fun launchSystemSettingForChannel(context: Context, soundState: SoundState, isReminder: Boolean) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = createNotificationChannel(context, soundState, isReminder)
+            val intent = Intent(android.provider.Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
+            intent.putExtra(android.provider.Settings.EXTRA_APP_PACKAGE, context.packageName)
+            intent.putExtra(android.provider.Settings.EXTRA_CHANNEL_ID, channel)
+            context.startActivity(intent)
+        }
     }
 
     private const val LOG_TAG = "NotificationChannelManager"
