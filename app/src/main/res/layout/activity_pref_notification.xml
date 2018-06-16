@@ -18,8 +18,8 @@
         android:text="@string/regular_notification_settings"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:paddingBottom="16dp"
-        android:paddingTop="16dp"
+        android:paddingBottom="14dp"
+        android:paddingTop="14dp"
         android:clickable="true"
         android:focusable="true"
         android:onClick="onChannelSettings"
@@ -27,8 +27,8 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divider"
+        android:layout_height="0.5dp"
+        android:background="@color/divider_light"
         android:padding="0dp"
         />
 
@@ -40,8 +40,8 @@
         android:text="@string/quiet_hours_notification_settings"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:paddingBottom="16dp"
-        android:paddingTop="16dp"
+        android:paddingBottom="14dp"
+        android:paddingTop="14dp"
         android:clickable="true"
         android:focusable="true"
         android:onClick="onSilentChannelSettings"
@@ -49,8 +49,8 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divider"
+        android:layout_height="0.5dp"
+        android:background="@color/divider_light"
         android:padding="0dp"
         />
 
@@ -62,8 +62,8 @@
         android:text="@string/alarm_notification_settings"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:paddingBottom="16dp"
-        android:paddingTop="16dp"
+        android:paddingBottom="14dp"
+        android:paddingTop="14dp"
         android:clickable="true"
         android:focusable="true"
         android:onClick="onAlarmChannelSettings"
@@ -71,10 +71,11 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divider"
+        android:layout_height="0.5dp"
+        android:background="@color/divider_light"
         android:padding="0dp"
         />
+
 
     <Switch
         android:id="@+id/notification_pref_switch_alarm_volume"
@@ -83,10 +84,14 @@
         android:text="@string/use_alarm_stream"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/primary_text"
-        android:padding="16dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="14dp"
+        android:paddingTop="14dp"
         android:onClick="onAlarmVolumeSettings"/>
 
     <TextView
+        android:id="@+id/notification_pref_switch_alarm_volume_small"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
@@ -100,12 +105,10 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divider"
+        android:layout_height="0.5dp"
+        android:background="@color/divider_light"
         android:padding="0dp"
         />
-
-
 
     <Switch
         android:id="@+id/notification_pref_switch_empty_action"
@@ -114,7 +117,10 @@
         android:text="@string/add_empty_action_to_the_end_title"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/primary_text"
-        android:padding="16dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="14dp"
+        android:paddingTop="14dp"
         android:onClick="onAppendEmptyActionSettings"/>
 
     <TextView
@@ -131,8 +137,8 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divider"
+        android:layout_height="0.5dp"
+        android:background="@color/divider_light"
         android:padding="0dp"
         />
 </LinearLayout>

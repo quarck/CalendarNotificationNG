@@ -44,12 +44,17 @@ class Settings(context: Context) : PersistentStorageBase(context) {
         get() = getBoolean(NOTIFICATION_ADD_EMPTY_ACTION_KEY, false)
         set(value) = setBoolean(NOTIFICATION_ADD_EMPTY_ACTION_KEY, value)
 
-    val viewAfterEdit: Boolean
+    var viewAfterEdit: Boolean
         get() = getBoolean(VIEW_AFTER_EDIT_KEY, true)
+        set(value) = setBoolean(VIEW_AFTER_EDIT_KEY, value)
+
+    var snoozePresetsRaw: String
+        get() = getString(SNOOZE_PRESET_KEY, DEFAULT_SNOOZE_PRESET)
+        set(value) = setString(SNOOZE_PRESET_KEY, value)
 
     val snoozePresets: LongArray
         get() {
-            var ret = PreferenceUtils.parseSnoozePresets(getString(SNOOZE_PRESET_KEY, DEFAULT_SNOOZE_PRESET))
+            var ret = PreferenceUtils.parseSnoozePresets(snoozePresetsRaw)
 
             if (ret == null)
                 ret = PreferenceUtils.parseSnoozePresets(DEFAULT_SNOOZE_PRESET)

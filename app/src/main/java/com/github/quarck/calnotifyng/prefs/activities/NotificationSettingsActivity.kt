@@ -75,6 +75,11 @@ class NotificationSettingsActivity : AppCompatActivity(){
         settings.notificationUseAlarmStream = switchAlarmVol.isChecked
     }
 
+    fun onAlarmVolumeSettingsView(v: View?) {
+        switchAlarmVol.isChecked = !switchAlarmVol.isChecked
+        onAlarmVolumeSettings(switchAlarmVol)
+    }
+
     fun onAppendEmptyActionSettings(v: View?) {
         settings.notificationAddEmptyAction = switchAppendEmpty.isChecked
     }
