@@ -41,12 +41,6 @@ class SettingsActivityNew : AppCompatActivity() {
                             .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
 
     @Suppress("unused", "UNUSED_PARAMETER")
-    fun onButtonReminderSettings(v: View?) =
-            startActivity(
-                    Intent(this, ReminderSettingsActivity::class.java)
-                            .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
-
-    @Suppress("unused", "UNUSED_PARAMETER")
     fun onButtonQuietHoursSettings(v: View?) =
             startActivity(
                     Intent(this, QuietHoursSettingsActivity::class.java)

@@ -30,8 +30,8 @@ import com.github.quarck.calnotifyng.utils.toIntOrNull
 data class NotificationSettingsSnapshot
 (
         val enableNotificationMute: Boolean,
-        val appendEmptyAction: Boolean,
-        val useAlarmStream: Boolean
+        val appendEmptyAction: Boolean//,
+        //val useAlarmStream: Boolean
 )
 
 class Settings(context: Context) : PersistentStorageBase(context) {
@@ -65,16 +65,21 @@ class Settings(context: Context) : PersistentStorageBase(context) {
             return ret;
         }
 
-    var notificationUseAlarmStream: Boolean
-        get() = getBoolean(USE_ALARM_STREAM_FOR_NOTIFICATION_KEY, false)
-        set(value) = setBoolean(USE_ALARM_STREAM_FOR_NOTIFICATION_KEY, value)
+//    var notificationUseAlarmStream: Boolean
+//        get() = getBoolean(USE_ALARM_STREAM_FOR_NOTIFICATION_KEY, false)
+//        set(value) = setBoolean(USE_ALARM_STREAM_FOR_NOTIFICATION_KEY, value)
 
-    val remindersEnabled: Boolean
+    var remindersEnabled: Boolean
         get() = getBoolean(ENABLE_REMINDERS_KEY, false)
+        set(value) = setBoolean(ENABLE_REMINDERS_KEY, value)
+
+    var remindersIntervalMillisPatternRaw
+        get() = getString(REMINDER_INTERVAL_PATTERN_KEY, "")
+        set(value) = setString(REMINDER_INTERVAL_PATTERN_KEY, value)
 
     var remindersIntervalMillisPattern: LongArray
         get() {
-            val raw = getString(REMINDER_INTERVAL_PATTERN_KEY, "")
+            val raw = remindersIntervalMillisPatternRaw
 
             val ret: LongArray?
 
@@ -94,7 +99,7 @@ class Settings(context: Context) : PersistentStorageBase(context) {
             return ret ?: longArrayOf(DEFAULT_REMINDER_INTERVAL_SECONDS * 1000L)
         }
         set(value) {
-            setString(REMINDER_INTERVAL_PATTERN_KEY, PreferenceUtils.formatPattern(value))
+            remindersIntervalMillisPatternRaw = PreferenceUtils.formatPattern(value)
         }
 
     fun reminderIntervalMillisForIndex(index: Int): Long {
@@ -113,8 +118,9 @@ class Settings(context: Context) : PersistentStorageBase(context) {
         return Pair(current, next)
     }
 
-    val maxNumberOfReminders: Int
+    var maxNumberOfReminders: Int
         get() = getString(MAX_REMINDERS_KEY, DEFAULT_MAX_REMINDERS).toIntOrNull() ?: 0
+        set(value) = setString(MAX_REMINDERS_KEY, "$value")
 
     val quietHoursEnabled: Boolean
         get() = getBoolean(ENABLE_QUIET_HOURS_KEY, false)
@@ -185,8 +191,8 @@ class Settings(context: Context) : PersistentStorageBase(context) {
         get() = NotificationSettingsSnapshot(
                 ////notificationSwipeDoesSnooze = notificationSwipeDoesSnooze,
                 enableNotificationMute = remindersEnabled,
-                appendEmptyAction = notificationAddEmptyAction,
-                useAlarmStream = notificationUseAlarmStream
+                appendEmptyAction = notificationAddEmptyAction//,
+  //              useAlarmStream = notificationUseAlarmStream
         )
 
     companion object {
@@ -231,7 +237,7 @@ class Settings(context: Context) : PersistentStorageBase(context) {
 
         private const val FIRST_DAY_OF_WEEK_KEY = "first_day_of_week"
 
-        private const val USE_ALARM_STREAM_FOR_NOTIFICATION_KEY = "use_alarm_stream_for_notification"
+//        private const val USE_ALARM_STREAM_FOR_NOTIFICATION_KEY = "use_alarm_stream_for_notification"
 
         private const val KEEP_APP_LOGS_KEY = "keep_logs"
 

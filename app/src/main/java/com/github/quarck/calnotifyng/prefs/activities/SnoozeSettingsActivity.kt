@@ -48,7 +48,7 @@ class SnoozeSettingsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_pref_snooze)
         settings = Settings(this)
 
-        switchViewAfterEdit = findOrThrow(R.id.snooze_pref_switch_view_after_edit)
+        switchViewAfterEdit = findOrThrow<Switch>(R.id.snooze_pref_switch_view_after_edit)
         switchViewAfterEdit.isChecked = settings.viewAfterEdit
     }
 

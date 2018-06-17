@@ -53,7 +53,14 @@
                 android:paddingTop="@dimen/dimen_main_settings_padding_top"
                 android:text="@string/title_calendars_activity"
                 android:textAppearance="?android:textAppearanceMedium"
-                android:textColor="@color/primary_text" />
+                android:textColor="@color/primary_text"
+                android:focusable="true" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/divider_light"
+                android:padding="0dp"
+                />
 
             <TextView
                 android:layout_width="match_parent"
@@ -67,7 +74,14 @@
                 android:paddingTop="@dimen/dimen_main_settings_padding_top"
                 android:text="@string/notification_settings"
                 android:textAppearance="?android:textAppearanceMedium"
-                android:textColor="@color/primary_text" />
+                android:textColor="@color/primary_text"
+                android:focusable="true" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/divider_light"
+                android:padding="0dp"
+                />
 
             <TextView
                 android:layout_width="match_parent"
@@ -81,21 +95,14 @@
                 android:paddingTop="@dimen/dimen_main_settings_padding_top"
                 android:text="@string/snooze_presets"
                 android:textAppearance="?android:textAppearanceMedium"
-                android:textColor="@color/primary_text" />
-
-            <TextView
+                android:textColor="@color/primary_text"
+                android:focusable="true" />
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="?android:attr/selectableItemBackground"
-                android:clickable="true"
-                android:onClick="onButtonReminderSettings"
-                android:paddingBottom="@dimen/dimen_main_settings_padding_bottom"
-                android:paddingEnd="@dimen/dimen_main_settings_padding_end"
-                android:paddingStart="@dimen/dimen_main_settings_padding_start"
-                android:paddingTop="@dimen/dimen_main_settings_padding_top"
-                android:text="@string/reminders_section"
-                android:textAppearance="?android:textAppearanceMedium"
-                android:textColor="@color/primary_text" />
+                android:layout_height="0.5dp"
+                android:background="@color/divider_light"
+                android:padding="0dp"
+                />
 
             <TextView
                 android:layout_width="match_parent"
@@ -109,7 +116,14 @@
                 android:paddingTop="@dimen/dimen_main_settings_padding_top"
                 android:text="@string/quiet_hours_section"
                 android:textAppearance="?android:textAppearanceMedium"
-                android:textColor="@color/primary_text" />
+                android:textColor="@color/primary_text"
+                android:focusable="true" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/divider_light"
+                android:padding="0dp"
+                />
 
             <TextView
                 android:layout_width="match_parent"
@@ -123,7 +137,15 @@
                 android:paddingTop="@dimen/dimen_main_settings_padding_top"
                 android:text="@string/app_behavior"
                 android:textAppearance="?android:textAppearanceMedium"
-                android:textColor="@color/primary_text" />
+                android:textColor="@color/primary_text"
+                android:focusable="true" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/divider_light"
+                android:padding="0dp"
+                />
 
             <TextView
                 android:layout_width="match_parent"
@@ -137,12 +159,13 @@
                 android:paddingTop="@dimen/dimen_main_settings_padding_top"
                 android:text="@string/misc_settings"
                 android:textAppearance="?android:textAppearanceMedium"
-                android:textColor="@color/primary_text" />
+                android:textColor="@color/primary_text"
+                android:focusable="true" />
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/divider"
+                android:layout_height="0.5dp"
+                android:background="@color/divider_light"
                 android:padding="0dp"
                 />
 

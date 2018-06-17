@@ -554,12 +554,15 @@
     <string name="delete_event_question">Delete Event?</string>
     <string name="view_event">View Event</string>
     <string name="content_desc_menu">menu</string>
-    <string name="regular_notification_settings">Regular notification settings</string>
-    <string name="quiet_hours_notification_settings">Quiet hours notification settings</string>
-    <string name="alarm_notification_settings">Alarm notification settings</string>
-    <string name="reminder_notification_settings">Reminder notification settings</string>
-    <string name="alarm_reminder_notification_settings">Alarm notification settings</string>
+    <string name="regular_notification_settings">Main channel</string>
+    <string name="quiet_hours_notification_settings">Quiet hours channel</string>
+    <string name="alarm_notification_settings">Alarms channel</string>
+    <string name="reminder_notification_settings">Reminders channel</string>
+    <string name="alarm_reminder_notification_settings">Alarm reminders channel</string>
     <string name="content_desc_navigate_back">navigate back</string>
+    <string name="main_notifications">Main notifications</string>
+    <string name="reminder_notifications">Reminder notifications</string>
+    <string name="other">Other...</string>
 
 </resources>
 

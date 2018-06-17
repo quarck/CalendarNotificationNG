@@ -325,9 +325,7 @@ class EventNotificationManager : EventNotificationManagerInterface {
                     soundState = NotificationChannelManager.SoundState.Alarm
             }
             else if (!isQuietPeriodActive) {
-                if (notificationsSettings.useAlarmStream)
-                    soundState = NotificationChannelManager.SoundState.Alarm
-                else if (event.isUnmutedAlarm)
+                if (event.isUnmutedAlarm)
                     soundState = NotificationChannelManager.SoundState.Alarm
                 else if (event.isMuted)
                     soundState = NotificationChannelManager.SoundState.Silent
@@ -428,9 +426,7 @@ class EventNotificationManager : EventNotificationManagerInterface {
                 soundState = NotificationChannelManager.SoundState.Alarm
         }
         else if (!isQuietPeriodActive) {
-            if (notificationsSettings.useAlarmStream)
-                soundState = NotificationChannelManager.SoundState.Alarm
-            else if (notificationRecords.any { it.event.isUnmutedAlarm && it.newNotification })
+            if (notificationRecords.any { it.event.isUnmutedAlarm && it.newNotification })
                 soundState = NotificationChannelManager.SoundState.Alarm
             else if (notificationRecords.all { it.event.isMuted && it.newNotification})
                 soundState = NotificationChannelManager.SoundState.Silent

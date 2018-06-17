@@ -136,11 +136,6 @@
             android:label="@string/quiet_hours_section"
             android:theme="@style/AppTheme"
             />
-        <activity android:name=".prefs.activities.ReminderSettingsActivity"
-            android:parentActivityName=".ui.SettingsActivityNew"
-            android:theme="@style/AppTheme"
-            android:label="@string/reminders_section"
-            />
         <activity android:name=".prefs.activities.SnoozeSettingsActivity"
             android:parentActivityName=".ui.SettingsActivityNew"
             android:theme="@style/AppTheme"
