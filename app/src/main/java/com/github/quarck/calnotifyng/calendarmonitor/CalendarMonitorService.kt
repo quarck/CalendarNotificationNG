@@ -55,40 +55,37 @@ class CalendarMonitorIntentService : IntentService("CalendarMonitorIntentService
                         "shouldReloadCalendar=$shouldReloadCalendar, "
         )
 
-        wakeLocked(powerManager, PowerManager.PARTIAL_WAKE_LOCK, WAKE_LOCK_NAME) {
+        if (shouldReloadCalendar && startDelay > MAX_TIME_WITHOUT_QUICK_RESCAN) {
+            try  {
+                sleep(QUICK_RESCAN_SLEEP_BEFORE)
+                startDelay -= QUICK_RESCAN_SLEEP_BEFORE
 
-            if (shouldReloadCalendar && startDelay > MAX_TIME_WITHOUT_QUICK_RESCAN) {
-                try  {
-                    sleep(QUICK_RESCAN_SLEEP_BEFORE)
-                    startDelay -= QUICK_RESCAN_SLEEP_BEFORE
-
-                    ApplicationController.onCalendarRescanForRescheduledFromService(this, userActionUntil)
-                }
-                catch (ex: Exception) {
-                    DevLog.error(this, LOG_TAG, "Exception while reloading calendar: ${ex.detailed}")
-                }
-            }
-
-            if (startDelay != 0) {
-                sleep(startDelay)
-            }
-
-            if (shouldReloadCalendar) {
-                try  {
-                    ApplicationController.onCalendarReloadFromService(this, userActionUntil)
-                }
-                catch (ex: Exception) {
-                    DevLog.error(this, LOG_TAG, "Exception while rescanning calendar: ${ex.detailed}")
-                }
-            }
-
-            // Always rescan CalendarChangeRequestMonitor
-            try {
-                ApplicationController.AddEventMonitorInstance.onRescanFromService(this)
+                ApplicationController.onCalendarRescanForRescheduledFromService(this, userActionUntil)
             }
             catch (ex: Exception) {
-                DevLog.error(this, LOG_TAG, "Exception while reloading calendar (2nd): ${ex.detailed}")
+                DevLog.error(this, LOG_TAG, "Exception while reloading calendar: ${ex.detailed}")
             }
+        }
+
+        if (startDelay != 0) {
+            sleep(startDelay)
+        }
+
+        if (shouldReloadCalendar) {
+            try  {
+                ApplicationController.onCalendarReloadFromService(this, userActionUntil)
+            }
+            catch (ex: Exception) {
+                DevLog.error(this, LOG_TAG, "Exception while rescanning calendar: ${ex.detailed}")
+            }
+        }
+
+        // Always rescan CalendarChangeRequestMonitor
+        try {
+            ApplicationController.AddEventMonitorInstance.onRescanFromService(this)
+        }
+        catch (ex: Exception) {
+            DevLog.error(this, LOG_TAG, "Exception while reloading calendar (2nd): ${ex.detailed}")
         }
     }
 
