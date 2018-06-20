@@ -10,91 +10,161 @@
     android:fitsSystemWindows="true"
     tools:context="com.github.quarck.calnotifyng.prefs.activities.QuietHoursSettingsActivity">
 
-    <!--<LinearLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:orientation="vertical">-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <!--<Switch-->
-            <!--android:id="@+id/quiet_hours_switch_prefs_enable"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="@string/enable_quiet_time"-->
-            <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
-            <!--android:textColor="@color/primary_text"-->
-            <!--android:paddingStart="16dp"-->
-            <!--android:paddingEnd="16dp"-->
-            <!--android:paddingBottom="14dp"-->
-            <!--android:paddingTop="14dp"-->
-            <!--android:onClick="onEnableQuietHours" />-->
+        <Switch
+            android:id="@+id/preference_quiet_hours_switch_enable"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/enable_quiet_time"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/primary_text"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="14dp"
+            android:paddingTop="14dp"
+             />
 
-        <!--<TextView-->
-            <!--android:id="@+id/notification_pref_switch_alarm_volume_small"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:textAppearance="?android:attr/textAppearanceSmall"-->
-            <!--android:textColor="@color/secondary_text"-->
-            <!--android:text="@string/quiet_hours_summary"-->
-            <!--android:paddingStart="16dp"-->
-            <!--android:paddingEnd="16dp"-->
-            <!--android:paddingBottom="16dp"-->
-            <!--android:paddingTop="0dp"-->
-            <!--/>-->
+        <TextView
+            android:id="@+id/notification_pref_switch_alarm_volume_small"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/secondary_text"
+            android:text="@string/quiet_hours_summary"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="16dp"
+            android:paddingTop="0dp"
+            />
 
-        <!--<View-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="0.5dp"-->
-            <!--android:background="@color/divider_light"-->
-            <!--android:padding="0dp"-->
-            <!--/>-->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/divider_light"
+            android:padding="0dp"
+            />
 
-        <!--<RelativeLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--&gt;-->
+        <LinearLayout
+            android:id="@+id/preference_quiet_hours_layout_times"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <!--<TextView-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
-                <!--android:textColor="@color/primary_text"-->
-                <!--android:text="@string/snooze_presets_title"-->
-                <!--android:paddingStart="16dp"-->
-                <!--android:paddingEnd="16dp"-->
-                <!--android:paddingBottom="14dp"-->
-                <!--android:paddingTop="14dp"-->
-                <!--android:clickable="true"-->
-                <!--android:focusable="true"-->
-                <!--android:onClick="onSnoozePresets"-->
-                <!--/>-->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <TextView
+                android:id="@+id/preference_quiet_hours_from"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/primary_text"
+                android:text="@string/quiet_time_from"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="18dp"
+                android:paddingTop="18dp"
+                android:clickable="true"
+                android:focusable="true"
+                />
+
+            <TextView
+                android:id="@+id/preference_quiet_hours_from_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/accent"
+                android:textStyle="bold"
+                android:text="22:00"
+
+                android:clickable="true"
+                android:focusable="true"
+
+                android:paddingStart="16dp"
+                android:paddingEnd="20dp"
+                android:paddingBottom="18dp"
+                android:paddingTop="18dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignBaseline="@id/preference_quiet_hours_from"
+
+                tools:ignore="HardcodedText" />
 
 
-        <!--</RelativeLayout>-->
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/divider_light"
+            android:padding="0dp"
+            />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <TextView
+                android:id="@+id/preference_quiet_hours_to"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/primary_text"
+                android:text="@string/quiet_time_to"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="18dp"
+                android:paddingTop="18dp"
+                android:clickable="true"
+                android:focusable="true"
+                />
+
+            <TextView
+                android:id="@+id/preference_quiet_hours_to_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/accent"
+                android:textStyle="bold"
+                android:text="06:00"
+
+                android:clickable="true"
+                android:focusable="true"
+
+                android:paddingStart="16dp"
+                android:paddingEnd="20dp"
+                android:paddingBottom="18dp"
+                android:paddingTop="18dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignBaseline="@id/preference_quiet_hours_to"
+
+                tools:ignore="HardcodedText" />
 
 
-        <!--<TextView-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:textAppearance="?android:attr/textAppearanceSmall"-->
-            <!--android:textColor="@color/secondary_text"-->
-            <!--android:text="@string/snooze_presets_summary"-->
-            <!--android:paddingStart="16dp"-->
-            <!--android:paddingEnd="16dp"-->
-            <!--android:paddingBottom="16dp"-->
-            <!--android:paddingTop="0dp"-->
-            <!--android:onClick="onSnoozePresets"-->
-            <!--/>-->
+        </RelativeLayout>
 
-        <!--<View-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="0.5dp"-->
-            <!--android:background="@color/divider_light"-->
-            <!--android:padding="0dp"-->
-            <!--/>-->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/divider_light"
+            android:padding="0dp"
+            />
+
+
+        </LinearLayout>
 
 
 
-    <!--</LinearLayout>-->
+
+    </LinearLayout>
 
 
 </ScrollView>

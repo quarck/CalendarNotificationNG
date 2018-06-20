@@ -36,6 +36,7 @@
             />
 
         <TextView
+            android:id="@+id/notification_pref_main_channel_pref"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
@@ -47,7 +48,6 @@
             android:paddingTop="14dp"
             android:clickable="true"
             android:focusable="true"
-            android:onClick="onChannelSettings"
             />
 
         <View
@@ -58,6 +58,7 @@
             />
 
         <TextView
+            android:id="@+id/notification_pref_silent_channel_pref"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
@@ -69,7 +70,6 @@
             android:paddingTop="14dp"
             android:clickable="true"
             android:focusable="true"
-            android:onClick="onSilentChannelSettings"
             />
 
         <View
@@ -80,6 +80,7 @@
             />
 
         <TextView
+            android:id="@+id/notification_pref_alarm_channel_pref"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
@@ -91,7 +92,6 @@
             android:paddingTop="14dp"
             android:clickable="true"
             android:focusable="true"
-            android:onClick="onAlarmChannelSettings"
             />
 
         <View
@@ -131,10 +131,9 @@
             android:paddingEnd="16dp"
             android:paddingBottom="14dp"
             android:paddingTop="14dp"
-            android:onClick="onEnableRemindersClick"/>
+            />
 
         <TextView
-            android:id="@+id/notification_pref_switch_alarm_volume_small"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
@@ -174,7 +173,6 @@
             android:paddingTop="14dp"
             android:clickable="true"
             android:focusable="true"
-            android:onClick="onReminderChannelSettings"
             />
 
         <View
@@ -197,7 +195,6 @@
             android:paddingTop="14dp"
             android:clickable="true"
             android:focusable="true"
-            android:onClick="onReminderAlarmChannelSettings"
             />
 
         <View
@@ -220,7 +217,6 @@
             android:paddingTop="14dp"
             android:clickable="true"
             android:focusable="true"
-            android:onClick="onReminderInterval"
             />
 
         <View
@@ -243,7 +239,6 @@
             android:paddingTop="14dp"
             android:clickable="true"
             android:focusable="true"
-            android:onClick="onMaxReminders"
             />
 
         <TextView

@@ -34,48 +34,53 @@ import android.content.DialogInterface
 import android.view.LayoutInflater
 import android.widget.EditText
 import com.github.quarck.calnotifyng.Consts
+import com.github.quarck.calnotifyng.prefs.ButtonPreferenceTwoLine
 import com.github.quarck.calnotifyng.prefs.PreferenceUtils
+import com.github.quarck.calnotifyng.prefs.SwitchPreference
 
 
 class SnoozeSettingsActivity : AppCompatActivity() {
 
-    lateinit var switchViewAfterEdit: Switch
     lateinit var settings: Settings
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState);
-        //addPreferencesFromResource(R.xml.notification_preferences)
+
         setContentView(R.layout.activity_pref_snooze)
         settings = Settings(this)
 
-        switchViewAfterEdit = findOrThrow<Switch>(R.id.snooze_pref_switch_view_after_edit)
-        switchViewAfterEdit.isChecked = settings.viewAfterEdit
+        ButtonPreferenceTwoLine(
+                this,
+                R.id.preference_snooze_presets,
+                R.id.preference_snooze_presets_summary) {
+            onCreateSnoozePresetsDialog().show()
+        }
+
+        SwitchPreference(this, R.id.snooze_pref_switch_view_after_edit, settings.viewAfterEdit) {
+            settings.viewAfterEdit = it
+        }
     }
 
-    private fun onDialogSnoozePresetsClosed(positiveResult: Boolean, newText: String) {
-        // When the user selects "OK", persist the new value
-        if (positiveResult) {
-
-            val presets = PreferenceUtils.parseSnoozePresets(newText)
-            if (presets != null) {
-                if (presets.size == 0) {
-                    settings.snoozePresetsRaw = Settings.DEFAULT_SNOOZE_PRESET
-                }
-                else {
-                    settings.snoozePresetsRaw =
-                            newText.split(',')
-                                    .map { it.trim() }
-                                    .filter { !it.isEmpty() }
-                                    .joinToString(", ")
-                }
-
-                if (presets.size > Consts.MAX_SUPPORTED_PRESETS) {
-                    showMessage(R.string.error_too_many_presets)
-                }
+    private fun onNewValue(newText: String) {
+        val presets = PreferenceUtils.parseSnoozePresets(newText)
+        if (presets != null) {
+            if (presets.size == 0) {
+                settings.snoozePresetsRaw = Settings.DEFAULT_SNOOZE_PRESET
             }
             else {
-                showMessage(R.string.error_cannot_parse_preset)
+                settings.snoozePresetsRaw =
+                        newText.split(',')
+                                .map { it.trim() }
+                                .filter { !it.isEmpty() }
+                                .joinToString(", ")
             }
+
+            if (presets.size > Consts.MAX_SUPPORTED_PRESETS) {
+                showMessage(R.string.error_too_many_presets)
+            }
+        }
+        else {
+            showMessage(R.string.error_cannot_parse_preset)
         }
     }
 
@@ -102,26 +107,14 @@ class SnoozeSettingsActivity : AppCompatActivity() {
         editText.setText(settings.snoozePresetsRaw)
 
         builder.setView(rootView)
-                // Add action buttons
                 .setPositiveButton(R.string.ok, DialogInterface.OnClickListener {
                     _, _ ->
-                    onDialogSnoozePresetsClosed(true, editText.text.toString())
-                    // sign in the user ...
+                    onNewValue(editText.text.toString())
                 })
                 .setNegativeButton(R.string.cancel, DialogInterface.OnClickListener {
                     _, _ ->
-                    onDialogSnoozePresetsClosed(false, "")
-                    //this@LoginDialogFragment.getDialog().cancel()
                 })
         return builder.create()
-    }
-
-    fun onSnoozePresets(v: View?) {
-        onCreateSnoozePresetsDialog().show()
-    }
-
-    fun onViewAfterEdit(v: View?) {
-        settings.viewAfterEdit = switchViewAfterEdit.isChecked
     }
 }
 

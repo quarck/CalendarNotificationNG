@@ -23,102 +23,73 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.Switch
-import android.widget.TextView
 import com.github.quarck.calnotifyng.R
 import com.github.quarck.calnotifyng.Settings
 import com.github.quarck.calnotifyng.notification.NotificationChannelManager
-import com.github.quarck.calnotifyng.prefs.MaxRemindersPreference
-import com.github.quarck.calnotifyng.prefs.ReminderPatternPreference
+import com.github.quarck.calnotifyng.prefs.*
 import com.github.quarck.calnotifyng.utils.findOrThrow
 
 class NotificationSettingsActivity : AppCompatActivity(){
 
     lateinit var settings: Settings
 
-    lateinit var enableReminders: Switch
-    lateinit var reminderMainChannel: TextView
-    lateinit var reminderAlarmChannel: TextView
-    lateinit var reminderInterval: TextView
-    lateinit var reminderMaxReminders: TextView
-    lateinit var switchAppendEmpty: Switch
     lateinit var remindersLayout: LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState);
-        //addPreferencesFromResource(R.xml.notification_preferences)
+
         setContentView(R.layout.activity_pref_notification)
         settings = Settings(this)
 
-        enableReminders = findOrThrow(R.id.notification_pref_enable_reminders)
-
-        reminderMainChannel = findOrThrow(R.id.notification_pref_reminder_main_channel)
-        reminderAlarmChannel = findOrThrow(R.id.notification_pref_reminder_alarm_channel)
-        reminderInterval = findOrThrow(R.id.notification_pref_reminder_interval)
-        reminderMaxReminders = findOrThrow(R.id.notification_pref_reminder_max_reminders)
-
-
-        switchAppendEmpty = findOrThrow(R.id.notification_pref_switch_empty_action)
-
         remindersLayout = findOrThrow(R.id.notification_pref_reminder_layout)
 
-        //switchAlarmVol.isChecked = settings.notificationUseAlarmStream
-        updateControls()
-    }
+        ButtonPreference(this, R.id.notification_pref_main_channel_pref) {
+            NotificationChannelManager.launchSystemSettingForChannel(this,
+                    NotificationChannelManager.SoundState.Normal,
+                    false)
+        }
 
-    fun updateControls() {
-        switchAppendEmpty.isChecked = settings.notificationAddEmptyAction
+        ButtonPreference(this, R.id.notification_pref_silent_channel_pref) {
+            NotificationChannelManager.launchSystemSettingForChannel(this,
+                    NotificationChannelManager.SoundState.Silent,
+                    false)
+        }
+        ButtonPreference(this, R.id.notification_pref_alarm_channel_pref) {
+            NotificationChannelManager.launchSystemSettingForChannel(this,
+                    NotificationChannelManager.SoundState.Alarm,
+                    false)
+        }
+        ButtonPreference(this, R.id.notification_pref_reminder_main_channel) {
+            NotificationChannelManager.launchSystemSettingForChannel(this,
+                    NotificationChannelManager.SoundState.Normal,
+                    true)
+        }
+        ButtonPreference(this, R.id.notification_pref_reminder_alarm_channel) {
+            NotificationChannelManager.launchSystemSettingForChannel(this,
+                    NotificationChannelManager.SoundState.Alarm,
+                    true)
+        }
 
-        val remindersEnabled = settings.remindersEnabled
-        enableReminders.isChecked = remindersEnabled
-        remindersLayout.visibility = if (remindersEnabled) View.VISIBLE else View.GONE
-    }
+        SwitchPreference(this, R.id.notification_pref_switch_empty_action, settings.notificationAddEmptyAction) {
+            settings.notificationAddEmptyAction = it
+        }
 
-    fun onChannelSettings(v: View?) {
-        NotificationChannelManager.launchSystemSettingForChannel(this,
-                NotificationChannelManager.SoundState.Normal,
-                false)
-    }
+        SwitchPreferenceWithLayout(
+                parent = this,
+                id = R.id.notification_pref_enable_reminders,
+                initialValue = settings.remindersEnabled,
+                onChange = { settings.remindersEnabled = it},
+                updateLayout = { remindersLayout.visibility = if (it) View.VISIBLE else View.GONE}
+        )
 
-    fun onSilentChannelSettings(v: View?) {
-        NotificationChannelManager.launchSystemSettingForChannel(this,
-                NotificationChannelManager.SoundState.Silent,
-                false)
-    }
+        ButtonPreference(this, R.id.notification_pref_reminder_interval) {
+            ReminderPatternPreference(this, settings, this.layoutInflater).create().show()
+        }
 
-    fun onAlarmChannelSettings(v: View?) {
-        NotificationChannelManager.launchSystemSettingForChannel(this,
-                NotificationChannelManager.SoundState.Alarm,
-                false)
-    }
-
-    fun onReminderChannelSettings(v: View?) {
-        NotificationChannelManager.launchSystemSettingForChannel(this,
-                NotificationChannelManager.SoundState.Normal,
-                true)
-    }
-
-    fun onReminderAlarmChannelSettings(v: View?) {
-        NotificationChannelManager.launchSystemSettingForChannel(this,
-                NotificationChannelManager.SoundState.Alarm,
-                true)
-    }
-
-    fun onAppendEmptyActionSettings(v: View?) {
-        settings.notificationAddEmptyAction = switchAppendEmpty.isChecked
-        updateControls()
-    }
-
-    fun onEnableRemindersClick(v: View?) {
-        settings.remindersEnabled = enableReminders.isChecked
-        updateControls()
-    }
-
-    fun onReminderInterval(v: View?) {
-        ReminderPatternPreference(this, settings, this.layoutInflater).create().show()
-    }
-
-    fun onMaxReminders(v: View?) {
-        MaxRemindersPreference(this, settings, this.layoutInflater).create().show()
+        ButtonPreferenceTwoLine(this,
+                R.id.notification_pref_reminder_max_reminders,
+                R.id.notification_pref_reminder_max_reminders_summary) {
+            MaxRemindersPreference(this, settings, this.layoutInflater).create().show()
+        }
     }
 }

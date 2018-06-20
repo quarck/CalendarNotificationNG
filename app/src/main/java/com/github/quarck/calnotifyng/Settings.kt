@@ -122,14 +122,17 @@ class Settings(context: Context) : PersistentStorageBase(context) {
         get() = getString(MAX_REMINDERS_KEY, DEFAULT_MAX_REMINDERS).toIntOrNull() ?: 0
         set(value) = setString(MAX_REMINDERS_KEY, "$value")
 
-    val quietHoursEnabled: Boolean
+    var quietHoursEnabled: Boolean
         get() = getBoolean(ENABLE_QUIET_HOURS_KEY, false)
+        set(value) = setBoolean(ENABLE_QUIET_HOURS_KEY, value)
 
-    val quietHoursFrom: Pair<Int, Int>
+    var quietHoursFrom: Pair<Int, Int>
         get() = PreferenceUtils.unpackTime(getInt(QUIET_HOURS_FROM_KEY, 0))
+        set(value) = setInt(QUIET_HOURS_FROM_KEY, PreferenceUtils.packTime(value))
 
-    val quietHoursTo: Pair<Int, Int>
+    var quietHoursTo: Pair<Int, Int>
         get() = PreferenceUtils.unpackTime(getInt(QUIET_HOURS_TO_KEY, 0))
+        set(value) = setInt(QUIET_HOURS_TO_KEY, PreferenceUtils.packTime(value))
 
     fun getCalendarIsHandled(calendarId: Long) =
             getBoolean("$CALENDAR_IS_HANDLED_KEY_PREFIX.$calendarId", true)

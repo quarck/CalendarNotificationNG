@@ -16,6 +16,7 @@
         android:orientation="vertical">
 
     <TextView
+        android:id="@+id/preference_snooze_presets"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
@@ -27,10 +28,10 @@
         android:paddingTop="14dp"
         android:clickable="true"
         android:focusable="true"
-        android:onClick="onSnoozePresets"
         />
 
     <TextView
+        android:id="@+id/preference_snooze_presets_summary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
@@ -40,7 +41,6 @@
         android:paddingEnd="16dp"
         android:paddingBottom="16dp"
         android:paddingTop="0dp"
-        android:onClick="onSnoozePresets"
         />
 
     <View
@@ -62,7 +62,7 @@
         android:paddingEnd="16dp"
         android:paddingBottom="14dp"
         android:paddingTop="14dp"
-        android:onClick="onViewAfterEdit" />
+        />
 
     <TextView
         android:id="@+id/notification_pref_switch_alarm_volume_small"

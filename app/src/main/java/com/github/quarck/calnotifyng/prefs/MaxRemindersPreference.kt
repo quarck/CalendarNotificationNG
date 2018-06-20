@@ -79,17 +79,14 @@ class MaxRemindersPreference(val context: Context, val settings: Settings, var i
 
         builder.setView(rootView)
 
-        // Add action buttons
         builder.setPositiveButton(android.R.string.ok, DialogInterface.OnClickListener {
             _, _ ->
             onDialogClosed(true)
-            // sign in the user ...
         })
 
         builder.setNegativeButton(android.R.string.cancel, DialogInterface.OnClickListener {
             _, _ ->
             onDialogClosed(false)
-            //this@LoginDialogFragment.getDialog().cancel()
         })
 
         return builder.create()
