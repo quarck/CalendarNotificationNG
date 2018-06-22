@@ -11,6 +11,7 @@
     tools:context="com.github.quarck.calnotifyng.prefs.activities.QuietHoursSettingsActivity">
 
     <LinearLayout
+        android:id="@+id/preference_quiet_hours_root"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">

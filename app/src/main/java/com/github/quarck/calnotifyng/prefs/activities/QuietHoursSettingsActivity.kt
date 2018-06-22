@@ -23,13 +23,16 @@ import android.os.Bundle
 import android.preference.PreferenceActivity
 import android.preference.PreferenceFragment
 import android.support.v7.app.AppCompatActivity
+import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.Switch
 import android.widget.TextView
 import com.github.quarck.calnotifyng.R
 import com.github.quarck.calnotifyng.Settings
 import com.github.quarck.calnotifyng.prefs.ButtonPreferenceTwoLine
+import com.github.quarck.calnotifyng.prefs.PrefsRoot
 import com.github.quarck.calnotifyng.prefs.SwitchPreferenceWithLayout
 import com.github.quarck.calnotifyng.prefs.TimeOfDayPreference
 import com.github.quarck.calnotifyng.utils.findOrThrow
@@ -46,6 +49,47 @@ class QuietHoursSettingsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_pref_quiet_hours)
 
         settings = Settings(this)
+
+        val root = findOrThrow<LinearLayout>(R.id.preference_quiet_hours_root)
+
+//        val sampleSwitch = findOrThrow<Switch>(R.id.preference_quiet_hours_switch_enable)
+//
+//        val newChild = layoutInflater.inflate(R.layout.pref_switch_with_text, null)
+//        newChild.findOrThrow<Switch>(R.id.pref_switch_generic).text = "Hello"
+//        newChild.findOrThrow<TextView>(R.id.pref_switch_generic_small_text).text = "Hello World"
+//        root.addView(newChild)
+//
+//        val newChild2 = layoutInflater.inflate(R.layout.pref_switch_with_text, null)
+//        newChild2.findOrThrow<Switch>(R.id.pref_switch_generic).text = "Hello2 "
+//        newChild2.findOrThrow<TextView>(R.id.pref_switch_generic_small_text).text = "Hello World 2"
+//        root.addView(newChild2)
+
+        PrefsRoot(layoutInflater, root) {
+            switch("Hello", "world") {
+                initial(true)
+                onChange {  }
+            }
+
+            header("Something else below")
+
+            switch("Goodbye", "Universe") {
+                initial(false)
+                onChange {  }
+
+                depending {
+                    switch("Another", "One") {
+                        initial(true)
+                    }
+
+                    header("ha-ha")
+
+                    switch ("And yet") {
+                        initial(false)
+                    }
+                }
+            }
+        }
+
 
         SwitchPreferenceWithLayout(
                 this,
