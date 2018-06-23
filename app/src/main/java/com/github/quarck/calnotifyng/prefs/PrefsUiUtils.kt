@@ -129,6 +129,36 @@ class PrefsSwitch(
     }
 }
 
+class PrefsItem(
+        val inflater: LayoutInflater,
+        val root: LinearLayout,
+        textMain: String,
+        textSecondary: String,
+        var onClick: () -> Unit
+) {
+    val main: TextView
+    val secondary: TextView
+
+    init {
+        val child = inflater.inflate(R.layout.pref_item, null)
+        main = child.findOrThrow<TextView>(R.id.pref_item_generic_text)
+        secondary = child.findOrThrow<TextView>(R.id.pref_item_generic_text_summary)
+
+        main.text = textMain
+
+        if (textSecondary.isNotEmpty())
+            secondary.text = textSecondary
+        else
+            secondary.visibility = View.GONE
+
+        main.setOnClickListener({
+            onClick()
+        })
+
+        root.addView(child)
+    }
+}
+
 class PrefsHeader(val inflater: LayoutInflater, val root: LinearLayout, text: String) {
     init {
         val child = inflater.inflate(R.layout.pref_header, null)
@@ -153,6 +183,14 @@ class PrefsRoot(val inflater: LayoutInflater, val root: LinearLayout, val fn: Pr
         val obj = PrefsSwitch(inflater, root, textMain, "")
         obj.fn()
         return obj
+    }
+
+    fun item(textMain: String, textSecondary: String, onClick: () -> Unit): PrefsItem  {
+        return PrefsItem(inflater, root, textMain, textSecondary, onClick)
+    }
+
+    fun item(textMain: String, onClick: () -> Unit): PrefsItem  {
+        return PrefsItem(inflater, root, textMain, "", onClick)
     }
 
     fun header(text: String): PrefsHeader {

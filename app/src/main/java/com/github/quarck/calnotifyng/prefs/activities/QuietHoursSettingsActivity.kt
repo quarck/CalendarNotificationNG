@@ -72,6 +72,14 @@ class QuietHoursSettingsActivity : AppCompatActivity() {
 
             header("Something else below")
 
+            item("hahaha - item", "with sub") {
+
+            }
+
+            item("hahaha - item") {
+
+            }
+
             switch("Goodbye", "Universe") {
                 initial(false)
                 onChange {  }

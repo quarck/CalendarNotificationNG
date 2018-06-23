@@ -21,19 +21,18 @@ package com.github.quarck.calnotifyng.prefs.activities
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.view.View
 import android.widget.LinearLayout
 import com.github.quarck.calnotifyng.R
 import com.github.quarck.calnotifyng.Settings
 import com.github.quarck.calnotifyng.notification.NotificationChannelManager
-import com.github.quarck.calnotifyng.prefs.*
+import com.github.quarck.calnotifyng.prefs.MaxRemindersPreference
+import com.github.quarck.calnotifyng.prefs.PrefsRoot
+import com.github.quarck.calnotifyng.prefs.ReminderPatternPreference
 import com.github.quarck.calnotifyng.utils.findOrThrow
 
 class NotificationSettingsActivity : AppCompatActivity(){
 
     lateinit var settings: Settings
-
-    lateinit var remindersLayout: LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState);
@@ -41,55 +40,73 @@ class NotificationSettingsActivity : AppCompatActivity(){
         setContentView(R.layout.activity_pref_notification)
         settings = Settings(this)
 
-        remindersLayout = findOrThrow(R.id.notification_pref_reminder_layout)
+        PrefsRoot(layoutInflater, findOrThrow<LinearLayout>(R.id.notification_pref_root)) {
+            header(resources.getString(R.string.main_notifications))
 
-        ButtonPreference(this, R.id.notification_pref_main_channel_pref) {
-            NotificationChannelManager.launchSystemSettingForChannel(this,
-                    NotificationChannelManager.SoundState.Normal,
-                    false)
+            item(resources.getString(R.string.regular_notification_settings)) {
+                NotificationChannelManager.launchSystemSettingForChannel(this@NotificationSettingsActivity,
+                        NotificationChannelManager.SoundState.Normal,
+                        false)
+            }
+
+            item(resources.getString(R.string.quiet_hours_notification_settings)){
+                NotificationChannelManager.launchSystemSettingForChannel(this@NotificationSettingsActivity,
+                        NotificationChannelManager.SoundState.Silent,
+                        false)
+            }
+
+            item (resources.getString(R.string.alarm_notification_settings)) {
+                NotificationChannelManager.launchSystemSettingForChannel(this@NotificationSettingsActivity,
+                        NotificationChannelManager.SoundState.Alarm,
+                        false)
+            }
+
+            header(resources.getString(R.string.reminder_notifications))
+
+            switch(resources.getString(R.string.enable_reminders),
+                    resources.getString(R.string.enable_reminders_summary)) {
+
+                initial(settings.remindersEnabled)
+
+                onChange{settings.remindersEnabled = it}
+
+                depending {
+                    item(resources.getString(R.string.reminder_notification_settings)) {
+                        NotificationChannelManager.launchSystemSettingForChannel(this@NotificationSettingsActivity,
+                                NotificationChannelManager.SoundState.Normal,
+                                true)
+
+                    }
+
+                    item(resources.getString(R.string.alarm_reminder_notification_settings)) {
+                        NotificationChannelManager.launchSystemSettingForChannel(this@NotificationSettingsActivity,
+                                NotificationChannelManager.SoundState.Alarm,
+                                true)
+
+                    }
+
+                    item(resources.getString(R.string.remind_interval)) {
+                        ReminderPatternPreference(this@NotificationSettingsActivity, settings,
+                                this@NotificationSettingsActivity.layoutInflater).create().show()
+                    }
+
+                    item(resources.getString(R.string.max_reminders)) {
+                        MaxRemindersPreference(this@NotificationSettingsActivity, settings,
+                                this@NotificationSettingsActivity.layoutInflater).create().show()
+                    }
+                }
+            }
+
+            header(resources.getString(R.string.other))
+
+            switch (resources.getString(R.string.add_empty_action_to_the_end_title),
+                    resources.getString(R.string.add_empty_action_to_the_end_summary)) {
+
+                initial(settings.notificationAddEmptyAction)
+                onChange{ settings.notificationAddEmptyAction = it }
+            }
         }
 
-        ButtonPreference(this, R.id.notification_pref_silent_channel_pref) {
-            NotificationChannelManager.launchSystemSettingForChannel(this,
-                    NotificationChannelManager.SoundState.Silent,
-                    false)
-        }
-        ButtonPreference(this, R.id.notification_pref_alarm_channel_pref) {
-            NotificationChannelManager.launchSystemSettingForChannel(this,
-                    NotificationChannelManager.SoundState.Alarm,
-                    false)
-        }
-        ButtonPreference(this, R.id.notification_pref_reminder_main_channel) {
-            NotificationChannelManager.launchSystemSettingForChannel(this,
-                    NotificationChannelManager.SoundState.Normal,
-                    true)
-        }
-        ButtonPreference(this, R.id.notification_pref_reminder_alarm_channel) {
-            NotificationChannelManager.launchSystemSettingForChannel(this,
-                    NotificationChannelManager.SoundState.Alarm,
-                    true)
-        }
 
-        SwitchPreference(this, R.id.notification_pref_switch_empty_action, settings.notificationAddEmptyAction) {
-            settings.notificationAddEmptyAction = it
-        }
-
-        SwitchPreferenceWithLayout(
-                parent = this,
-                id = R.id.notification_pref_enable_reminders,
-                initialValue = settings.remindersEnabled,
-                onChange = { settings.remindersEnabled = it},
-                updateLayout = { remindersLayout.visibility = if (it) View.VISIBLE else View.GONE}
-        )
-
-        ButtonPreference(this, R.id.notification_pref_reminder_interval) {
-            ReminderPatternPreference(this, settings, this.layoutInflater).create().show()
-        }
-
-        ButtonPreferenceTwoLine(this,
-                R.id.notification_pref_reminder_max_reminders,
-                R.id.notification_pref_reminder_max_reminders_summary) {
-            MaxRemindersPreference(this, settings, this.layoutInflater).create().show()
-        }
     }
 }
