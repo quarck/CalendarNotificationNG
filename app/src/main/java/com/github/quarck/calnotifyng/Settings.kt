@@ -144,11 +144,13 @@ class Settings(context: Context) : PersistentStorageBase(context) {
         get() = getLong(VERSION_CODE_FIRST_INSTALLED_KEY, 0L)
         set(value) = setLong(VERSION_CODE_FIRST_INSTALLED_KEY, value)
 
-    val useSetAlarmClock: Boolean
+    var useSetAlarmClock: Boolean
         get() = getBoolean(BEHAVIOR_USE_SET_ALARM_CLOCK_KEY, true)
+        set(value) = setBoolean(BEHAVIOR_USE_SET_ALARM_CLOCK_KEY, value)
 
-    val useSetAlarmClockForFailbackEventPaths: Boolean
+    var useSetAlarmClockForFailbackEventPaths: Boolean
         get() = getBoolean(BEHAVIOR_USE_SET_ALARM_CLOCK_FOR_FAILBACK_KEY, false)
+        set(value) = setBoolean(BEHAVIOR_USE_SET_ALARM_CLOCK_FOR_FAILBACK_KEY, value)
 
     val shouldRemindForEventsWithNoReminders: Boolean
         get() = getBoolean(SHOULD_REMIND_FOR_EVENTS_WITH_NO_REMINDERS_KEY, false)
@@ -175,11 +177,13 @@ class Settings(context: Context) : PersistentStorageBase(context) {
         get() = getBoolean(ENABLE_MONITOR_DEBUGGING_KEY, false)
         set(value) = setBoolean(ENABLE_MONITOR_DEBUGGING_KEY, value)
 
-    val firstDayOfWeek: Int
+    var firstDayOfWeek: Int
         get() = getString(FIRST_DAY_OF_WEEK_KEY, "-1").toIntOrNull() ?: -1
+        set(value) = setString(FIRST_DAY_OF_WEEK_KEY, "$value")
 
-    val shouldKeepLogs: Boolean
+    var shouldKeepLogs: Boolean
         get() = getBoolean(KEEP_APP_LOGS_KEY, false)
+        set(value) = setBoolean(KEEP_APP_LOGS_KEY, value)
 
     val enableCalendarRescan: Boolean
         get() = getBoolean(ENABLE_CALENDAR_RESCAN_KEY, true)

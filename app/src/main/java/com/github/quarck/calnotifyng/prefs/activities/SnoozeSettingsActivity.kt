@@ -34,9 +34,8 @@ import android.content.DialogInterface
 import android.view.LayoutInflater
 import android.widget.EditText
 import com.github.quarck.calnotifyng.Consts
-import com.github.quarck.calnotifyng.prefs.ButtonPreferenceTwoLine
 import com.github.quarck.calnotifyng.prefs.PreferenceUtils
-import com.github.quarck.calnotifyng.prefs.SwitchPreference
+import com.github.quarck.calnotifyng.prefs.preferences
 
 
 class SnoozeSettingsActivity : AppCompatActivity() {
@@ -46,18 +45,20 @@ class SnoozeSettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_pref_snooze)
         settings = Settings(this)
 
-        ButtonPreferenceTwoLine(
-                this,
-                R.id.preference_snooze_presets,
-                R.id.preference_snooze_presets_summary) {
-            onCreateSnoozePresetsDialog().show()
-        }
+        preferences(this) {
 
-        SwitchPreference(this, R.id.snooze_pref_switch_view_after_edit, settings.viewAfterEdit) {
-            settings.viewAfterEdit = it
+            item(R.string.snooze_presets_title,
+                    R.string.snooze_presets_summary) {
+                onCreateSnoozePresetsDialog().show()
+            }
+
+            switch(R.string.view_after_edit) {
+                initial(settings.viewAfterEdit)
+                onChange { settings.viewAfterEdit = it }
+            }
+
         }
     }
 

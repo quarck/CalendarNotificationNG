@@ -22,12 +22,44 @@ package com.github.quarck.calnotifyng.prefs.activities
 import android.os.Bundle
 import android.preference.PreferenceActivity
 import android.preference.PreferenceFragment
+import android.support.v7.app.AppCompatActivity
 import com.github.quarck.calnotifyng.R
+import com.github.quarck.calnotifyng.Settings
+import com.github.quarck.calnotifyng.prefs.preferences
 
-class MiscSettingsActivity : PreferenceActivity() {
+class MiscSettingsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.xml.misc_preferences)
+        super.onCreate(savedInstanceState)
+
+        val settings = Settings(this)
+
+        preferences(this) {
+
+            list(
+                    R.string.first_day_of_week,
+                    R.string.first_day_of_week_summary,
+                    R.array.days_of_week_entries,
+                    R.array.days_of_week_values,
+                    settings.firstDayOfWeek
+            ) {
+                settings.firstDayOfWeek = it
+            }
+
+            switch(R.string.use_set_alarm_clock_title, R.string.use_set_alarm_clock_summary) {
+                initial(settings.useSetAlarmClock)
+                onChange{settings.useSetAlarmClock = it}
+            }
+
+            switch(R.string.use_set_alarm_clock_for_events, R.string.use_set_alarm_clock_for_events_summary) {
+                initial(settings.useSetAlarmClockForFailbackEventPaths)
+                onChange{settings.useSetAlarmClockForFailbackEventPaths = it}
+            }
+
+            switch(R.string.keep_logs_title, R.string.keep_logs_summary) {
+                initial(settings.shouldKeepLogs)
+                onChange{settings.shouldKeepLogs = it}
+            }
+        }
     }
 }
