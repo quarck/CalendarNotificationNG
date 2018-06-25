@@ -28,8 +28,9 @@ import com.github.quarck.calnotifyng.utils.toIntOrNull
 data class NotificationSettingsSnapshot
 (
         val enableNotificationMute: Boolean,
-        val appendEmptyAction: Boolean//,
-        //val useAlarmStream: Boolean
+        val appendEmptyAction: Boolean,
+        val useAlarmStream: Boolean,
+        val forwardReminersToPebble: Boolean
 )
 
 class Settings(context: Context) : PersistentStorageBase(context) {
@@ -63,9 +64,9 @@ class Settings(context: Context) : PersistentStorageBase(context) {
             return ret;
         }
 
-//    var notificationUseAlarmStream: Boolean
-//        get() = getBoolean(USE_ALARM_STREAM_FOR_NOTIFICATION_KEY, false)
-//        set(value) = setBoolean(USE_ALARM_STREAM_FOR_NOTIFICATION_KEY, value)
+    var notificationUseAlarmStream: Boolean
+        get() = getBoolean(USE_ALARM_STREAM_FOR_NOTIFICATION_KEY, false)
+        set(value) = setBoolean(USE_ALARM_STREAM_FOR_NOTIFICATION_KEY, value)
 
     var remindersEnabled: Boolean
         get() = getBoolean(ENABLE_REMINDERS_KEY, false)
@@ -206,12 +207,18 @@ class Settings(context: Context) : PersistentStorageBase(context) {
         get() = getBoolean(NOTIFY_ON_EMAIL_ONLY_EVENTS_KEY, false)
         set(value) = setBoolean(NOTIFY_ON_EMAIL_ONLY_EVENTS_KEY, value)
 
+
+    var forwardReminersToPebble: Boolean
+        get() = getBoolean(FORWARD_REMINDERS_TO_PEBBLE, false)
+        set(value) = setBoolean(FORWARD_REMINDERS_TO_PEBBLE, value)
+
     val notificationSettingsSnapshot: NotificationSettingsSnapshot
         get() = NotificationSettingsSnapshot(
                 ////notificationSwipeDoesSnooze = notificationSwipeDoesSnooze,
                 enableNotificationMute = remindersEnabled,
-                appendEmptyAction = notificationAddEmptyAction//,
-  //              useAlarmStream = notificationUseAlarmStream
+                appendEmptyAction = notificationAddEmptyAction,
+                useAlarmStream = notificationUseAlarmStream,
+                forwardReminersToPebble = forwardReminersToPebble
         )
 
     companion object {
@@ -256,7 +263,7 @@ class Settings(context: Context) : PersistentStorageBase(context) {
 
         private const val FIRST_DAY_OF_WEEK_KEY = "first_day_of_week"
 
-//        private const val USE_ALARM_STREAM_FOR_NOTIFICATION_KEY = "use_alarm_stream_for_notification"
+        private const val USE_ALARM_STREAM_FOR_NOTIFICATION_KEY = "use_alarm_stream_for_notification"
 
         private const val KEEP_APP_LOGS_KEY = "keep_logs"
 
@@ -266,6 +273,8 @@ class Settings(context: Context) : PersistentStorageBase(context) {
         private const val DEVELOPER_MODE_KEY = "dev"
 
         private const val NOTIFICATION_ADD_EMPTY_ACTION_KEY = "add_empty_action_to_the_end"
+
+        private const val FORWARD_REMINDERS_TO_PEBBLE = "forward_reminders_to_pebble"
 
         // Default values
         internal const val DEFAULT_SNOOZE_PRESET = "15m, 1h, 4h, 1d, -5m"

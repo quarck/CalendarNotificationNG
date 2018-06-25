@@ -99,6 +99,11 @@ class NotificationSettingsActivity : AppCompatActivity(){
                 initial(settings.notificationAddEmptyAction)
                 onChange{ settings.notificationAddEmptyAction = it }
             }
+
+            switch(R.string.use_alarm_stream, R.string.use_alarm_stream_summary) {
+                initial(settings.notificationUseAlarmStream)
+                onChange{settings.notificationUseAlarmStream = it}
+            }
         }
     }
 }

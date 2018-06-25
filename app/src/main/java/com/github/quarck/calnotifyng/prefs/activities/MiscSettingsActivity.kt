@@ -60,6 +60,13 @@ class MiscSettingsActivity : AppCompatActivity() {
                 initial(settings.shouldKeepLogs)
                 onChange{settings.shouldKeepLogs = it}
             }
+
+            header(R.string.other)
+
+            switch(R.string.pebble_forward_reminders, R.string.pebble_forward_reminders_summary) {
+                initial(settings.forwardReminersToPebble)
+                onChange{settings.forwardReminersToPebble = it}
+            }
         }
     }
 }

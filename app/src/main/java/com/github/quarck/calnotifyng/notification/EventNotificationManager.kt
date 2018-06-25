@@ -25,6 +25,7 @@ import android.content.Intent
 import android.graphics.drawable.Icon
 import android.support.v4.app.NotificationCompat
 import android.text.format.DateUtils
+import com.github.quarck.calnotify.pebble.PebbleUtils
 import com.github.quarck.calnotifyng.*
 import com.github.quarck.calnotifyng.calendar.*
 import com.github.quarck.calnotifyng.eventsstorage.EventsStorage
@@ -440,7 +441,13 @@ class EventNotificationManager : EventNotificationManagerInterface {
                 soundState = NotificationChannelManager.SoundState.Silent
         }
 
-        val channel = NotificationChannelManager.createNotificationChannel(context, soundState, isReminder)
+        val activeSoundState = // force Alarm if we have it enabled
+                if (soundState == NotificationChannelManager.SoundState.Normal && settings.notificationUseAlarmStream)
+                    NotificationChannelManager.SoundState.Alarm
+                else
+                    soundState
+
+        val channel = NotificationChannelManager.createNotificationChannel(context, activeSoundState, isReminder)
 
         val notificationStyle = NotificationCompat.InboxStyle()
 
@@ -506,8 +513,11 @@ class EventNotificationManager : EventNotificationManagerInterface {
         catch (ex: Exception) {
             DevLog.error(context, LOG_TAG, "Error posting notification: $ex, ${ex.stackTrace}")
         }
-    }
 
+        if (isReminder && settings.forwardReminersToPebble) {
+            PebbleUtils.forwardNotificationToPebble(context, contentTitle, contentText, false)
+        }
+    }
 
 //    private fun collapseDisplayedNotifications(
 //            context: Context, db: EventsStorage,
@@ -763,9 +773,15 @@ class EventNotificationManager : EventNotificationManagerInterface {
         else if (event.isMuted)
             iconId = R.drawable.stat_notify_calendar_muted
 
+        val activeSoundState = // force Alarm if we have it enabled
+                if (soundState == NotificationChannelManager.SoundState.Normal && notificationSettings.useAlarmStream)
+                    NotificationChannelManager.SoundState.Alarm
+                else
+                    soundState
+
         val channel = NotificationChannelManager.createNotificationChannel(
                 ctx,
-                soundState = soundState,
+                soundState = activeSoundState,
                 isReminder = isReminder
         )
 
@@ -935,6 +951,10 @@ class EventNotificationManager : EventNotificationManagerInterface {
         }
         catch (ex: Exception) {
             DevLog.error(ctx, LOG_TAG, "Exception on notificationId=${event.notificationId}: ${ex.detailed}")
+        }
+
+        if (isReminder && notificationSettings.forwardReminersToPebble) {
+            PebbleUtils.forwardNotificationToPebble(ctx, title, notificationTextString, false)
         }
     }
 
