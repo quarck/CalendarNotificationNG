@@ -20,8 +20,6 @@
 package com.github.quarck.calnotifyng
 
 import android.content.Context
-import android.media.RingtoneManager
-import android.net.Uri
 import com.github.quarck.calnotifyng.prefs.PreferenceUtils
 import com.github.quarck.calnotifyng.utils.PersistentStorageBase
 import com.github.quarck.calnotifyng.utils.toIntOrNull
@@ -152,26 +150,38 @@ class Settings(context: Context) : PersistentStorageBase(context) {
         get() = getBoolean(BEHAVIOR_USE_SET_ALARM_CLOCK_FOR_FAILBACK_KEY, false)
         set(value) = setBoolean(BEHAVIOR_USE_SET_ALARM_CLOCK_FOR_FAILBACK_KEY, value)
 
-    val shouldRemindForEventsWithNoReminders: Boolean
+    var shouldRemindForEventsWithNoReminders: Boolean
         get() = getBoolean(SHOULD_REMIND_FOR_EVENTS_WITH_NO_REMINDERS_KEY, false)
+        set(value) = setBoolean(SHOULD_REMIND_FOR_EVENTS_WITH_NO_REMINDERS_KEY, value)
 
-    val defaultReminderTimeForEventWithNoReminder: Long
-        get() = getInt(DEFAULT_REMINDER_TIME_FOR_EVENTS_WITH_NO_REMINDER_KEY, 15) * 60L * 1000L
+    var defaultReminderTimeForEventWithNoReminderMinutes: Int
+        get() = getInt(DEFAULT_REMINDER_TIME_FOR_EVENTS_WITH_NO_REMINDER_KEY, 15)
+        set(value) = setInt(DEFAULT_REMINDER_TIME_FOR_EVENTS_WITH_NO_REMINDER_KEY, value)
 
-    val defaultReminderTimeForAllDayEventWithNoreminder: Long
-        get() = getInt(DEFAULT_REMINDER_TIME_FOR_ALL_DAY_EVENTS_WITH_NO_REMINDER, -480) * 60L * 1000L
+    val defaultReminderTimeForEventWithNoReminderMillis: Long
+        get() = defaultReminderTimeForEventWithNoReminderMinutes * 60L * 1000L
+
+    var defaultReminderTimeForAllDayEventWithNoreminderMinutes: Int
+        get() = getInt(DEFAULT_REMINDER_TIME_FOR_ALL_DAY_EVENTS_WITH_NO_REMINDER, -480)
+        set(value) = setInt(DEFAULT_REMINDER_TIME_FOR_ALL_DAY_EVENTS_WITH_NO_REMINDER, value)
+
+    val defaultReminderTimeForAllDayEventWithNoreminderMillis: Long
+        get() = defaultReminderTimeForAllDayEventWithNoreminderMinutes * 60L * 1000L
 
     val manualCalWatchScanWindow: Long
         get() = getLong(CALENDAR_MANUAL_WATCH_RELOAD_WINDOW_KEY, 30L * 24L * 3600L * 1000L) // 1 month by default
 
-    val dontShowDeclinedEvents: Boolean
+    var dontShowDeclinedEvents: Boolean
         get() = getBoolean(DONT_SHOW_DECLINED_EVENTS_KEY, false)
+        set(value) = setBoolean(DONT_SHOW_DECLINED_EVENTS_KEY, value)
 
-    val dontShowCancelledEvents: Boolean
+    var dontShowCancelledEvents: Boolean
         get() = getBoolean(DONT_SHOW_CANCELLED_EVENTS_KEY, false)
+        set(value) = setBoolean(DONT_SHOW_CANCELLED_EVENTS_KEY, value)
 
-    val dontShowAllDayEvents: Boolean
+    var dontShowAllDayEvents: Boolean
         get() = getBoolean(DONT_SHOW_ALL_DAY_EVENTS_KEY, false)
+        set(value) = setBoolean(DONT_SHOW_ALL_DAY_EVENTS_KEY, value)
 
     var enableMonitorDebug: Boolean
         get() = getBoolean(ENABLE_MONITOR_DEBUGGING_KEY, false)
@@ -185,14 +195,16 @@ class Settings(context: Context) : PersistentStorageBase(context) {
         get() = getBoolean(KEEP_APP_LOGS_KEY, false)
         set(value) = setBoolean(KEEP_APP_LOGS_KEY, value)
 
-    val enableCalendarRescan: Boolean
+    var enableCalendarRescan: Boolean
         get() = getBoolean(ENABLE_CALENDAR_RESCAN_KEY, true)
+        set(value) = setBoolean(ENABLE_CALENDAR_RESCAN_KEY, value)
 
     val rescanCreatedEvent: Boolean
         get() = true
 
-    val notifyOnEmailOnlyEvents: Boolean
+    var notifyOnEmailOnlyEvents: Boolean
         get() = getBoolean(NOTIFY_ON_EMAIL_ONLY_EVENTS_KEY, false)
+        set(value) = setBoolean(NOTIFY_ON_EMAIL_ONLY_EVENTS_KEY, value)
 
     val notificationSettingsSnapshot: NotificationSettingsSnapshot
         get() = NotificationSettingsSnapshot(

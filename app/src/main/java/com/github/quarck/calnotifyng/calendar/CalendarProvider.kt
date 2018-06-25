@@ -1307,10 +1307,10 @@ object CalendarProvider : CalendarProviderInterface {
         val notifyOnEmailOnlyEvents = settings.notifyOnEmailOnlyEvents
 
         val defaultReminderTimeForEventWithNoReminder =
-                settings.defaultReminderTimeForEventWithNoReminder
+                settings.defaultReminderTimeForEventWithNoReminderMillis
 
         val defaultReminderTimeForAllDayEventWithNoreminder =
-                settings.defaultReminderTimeForAllDayEventWithNoreminder
+                settings.defaultReminderTimeForAllDayEventWithNoreminderMillis
 
         try {
             val timezone = TimeZone.getDefault()
@@ -1431,10 +1431,10 @@ object CalendarProvider : CalendarProviderInterface {
         val notifyOnEmailOnlyEvents = settings.notifyOnEmailOnlyEvents
 
         val defaultReminderTimeForEventWithNoReminder =
-                settings.defaultReminderTimeForEventWithNoReminder
+                settings.defaultReminderTimeForEventWithNoReminderMillis
 
         val defaultReminderTimeForAllDayEventWithNoreminder =
-                settings.defaultReminderTimeForAllDayEventWithNoreminder
+                settings.defaultReminderTimeForAllDayEventWithNoreminderMillis
 
         try {
             val timezone = TimeZone.getDefault()
