@@ -24,21 +24,20 @@ import android.content.Context
 import android.widget.ArrayAdapter
 import com.github.quarck.calnotifyng.R
 
-class ListPreference(
+class ListPreference<T>(
         val context: Context,
         val titleId: Int,
-        val namesId: Int,
-        val valuesId: Int,
-        val onNewValue: (pos: Int) -> Unit) {
+
+        val namesArray: Array<String>,
+        val valuesArray: Array<T>,
+
+        val onNewValue: (valueName: String, value: T) -> Unit) {
 
     fun create() {
 
         val builder = AlertDialog.Builder(context)
         builder.setIcon(R.drawable.ic_launcher)
         builder.setTitle(context.resources.getString(titleId))
-
-        val namesArray: Array<String> = context.resources.getStringArray(namesId)
-        val valuesArray: IntArray = context.resources.getIntArray(valuesId)
 
         val arrayAdapter = ArrayAdapter<String>(context, android.R.layout.select_dialog_singlechoice, namesArray)
 
@@ -48,8 +47,8 @@ class ListPreference(
 
         builder.setAdapter(arrayAdapter) {
             dialog, which ->
-            onNewValue(valuesArray[which])
-            //val strName = arrayAdapter.getItem(which)
+            if (which >= 0 && which < valuesArray.size && which < namesArray.size)
+                onNewValue(namesArray[which], valuesArray[which])
         }
 
         return builder.create().show()

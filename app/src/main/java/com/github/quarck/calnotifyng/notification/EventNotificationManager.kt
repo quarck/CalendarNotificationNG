@@ -25,7 +25,7 @@ import android.content.Intent
 import android.graphics.drawable.Icon
 import android.support.v4.app.NotificationCompat
 import android.text.format.DateUtils
-import com.github.quarck.calnotify.pebble.PebbleUtils
+import com.github.quarck.calnotifyng.pebble.PebbleUtils
 import com.github.quarck.calnotifyng.*
 import com.github.quarck.calnotifyng.calendar.*
 import com.github.quarck.calnotifyng.eventsstorage.EventsStorage

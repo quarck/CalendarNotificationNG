@@ -36,14 +36,19 @@ class MiscSettingsActivity : AppCompatActivity() {
 
         preferences(this) {
 
+            val daysOfWeek: Array<String> = context.resources.getStringArray(R.array.days_of_week_entries)
+            val daysOfWeekValues: Array<Int> = context.resources.getIntArray(R.array.days_of_week_values).toTypedArray()
+
             list(
                     R.string.first_day_of_week,
                     R.string.first_day_of_week_summary,
-                    R.array.days_of_week_entries,
-                    R.array.days_of_week_values,
-                    settings.firstDayOfWeek
+                    daysOfWeek,
+                    daysOfWeekValues,
+                    settings.firstDayOfWeek,
+                    true
             ) {
-                settings.firstDayOfWeek = it
+                name, value ->
+                settings.firstDayOfWeek = value
             }
 
             switch(R.string.use_set_alarm_clock_title, R.string.use_set_alarm_clock_summary) {

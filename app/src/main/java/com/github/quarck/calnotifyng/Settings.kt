@@ -189,8 +189,8 @@ class Settings(context: Context) : PersistentStorageBase(context) {
         set(value) = setBoolean(ENABLE_MONITOR_DEBUGGING_KEY, value)
 
     var firstDayOfWeek: Int
-        get() = getString(FIRST_DAY_OF_WEEK_KEY, "-1").toIntOrNull() ?: -1
-        set(value) = setString(FIRST_DAY_OF_WEEK_KEY, "$value")
+        get() = getInt(FIRST_DAY_OF_WEEK_KEY, 1)
+        set(value) = setInt(FIRST_DAY_OF_WEEK_KEY, value)
 
     var shouldKeepLogs: Boolean
         get() = getBoolean(KEEP_APP_LOGS_KEY, false)
@@ -261,7 +261,7 @@ class Settings(context: Context) : PersistentStorageBase(context) {
 
         private const val ENABLE_MONITOR_DEBUGGING_KEY = "enableMonitorDebug"
 
-        private const val FIRST_DAY_OF_WEEK_KEY = "first_day_of_week"
+        private const val FIRST_DAY_OF_WEEK_KEY = "first_day_of_week_2"
 
         private const val USE_ALARM_STREAM_FOR_NOTIFICATION_KEY = "use_alarm_stream_for_notification"
 

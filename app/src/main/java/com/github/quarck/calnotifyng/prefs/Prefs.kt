@@ -326,29 +326,46 @@ class PrefsRoot(val context: Context, val inflater: LayoutInflater, val root: Li
         )
     }
 
-    fun list(
+    fun<T> list(
             textMainId: Int,
             textSecondaryId: Int,
-            arrayNamesId: Int,
-            arrayValuesId: Int,
-            initialValue: Int,
-            onNewValue: (pos: Int) -> Unit
+            arrayNames: Array<String>,
+            arrayValues: Array<T>,
+            currentValue: T,
+            showValue: Boolean,
+            onNewValue: (valueNmae: String, value: T) -> Unit
             ): PrefsItem {
 
+        if (arrayNames.size != arrayValues.size)
+            throw Exception("Names and values arrays are not aligned")
+
+        val currentIndex = arrayValues.indexOf(currentValue)
+
         return PrefsItem(
-                context,
-                inflater,
-                root,
-                context.resources.getString(textMainId),
-                context.resources.getString(textSecondaryId),
-                {
-                    ListPreference(
+                context = context,
+                inflater = inflater,
+                root = root,
+                textMain = context.resources.getString(textMainId),
+                textSecondary = context.resources.getString(textSecondaryId),
+                onClick = {
+                    ListPreference<T>(
                             context,
                             textMainId,
-                            arrayNamesId,
-                            arrayValuesId,
-                            onNewValue).create()
-                })
+                            arrayNames,
+                            arrayValues,
+                            {
+                                name, value ->
+
+                                if (showValue)
+                                    this@PrefsItem.setValue(name)
+
+                                onNewValue(name, value)
+                            }
+                    ).create()
+                },
+                shouldUseValue = showValue,
+                initialValue = if (showValue && currentIndex >= 0 && currentIndex < arrayNames.size)
+                    arrayNames[currentIndex] else null)
     }
 
     fun header(text: String): PrefsHeader {
