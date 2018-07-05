@@ -21,6 +21,7 @@ package com.github.quarck.calnotifyng.calendareditor
 
 import android.content.Context
 import com.github.quarck.calnotifyng.calendar.CalendarEventDetails
+import com.github.quarck.calnotifyng.calendar.CalendarRecord
 import com.github.quarck.calnotifyng.calendar.EventAlertRecord
 import com.github.quarck.calnotifyng.calendar.EventRecord
 
@@ -53,4 +54,14 @@ interface CalendarChangeManagerInterface {
      * @returns true on success
      */
     fun updateEvent(context: Context, eventToEdit: EventRecord, details: CalendarEventDetails): Boolean
+
+    /**
+     * For repeating events - creates a copy of event instance with the time "addTime" added
+     * to the start time
+     * @param [context] - Android context
+     * @param [calendar] - Calendar, this event belongs to
+     * @param [event] - event to move
+     * @param [addTimeMillis] - amount of time to add
+     */
+    fun moveRepeatingAsCopy(context: Context, calendar: CalendarRecord, event: EventAlertRecord, addTimeMillis: Long): Long
 }

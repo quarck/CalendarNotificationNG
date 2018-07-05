@@ -30,11 +30,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.SettingsActivity"
-            android:label="@string/settings_name"
-            android:parentActivityName=".ui.MainActivity"
-            android:theme="@style/AppTheme" />
+        <!--<activity-->
+            <!--android:name=".ui.SettingsActivity"-->
+            <!--android:label="@string/settings_name"-->
+            <!--android:parentActivityName=".ui.MainActivity"-->
+            <!--android:theme="@style/AppTheme" />-->
         <activity
             android:name=".ui.HelpAndFeedbackActivity"
             android:label="@string/help_feedback"
@@ -61,15 +61,15 @@
         <activity
             android:name=".prefs.CalendarsActivity"
             android:label="@string/title_calendars_activity"
-            android:parentActivityName=".ui.SettingsActivity"
+            android:parentActivityName=".ui.SettingsActivityNew"
             android:theme="@style/AppTheme.NoActionBar">
-            >
             <intent-filter>
                 <action android:name="com.github.quarck.calnotifyng.prefs.CalendarsActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".ui.TestActivity"
             android:label="@string/title_activity_activity_test_buttons_and_to_do"

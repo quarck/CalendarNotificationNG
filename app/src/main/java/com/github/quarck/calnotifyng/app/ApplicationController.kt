@@ -999,6 +999,19 @@ object ApplicationController : EventMovedHandler {
         return moved
     }
 
+    fun moveAsCopy(context: Context, calendar: CalendarRecord, event: EventAlertRecord, addTime: Long): Long {
+
+        val eventId = calendarChangeManager.moveRepeatingAsCopy(context, calendar, event, addTime)
+
+        if (eventId != -1L) {
+            DevLog.debug(context, LOG_TAG, "Event created: id=${eventId}")
+        } else {
+            DevLog.error(context, LOG_TAG, "Failed to create event")
+        }
+
+        return eventId
+    }
+
     // used for debug purpose
     @Suppress("unused")
     fun forceRepostNotifications(context: Context) {

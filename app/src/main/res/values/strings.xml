@@ -60,6 +60,7 @@
     <string name="tomorrow">Tomorrow</string>
     <string name="yesterday">Yesterday</string>
     <string name="change_event_time">Change event time</string>
+    <string name="change_event_time_repeating_event">Change event time (creates event copy for repeating events)</string>
     <string name="one_hour_from_now">Move next hour</string>
     <string name="same_time_tomorrow">Move next day</string>
     <string name="next_week_same_day">Move next week</string>

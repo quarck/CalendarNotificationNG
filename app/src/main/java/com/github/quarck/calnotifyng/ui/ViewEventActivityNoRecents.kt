@@ -97,6 +97,8 @@ open class ViewEventActivityNoRecents : AppCompatActivity() {
 
     lateinit var event: EventAlertRecord
 
+    lateinit var calendar: CalendarRecord
+
     lateinit var snoozePresets: LongArray
 
     lateinit var settings: Settings
@@ -144,6 +146,7 @@ open class ViewEventActivityNoRecents : AppCompatActivity() {
     var snoozeUntil_DatePicker: DatePicker? = null
     var snoozeUntil_TimePicker: TimePicker? = null
 
+    lateinit var calendarNameTextView: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -200,6 +203,11 @@ open class ViewEventActivityNoRecents : AppCompatActivity() {
 
             event = dbEvent
         }
+
+        calendar = calendarProvider.getCalendarById(this, event.calendarId) ?: throw Exception("Can't find calendar")
+
+        calendarNameTextView = findOrThrow<TextView>(R.id.view_event_calendar_name)
+        calendarNameTextView.text = calendar.displayName
 
         snoozePresets = settings.snoozePresets
 
@@ -292,9 +300,13 @@ open class ViewEventActivityNoRecents : AppCompatActivity() {
 
         window.statusBarColor = color.scaleColor(0.7f)
 
-        val shouldOfferMove = (!event.isRepeating) && (DateTimeUtils.isUTCTodayOrInThePast(event.startTime))
+//        val shouldOfferMove = (!event.isRepeating) && (DateTimeUtils.isUTCTodayOrInThePast(event.startTime))
+        val shouldOfferMove = (DateTimeUtils.isUTCTodayOrInThePast(event.startTime))
         if (shouldOfferMove) {
             findOrThrow<RelativeLayout>(R.id.snooze_reschedule_layout).visibility = View.VISIBLE
+            if (event.isRepeating) {
+                findOrThrow<TextView>(R.id.snooze_reschedule_for).text = getString(R.string.change_event_time_repeating_event)
+            }
         }
         else {
             find<View?>(R.id.snooze_view_inter_view_divider)?.visibility = View.GONE
@@ -324,13 +336,21 @@ open class ViewEventActivityNoRecents : AppCompatActivity() {
 
         val fab = findOrThrow<FloatingActionButton>(R.id.floating_edit_button)
 
-        if (!event.isRepeating) {
-            fab.setOnClickListener {
-                _ ->
-                val intent = Intent(this, EditEventActivity::class.java)
-                intent.putExtra(EditEventActivity.EVENT_ID, event.eventId)
-                startActivity(intent)
-                finish()
+        if (!calendar.isReadOnly) {
+            if (!event.isRepeating) {
+
+                fab.setOnClickListener { _ ->
+                    val intent = Intent(this, EditEventActivity::class.java)
+                    intent.putExtra(EditEventActivity.EVENT_ID, event.eventId)
+                    startActivity(intent)
+                    finish()
+                }
+
+            } else {
+                fab.setOnClickListener { _ ->
+                    CalendarIntents.viewCalendarEvent(this, event)
+                    finish()
+                }
             }
 
             val states = arrayOf(intArrayOf(android.R.attr.state_enabled), // enabled
@@ -344,7 +364,7 @@ open class ViewEventActivityNoRecents : AppCompatActivity() {
 
             fab.backgroundTintList = ColorStateList(states, colors)
         }
-        else {
+        else  {
             fab.visibility = View.GONE
         }
 
@@ -794,22 +814,40 @@ open class ViewEventActivityNoRecents : AppCompatActivity() {
 
     fun reschedule(addTime: Long) {
 
-        DevLog.info(this, LOG_TAG, "Moving event ${event.eventId} by ${addTime / 1000L} seconds");
+        DevLog.info(this, LOG_TAG, "Moving event ${event.eventId} by ${addTime / 1000L} seconds, isRepeating = ${event.isRepeating}");
 
-        val moved = ApplicationController.moveEvent(this, event, addTime)
+        if (!event.isRepeating) {
+            val moved = ApplicationController.moveEvent(this, event, addTime)
 
-        if (moved) {
-            // Show
-            if (Settings(this).viewAfterEdit)
-                CalendarIntents.viewCalendarEvent(this, event)
-            else
-                SnoozeResult(SnoozeType.Moved, event.startTime, 0L).toast(this)
+            if (moved) {
+                // Show
+                if (Settings(this).viewAfterEdit)
+                    CalendarIntents.viewCalendarEvent(this, event)
+                else
+                    SnoozeResult(SnoozeType.Moved, event.startTime, 0L).toast(this)
 
-            // terminate ourselves
-            finish();
+                // terminate ourselves
+                finish();
+            } else {
+                DevLog.info(this, LOG_TAG, "snooze: Failed to move event ${event.eventId} by ${addTime / 1000L} seconds")
+            }
+
         }
         else {
-            DevLog.info(this, LOG_TAG, "snooze: Failed to move event ${event.eventId} by ${addTime / 1000L} seconds")
+            val newEventId = ApplicationController.moveAsCopy(this, calendar, event, addTime)
+
+            if (newEventId != -1L) {
+                // Show
+                if (Settings(this).viewAfterEdit)
+                    CalendarIntents.viewCalendarEvent(this, newEventId)
+                else
+                    SnoozeResult(SnoozeType.Moved, event.startTime, 0L).toast(this)
+
+                // terminate ourselves
+                finish();
+            } else {
+                DevLog.info(this, LOG_TAG, "snooze: Failed to move event ${event.eventId} by ${addTime / 1000L} seconds")
+            }
         }
     }
 
