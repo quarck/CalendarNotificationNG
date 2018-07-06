@@ -173,19 +173,19 @@ class CalendarChangeManager(val provider: CalendarProviderInterface): CalendarCh
 
         val currentTime = System.currentTimeMillis()
 
-        val numSecondsInThePast = currentTime + Consts.ALARM_THRESHOLD - event.startTime
+        val numSecondsInThePast = currentTime + Consts.ALARM_THRESHOLD - event.instanceStartTime
 
         if (numSecondsInThePast > 0) {
             val addUnits = numSecondsInThePast / addTimeMillis + 1
 
-            newStartTime = event.startTime + addTimeMillis * addUnits
-            newEndTime = event.endTime + addTimeMillis * addUnits
+            newStartTime = event.instanceStartTime + addTimeMillis * addUnits
+            newEndTime = event.instanceEndTime + addTimeMillis * addUnits
 
             DevLog.warn(context, LOG_TAG, "Requested time is already in the past, total added time: ${addTimeMillis * addUnits}")
         }
         else {
-            newStartTime = event.startTime + addTimeMillis
-            newEndTime = event.endTime + addTimeMillis
+            newStartTime = event.instanceStartTime + addTimeMillis
+            newEndTime = event.instanceEndTime + addTimeMillis
         }
 
         DevLog.info(context, LOG_TAG, "Moving event ${event.eventId} from ${event.startTime} / ${event.endTime} to $newStartTime / $newEndTime")

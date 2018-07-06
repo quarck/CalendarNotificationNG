@@ -21,6 +21,7 @@ package com.github.quarck.calnotifyng.ui
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
@@ -46,6 +47,7 @@ import com.github.quarck.calnotifyng.*
 import com.github.quarck.calnotifyng.logs.DevLog
 import com.github.quarck.calnotifyng.permissions.PermissionsManager
 import android.content.res.ColorStateList
+import android.os.Handler
 import android.support.v4.content.ContextCompat
 import android.text.method.ScrollingMovementMethod
 
@@ -91,6 +93,18 @@ data class ViewEventActivityState(
     }
 }
 
+class ViewEventById(private val context: Context, internal var eventId: Long) : Runnable {
+    override fun run() {
+        CalendarIntents.viewCalendarEvent(context, eventId)
+    }
+}
+
+class ViewEventByEvent(private val context: Context, internal var event: EventAlertRecord) : Runnable {
+    override fun run() {
+        CalendarIntents.viewCalendarEvent(context, event)
+    }
+}
+
 open class ViewEventActivityNoRecents : AppCompatActivity() {
 
     var state = ViewEventActivityState()
@@ -107,6 +121,8 @@ open class ViewEventActivityNoRecents : AppCompatActivity() {
 
     val calendarReloadManager: CalendarReloadManagerInterface = CalendarReloadManager
     val calendarProvider: CalendarProviderInterface = CalendarProvider
+
+    val handler = Handler()
 
 //    var snoozeAllIsChange = false
 
@@ -821,30 +837,37 @@ open class ViewEventActivityNoRecents : AppCompatActivity() {
 
             if (moved) {
                 // Show
-                if (Settings(this).viewAfterEdit)
-                    CalendarIntents.viewCalendarEvent(this, event)
-                else
+                if (Settings(this).viewAfterEdit) {
+                    handler.postDelayed({
+                        CalendarIntents.viewCalendarEvent(this, event)
+                        finish()
+                    }, 100)
+                }
+                else {
                     SnoozeResult(SnoozeType.Moved, event.startTime, 0L).toast(this)
-
-                // terminate ourselves
-                finish();
+                    // terminate ourselves
+                    finish();
+                }
             } else {
                 DevLog.info(this, LOG_TAG, "snooze: Failed to move event ${event.eventId} by ${addTime / 1000L} seconds")
             }
-
         }
         else {
             val newEventId = ApplicationController.moveAsCopy(this, calendar, event, addTime)
 
             if (newEventId != -1L) {
                 // Show
-                if (Settings(this).viewAfterEdit)
-                    CalendarIntents.viewCalendarEvent(this, newEventId)
-                else
+                if (Settings(this).viewAfterEdit) {
+                    handler.postDelayed({
+                        CalendarIntents.viewCalendarEvent(this, newEventId)
+                        finish()
+                    }, 100)
+                }
+                else {
                     SnoozeResult(SnoozeType.Moved, event.startTime, 0L).toast(this)
-
-                // terminate ourselves
-                finish();
+                    // terminate ourselves
+                    finish();
+                }
             } else {
                 DevLog.info(this, LOG_TAG, "snooze: Failed to move event ${event.eventId} by ${addTime / 1000L} seconds")
             }

@@ -1005,6 +1005,17 @@ object ApplicationController : EventMovedHandler {
 
         if (eventId != -1L) {
             DevLog.debug(context, LOG_TAG, "Event created: id=${eventId}")
+
+            EventsStorage(context).use {
+                db ->
+                dismissEvent(
+                        context,
+                        db,
+                        event,
+                        EventDismissType.EventMovedUsingApp,
+                        true)
+            }
+
         } else {
             DevLog.error(context, LOG_TAG, "Failed to create event")
         }
