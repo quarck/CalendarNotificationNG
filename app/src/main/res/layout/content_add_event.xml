@@ -33,28 +33,6 @@
 
         <!--             android:textSize="18.0sp"
 -->
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/add_event_view_title_height"
-            android:id="@+id/add_event_title"
-            android:text="@string/empty"
-            android:hint="@string/add_event_event_title_hint"
-            android:textAppearance="?android:textAppearanceMedium"
-            android:textColor="@color/event_title_color"
-            android:textColorHint="@color/event_title_hint_color"
-
-            android:paddingBottom="@dimen/add_event_view_header_padding_bottom"
-            android:paddingTop="@dimen/add_event_view_header_padding_top"
-            android:paddingStart="@dimen/add_event_view_padding_start"
-            android:paddingEnd="@dimen/add_event_view_padding_end"
-            android:gravity="start|bottom"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:scrollbars = "vertical"
-            android:inputType="text|textLongMessage|textCapSentences"
-            tools:ignore="HardcodedText"
-            />
-
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -74,6 +52,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
+            android:layout_alignBaseline="@id/add_event_view_cancel"
             android:background="?android:attr/selectableItemBackground"
             android:longClickable="false"
             android:paddingBottom="@dimen/snooze_view_img_padding_start"
@@ -87,6 +66,32 @@
             tools:ignore="RelativeOverlap"
             android:contentDescription="@string/save_button"
             />
+
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/add_event_view_title_height"
+            android:id="@+id/add_event_title"
+            android:text="@string/empty"
+            android:hint="@string/add_event_event_title_hint"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:textColor="@color/event_title_color"
+            android:textColorHint="@color/event_title_hint_color"
+
+            android:paddingBottom="@dimen/add_event_view_header_padding_bottom"
+            android:paddingTop="@dimen/add_event_view_header_padding_top"
+            android:paddingStart="@dimen/add_event_view_padding_start"
+            android:paddingEnd="@dimen/add_event_view_padding_end"
+            android:inputType="textMultiLine|textCapSentences"
+
+            android:gravity="start|bottom"
+            tools:ignore="HardcodedText"
+            android:ellipsize="end"
+            android:layout_below="@id/add_event_save"
+
+            />
+
 
         <LinearLayout
             android:id="@+id/add_event_layout_buttons"
@@ -526,7 +531,7 @@
                     android:textColor="@color/primary_text"
                     android:textColorHint="@color/secondary_text"
                     android:background="@color/background"
-                    android:maxLines="10"
+                    android:inputType="textMultiLine"
                     />
 
 

@@ -163,6 +163,7 @@ open class ViewEventActivityNoRecents : AppCompatActivity() {
     var snoozeUntil_TimePicker: TimePicker? = null
 
     lateinit var calendarNameTextView: TextView
+    lateinit var calendarAccountTextView: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -224,6 +225,9 @@ open class ViewEventActivityNoRecents : AppCompatActivity() {
 
         calendarNameTextView = findOrThrow<TextView>(R.id.view_event_calendar_name)
         calendarNameTextView.text = calendar.displayName
+
+        calendarAccountTextView = findOrThrow<TextView>(R.id.view_event_calendar_account)
+        calendarAccountTextView.text = calendar.accountName
 
         snoozePresets = settings.snoozePresets
 

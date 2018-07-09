@@ -167,9 +167,8 @@ class PrefsItem(
         else
             secondary.visibility = View.GONE
 
-        main.setOnClickListener({
-            onClick()
-        })
+        main.setOnClickListener{ onClick() }
+        valueField?.setOnClickListener { onClick() }
 
         root.addView(child)
     }
@@ -183,6 +182,13 @@ class PrefsHeader(val inflater: LayoutInflater, val root: LinearLayout, text: St
     init {
         val child = inflater.inflate(R.layout.pref_header, null)
         child.findOrThrow<TextView>(R.id.pref_header_generic_text).text = text
+        root.addView(child)
+    }
+}
+
+class PrefsSeparator(val inflater: LayoutInflater, val root: LinearLayout) {
+    init {
+        val child = inflater.inflate(R.layout.pref_separator, null)
         root.addView(child)
     }
 }
@@ -374,6 +380,10 @@ class PrefsRoot(val context: Context, val inflater: LayoutInflater, val root: Li
 
     fun header(textId: Int): PrefsHeader {
         return header(context.resources.getString(textId))
+    }
+
+    fun separator(): PrefsSeparator {
+        return PrefsSeparator(inflater, root)
     }
 }
 

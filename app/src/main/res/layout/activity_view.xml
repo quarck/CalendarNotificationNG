@@ -198,15 +198,31 @@
                         android:id="@+id/view_event_calendar_name"
                         android:text="__CALENDAR_NAME__"
                         android:textAppearance="?android:textAppearanceMedium"
-                        android:textColor="@color/secondary_text"
-                        android:gravity="start|bottom"
+                        android:textColor="@color/primary_text"
                         android:paddingBottom="@dimen/snooze_view_in_text_vert_padding"
                         android:paddingTop="0dp"
                         android:paddingStart="@dimen/snooze_view_padding_start"
                         android:paddingEnd="@dimen/snooze_view_padding_end"
                         android:layout_alignParentTop="true"
                         android:visibility="visible"
-                        tools:ignore="HardcodedText"/>
+                        tools:ignore="HardcodedText"
+                        />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/view_event_calendar_account"
+                        android:text="__CALENDAR_ACCOUNT__"
+                        android:textAppearance="?android:textAppearanceSmall"
+                        android:textColor="@color/secondary_text"
+                        android:paddingBottom="@dimen/snooze_view_in_text_vert_padding"
+                        android:paddingTop="0dp"
+                        android:paddingStart="@dimen/snooze_view_padding_start"
+                        android:paddingEnd="@dimen/snooze_view_padding_end"
+                        android:visibility="visible"
+                        tools:ignore="HardcodedText"
+                        android:layout_below="@id/view_event_calendar_name"
+                        />
 
                 </RelativeLayout>
 
