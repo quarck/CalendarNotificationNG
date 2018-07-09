@@ -36,7 +36,6 @@
         android:paddingBottom="18dp"
         android:paddingTop="18dp"
         android:layout_alignParentEnd="true"
-        android:layout_alignBaseline="@id/preference_quiet_hours_to"
 
         tools:ignore="HardcodedText" />
 

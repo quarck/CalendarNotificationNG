@@ -416,7 +416,7 @@ class EventNotificationManager : EventNotificationManagerInterface {
 
         // now build actual notification and notify
         val intent = Intent(context, MainActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(context, MAIN_ACTIVITY_NUM_NOTIFICATIONS_COLLAPSED_CODE, intent, 0)
+        val pendingIntent = pendingActivityIntent(context, intent, MAIN_ACTIVITY_NUM_NOTIFICATIONS_COLLAPSED_CODE)
 
         val numEvents = events.size
 
@@ -660,8 +660,7 @@ class EventNotificationManager : EventNotificationManagerInterface {
         val notificationManager = ctx.notificationManager
 
         val intent = Intent(ctx, MainActivity::class.java)
-
-        val pendingIntent = PendingIntent.getActivity(ctx, MAIN_ACTIVITY_GROUP_NOTIFICATION_CODE, intent, 0)
+        val pendingIntent = pendingActivityIntent(ctx, intent, MAIN_ACTIVITY_GROUP_NOTIFICATION_CODE)
 
         val text = ctx.resources.getString(R.string.N_calendar_events).format(numTotalEvents)
 
@@ -1040,7 +1039,7 @@ class EventNotificationManager : EventNotificationManagerInterface {
 //        DevLog.debug(LOG_TAG, "Posting collapsed view notification for ${events.size} requests")
 //
 //        val intent = Intent(context, MainActivity::class.java)
-//        val pendingIntent = PendingIntent.getActivity(context, MAIN_ACTIVITY_NUM_NOTIFICATIONS_COLLAPSED_CODE, intent, 0)
+//        val pendingIntent = pendingActivityIntent(context, intent, MAIN_ACTIVITY_NUM_NOTIFICATIONS_COLLAPSED_CODE)
 //
 //        val numEvents = events.size
 //
