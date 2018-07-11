@@ -221,7 +221,8 @@ open class ViewEventActivityNoRecents : AppCompatActivity() {
             event = dbEvent
         }
 
-        calendar = calendarProvider.getCalendarById(this, event.calendarId) ?: throw Exception("Can't find calendar")
+        calendar = calendarProvider.getCalendarById(this, event.calendarId)
+                ?: calendarProvider.createCalendarNotFoundCal(this)
 
         calendarNameTextView = findOrThrow<TextView>(R.id.view_event_calendar_name)
         calendarNameTextView.text = calendar.displayName

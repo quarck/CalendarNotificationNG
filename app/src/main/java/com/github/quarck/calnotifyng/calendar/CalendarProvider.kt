@@ -28,6 +28,7 @@ import android.database.Cursor
 import android.os.Build
 import android.provider.CalendarContract
 import com.github.quarck.calnotifyng.Consts
+import com.github.quarck.calnotifyng.R
 import com.github.quarck.calnotifyng.Settings
 import com.github.quarck.calnotifyng.logs.DevLog
 import com.github.quarck.calnotifyng.permissions.PermissionsManager
@@ -1358,6 +1359,22 @@ object CalendarProvider : CalendarProviderInterface {
         }
 
         return ret
+    }
+
+    override fun createCalendarNotFoundCal(context: Context): CalendarRecord {
+        return CalendarRecord(
+                calendarId = -1,
+                owner = context.getString(R.string.owner_dummy_local),
+                displayName = context.getString(R.string.calendar_not_found),
+                name = context.getString(R.string.calendar_not_found),
+                accountName = context.getString(R.string.no_account),
+                accountType = context.getString(R.string.dummy),
+                timeZone = context.getString(R.string.unknown),
+                color = Consts.DEFAULT_CALENDAR_EVENT_COLOR,
+                isVisible = true,
+                isPrimary = false,
+                isReadOnly = true,
+                isSynced = false)
     }
 
     override fun getHandledCalendarsIds(context: Context, settings: Settings): Set<Long> {
