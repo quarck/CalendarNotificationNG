@@ -6,11 +6,11 @@ android {
     buildToolsVersion '27.0.3'
 
     defaultConfig {
-        applicationId "com.github.quarck.calnotifyng"
-        minSdkVersion 25
+        applicationId "com.github.quarck.calnotify"
+        minSdkVersion 27
         targetSdkVersion 27
-        versionCode 1
-        versionName "1.0.0-alpha"
+        versionCode 2
+        versionName "1.0.1"
 
         buildConfigField "long", "TIMESTAMP", System.currentTimeMillis() + "L"
     }

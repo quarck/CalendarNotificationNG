@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.github.quarck.calnotifyng"
+    package="com.github.quarck.calnotify"
     android:installLocation="internalOnly">
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -66,7 +66,7 @@
             android:parentActivityName=".ui.SettingsActivityNew"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
-                <action android:name="com.github.quarck.calnotifyng.prefs.CalendarsActivity" />
+                <action android:name="com.github.quarck.calnotify.prefs.CalendarsActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -147,7 +147,7 @@
 
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.github.quarck.calnotifyng.fileprovider"
+            android:authorities="com.github.quarck.calnotify.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

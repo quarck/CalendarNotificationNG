@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Calendar Notifications NG</string>
+    <string name="app_name">Calendar Notifications</string>
 
     <string name="main_activity_title">Kalenderbenachrichtungen</string>
 
@@ -169,7 +169,7 @@
 
     <string name="title_calendars_activity">Überwachte Kalender</string>
 
-    <string name="power_optimisation_warning"><b>Wichtige Information für Samsung Benutzer:</b>\n\nBei vielen neueren Geräten hat Samsung Optimierungen beim Energieverbrauch vorgenommen.\nWenn diese Optimierungen für Calendar Notifications NG aktiviert sind, können die Erinnerungen mit einer Verzögerung zum eigentlichen Termin angezeigt werden.\n\nEs gibt keine Möglichkeit für die App herauszufinden ob die Optimierungen aktiv sind oder nicht. Es wird empfohlen dies manuell zu prüfen.\n\nDeaktivierung für diese App führt zu keinem erhöhten Verbrauch.\n\nBitte öffnen sie\nEinstellungen -&gt; Akku -&gt; App Energiespardetails -&gt; Suche "Calendar Notifications Plus"\nund setze es auf \'Deaktiviert\'\n\nDiese Information trifft nicht bei Custom non-TouchWiz basierten ROMs zu.</string>
+    <string name="power_optimisation_warning"><b>Wichtige Information für Samsung Benutzer:</b>\n\nBei vielen neueren Geräten hat Samsung Optimierungen beim Energieverbrauch vorgenommen.\nWenn diese Optimierungen für Calendar Notifications Plus aktiviert sind, können die Erinnerungen mit einer Verzögerung zum eigentlichen Termin angezeigt werden.\n\nEs gibt keine Möglichkeit für die App herauszufinden ob die Optimierungen aktiv sind oder nicht. Es wird empfohlen dies manuell zu prüfen.\n\nDeaktivierung für diese App führt zu keinem erhöhten Verbrauch.\n\nBitte öffnen sie\nEinstellungen -&gt; Akku -&gt; App Energiespardetails -&gt; Suche "Calendar Notifications Plus"\nund setze es auf \'Deaktiviert\'\n\nDiese Information trifft nicht bei Custom non-TouchWiz basierten ROMs zu.</string>
     <string name="never_show_again">Nicht wieder anzeigen</string>
 
 

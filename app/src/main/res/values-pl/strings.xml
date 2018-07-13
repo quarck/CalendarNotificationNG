@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Calendar Notifications NG</string>
+    <string name="app_name">Calendar Notifications</string>
 
     <string name="main_activity_title">Powiadomienia kalendarza</string>
 
@@ -164,7 +164,7 @@
 
     <string name="title_calendars_activity">Obsługiwane kalendarze</string>
 
-    <string name="power_optimisation_warning"><b>Ważna informacja dla użytkowników telefonów Samsung:</b>\n\nW najnowszych urządzeniach Samsung dodał optymalizację użycia energii.\nJeżeli optymalizacja zostanie włączona dla Calendar Notifications NG, powiadomienia dla wydarzeń mogą pojawiać się z opóźnieniem.\n\nNie ma możliwośći automatycznego sprawdzenia czy optymalizacja jest włączona czy nie. Należy to zrobić samemu.\n\nWyłączenie optymalizacji użycia energii dla aplikacji nie spowoduje drenażu baterii.\n\nProszę otworzyć\nUstawienia -&gt; Bateria -&gt; Oszczędzanie energii -&gt; Znajdź "Calendar Notifications Plus"\n i zmień na \'Wyłączony\'\n\nTa informacja nie ma znaczenia jeżeli używasz niestandardowego ROM (brak TouchWiz).</string>
+    <string name="power_optimisation_warning"><b>Ważna informacja dla użytkowników telefonów Samsung:</b>\n\nW najnowszych urządzeniach Samsung dodał optymalizację użycia energii.\nJeżeli optymalizacja zostanie włączona dla Calendar Notifications Plus, powiadomienia dla wydarzeń mogą pojawiać się z opóźnieniem.\n\nNie ma możliwośći automatycznego sprawdzenia czy optymalizacja jest włączona czy nie. Należy to zrobić samemu.\n\nWyłączenie optymalizacji użycia energii dla aplikacji nie spowoduje drenażu baterii.\n\nProszę otworzyć\nUstawienia -&gt; Bateria -&gt; Oszczędzanie energii -&gt; Znajdź "Calendar Notifications Plus"\n i zmień na \'Wyłączony\'\n\nTa informacja nie ma znaczenia jeżeli używasz niestandardowego ROM (brak TouchWiz).</string>
     <string name="never_show_again">Nie pokazuj ponownie</string>
 
 
